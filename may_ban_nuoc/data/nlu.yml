@@ -1,0 +1,746 @@
+version: "3.1"
+
+nlu:
+# ==================== CHÀO HỎI ====================
+- intent: greet
+  examples: |
+    - xin chào
+    - chào máy
+    - hello
+    - hi
+    - chào buổi sáng
+    - chào buổi chiều
+    - có ai ở đây không
+    - alo
+    - hey
+    - chào bạn
+    - chào cửa hàng
+    - chào shop
+    - ai đó ơi
+    - máy ơi
+    - em ơi
+    - bác ơi
+    - chị ơi
+    - anh ơi
+    - xin chao
+    - chao may
+    - chao ban
+    - chao buoi sang
+    - co ai o day khong
+
+# ==================== ĐẶT NƯỚC ====================
+- intent: order_drink
+  examples: |
+    - cho tôi [1 chai](quantity) [coca](drink)
+    - tôi muốn [pepsi](drink)
+    - [sting](drink) [1 lon](quantity)
+    - lấy [revive](drink) [chai lớn](size)
+    - [aquafina](drink) [500ml](size)
+    - [2 chai](quantity) [7up](drink)
+    - cho [3 lon](quantity) [redbull](drink)
+    - tôi cần [trà xanh không độ](drink)
+    - [1 chai](quantity) [c2](drink)
+    - mua [nước suối](drink)
+    - [lavie](drink) nhé
+    - cho tôi [nước cam twister](drink)
+    - [số 1](drink) [500ml](size)
+    - lấy [warrior](drink)
+    - [olong tea plus](drink) [1 chai](quantity)
+    - cho [cafe birdy](drink)
+    - [nescafe](drink) đi
+    - [mirinda](drink) vị cam
+    - [fanta](drink) vị nho
+    - [sprite](drink) [lon 330ml](size)
+    - mua [trà gạo lứt](drink)
+    - cho tôi [nước tăng lực](drink)
+    - [warrior](drink) cho tôi
+    - [wake up 247](drink)
+    - [dr thanh](drink) đi
+    - [trà ô long](drink)
+    - cho [lipton](drink)
+    - [nestea](drink) vị đào
+    - [c2 hương chanh](drink)
+    - [yakult](drink) nhé
+    - [sữa đậu nành](drink)
+    - [dutch lady](drink)
+    - [th true milk](drink)
+    - [vinamilk](drink) có socola
+    - [nước dừa](drink)
+    - [cocoxim](drink) đi
+    - [monster energy](drink)
+    - [vita milk](drink)
+    - [aloe vera](drink)
+    - [nước nha đam](drink)
+    - đặt [coca](drink) [2 chai](quantity)
+    - order [pepsi](drink)
+    - tôi lấy [sting](drink) [1 lon](quantity)
+    - mua [redbull](drink) giúp tôi
+    - cho xin [sprite](drink)
+    - [birdy](drink) một cái
+    - thêm [7up](drink)
+    - bán cho tôi [fanta](drink)
+    - cho toi [coca](drink)
+    - toi muon [pepsi](drink)
+    - lay [redbull](drink)
+    - mua [sprite](drink)
+    - dat [sting](drink)
+    - cho xin [c2](drink)
+    - [aquafina](drink) di
+    - [lavie](drink) nhe
+    - [monster](drink) cho toi
+    - order [7up](drink)
+    - [number1](drink) cho toi
+    - [number 1](drink) di
+    - [so 1](drink) nhe
+    - [tra xanh khong do](drink) mot chai
+    - [dr thanh](drink) mot chai
+    - [olong](drink) di
+    - [nescafe](drink) mot lon
+    - [vita milk](drink) di
+    - [cocoxim](drink) mot chai
+    - [yakult](drink) di
+    - [warrior](drink) nhe
+    - [birdy](drink) di
+    - [wake up](drink) mot chai
+
+# ==================== HỎI GIÁ ====================
+- intent: ask_price
+  examples: |
+    - [coca](drink) giá bao nhiêu
+    - [pepsi](drink) bao nhiêu tiền
+    - giá [sting](drink)
+    - [redbull](drink) có đắt không
+    - cho xem giá [aquafina](drink)
+    - [7up](drink) [lon 330ml](size) giá thế nào
+    - hỏi giá [revive](drink)
+    - [c2](drink) giá mấy
+    - bao nhiêu [sprite](drink)
+    - giá cả [trà xanh](drink) ra sao
+    - [nước suối](drink) giá bao nhiêu
+    - giá [lavie](drink) thế nào
+    - cho biết giá [fanta](drink)
+    - [mirinda](drink) hết bao nhiêu tiền
+    - [nestea](drink) giá bao nhiêu thế
+    - [olong tea](drink) giá mấy
+    - [trà gạo lứt](drink) giá cả
+    - [nước tăng lực](drink) bao nhiêu
+    - [warrior](drink) giá ra sao
+    - giá tiền [redbull](drink)
+    - [birdy](drink) giá thế nào
+    - cho xem bảng giá
+    - menu giá đi
+    - [dr thanh](drink) giá mấy tiền
+    - [monster](drink) có đắt không
+    - [cocoxim](drink) giá cả
+    - hỏi giá [yakult](drink)
+    - [vinamilk](drink) bao nhiêu một chai
+    - [vita milk](drink) giá mấy
+    - [aloe vera](drink) bao tiền
+    - [wake up](drink) giá bao nhiêu
+    - giá [th true milk](drink)
+    - [dutch lady](drink) bao nhiêu
+    - [nescafe](drink) giá thế nào
+    - gia [coca](drink) bao nhieu
+    - [pepsi](drink) bao nhieu tien
+    - gia [sting](drink)
+    - [redbull](drink) gia may
+    - [sprite](drink) bao nhieu
+    - cho biet gia [fanta](drink)
+    - [c2](drink) gia may tien
+    - gia [monster](drink)
+    - [aquafina](drink) gia ca
+    - [number1](drink) gia bao nhieu
+    - [number 1](drink) bao nhieu tien
+    - gia [tra xanh khong do](drink)
+    - [dr thanh](drink) gia may
+
+# ==================== HỎI SẢN PHẨM CÓ GÌ ====================
+- intent: ask_available_drinks
+  examples: |
+    - có nước gì
+    - bạn bán gì
+    - menu của bạn
+    - có loại nào
+    - bán những gì
+    - có những đồ uống nào
+    - cho xem danh sách
+    - nước gì có sẵn
+    - hiện có gì
+    - đồ uống nào đang bán
+    - có nước ngọt không
+    - có nước tăng lực không
+    - có trà không
+    - có cà phê không
+    - có sữa không
+    - có nước suối không
+    - bán coca không
+    - có pepsi không
+    - có sting không
+    - có redbull không
+    - danh sách đồ uống
+    - cho xem hàng
+    - có hàng gì
+    - còn gì nữa
+    - thêm gì nữa không
+    - có thức uống gì
+    - menu
+    - show menu
+    - xem menu
+    - hôm nay có nước gì
+    - có những loại nào
+    - liệt kê đồ uống
+    - có sản phẩm mới gì không
+    - có hàng mới không
+    - mới ra sản phẩm gì không
+    - có gì mới không
+    - sản phẩm mới nhất là gì
+    - hàng mới về chưa
+    - co nuoc gi
+    - ban gi
+    - co nhung do uong nao
+    - cho xem danh sach
+    - co hang gi
+
+# ==================== HỎI THÔNG TIN SẢN PHẨM ====================
+- intent: ask_product_info
+  examples: |
+    - [coca](drink) thể tích bao nhiêu
+    - [pepsi](drink) có size nào
+    - [sting](drink) lon hay chai
+    - [redbull](drink) có mấy loại
+    - [aquafina](drink) bao nhiêu ml
+    - cho biết thông tin [7up](drink)
+    - [sprite](drink) có size nào
+    - [revive](drink) dung tích
+    - [fanta](drink) có màu gì
+    - [mirinda](drink) có hương vị nào
+    - [nestea](drink) vị gì
+    - thông tin về [trà xanh](drink)
+    - [trà gạo lứt](drink) có tốt không
+    - [warrior](drink) thành phần gì
+    - [birdy](drink) là gì
+    - [monster](drink) có mấy vị
+    - [dr thanh](drink) công dụng
+    - [yakult](drink) là loại gì
+    - [vinamilk](drink) vị gì
+    - thông tin [aloe vera](drink)
+    - [vita milk](drink) của hãng nào
+    - [wake up 247](drink) mô tả
+    - [th true milk](drink) nguyên liệu gì
+    - [dutch lady](drink) thông tin
+    - số lượng [coca](drink) còn bao nhiêu
+    - [pepsi](drink) còn bao nhiêu lon
+    - tồn kho [sting](drink) còn không
+    - [redbull](drink) còn hàng không
+    - [sprite](drink) còn bao nhiêu chai
+    - stock [monster](drink) còn bao nhiêu
+    - [aquafina](drink) hết hàng chưa
+    - [c2](drink) còn lại bao nhiêu
+    - kiểm tra số lượng [lavie](drink)
+    - [yakult](drink) còn không
+    - còn [lavie](drink) không
+    - còn [coca](drink) không
+    - còn [pepsi](drink) không
+    - [sting](drink) còn không
+    - [redbull](drink) còn không
+    - [sprite](drink) hết chưa
+    - [aquafina](drink) còn không
+    - [monster](drink) còn hàng không
+    - [c2](drink) còn bán không
+    - [trà xanh](drink) còn không
+    - [olong tea](drink) còn hàng không
+    - [yakult](drink) hết chưa
+    - [vita milk](drink) còn không
+    - [cocoxim](drink) còn không
+    - [revive](drink) còn hàng không
+    - [number 1](drink) còn không
+    - [warrior](drink) còn hàng không
+    - [birdy](drink) còn bán không
+    - [nescafe](drink) còn không
+    - [lipton](drink) còn hàng không
+    - [vita milk](drink) có phải sản phẩm mới không
+    - [aloe vera](drink) có phải hàng mới không
+    - [trà gạo lứt](drink) mới ra không
+    - [cocoxim](drink) là hàng mới không
+    - [monster](drink) có mới không
+    - độ phổ biến của [coca](drink)
+    - [pepsi](drink) bán chạy không
+    - [redbull](drink) có được ưa chuộng không
+    - [sting](drink) lượt bán bao nhiêu
+    - [monster](drink) xếp hạng thế nào
+    - [twister](drink) phổ biến không
+    - mức độ phổ biến của [sprite](drink)
+    - [c2](drink) đã bán bao nhiêu
+    - rating của [yakult](drink)
+    - [vita milk](drink) được mua nhiều không
+    - con [lavie](drink) khong
+    - con [coca](drink) khong
+    - [pepsi](drink) con hang khong
+    - [sting](drink) het chua
+    - [redbull](drink) con khong
+    - do pho bien cua [coca](drink)
+    - [pepsi](drink) pho bien khong
+    - [monster](drink) xep hang the nao
+    - [c2](drink) da ban bao nhieu
+    - dung tich [dr thanh](drink)
+    - [sprite](drink) co may loai
+    - [aquafina](drink) bao nhieu ml
+    - thong tin [redbull](drink)
+    - [monster](drink) cua hang nao
+    - con [number1](drink) khong
+    - [number 1](drink) con hang khong
+    - [tra xanh khong do](drink) con khong
+    - [dr thanh](drink) cong dung gi
+    - [olong](drink) con hang khong
+    - han su dung cua [monster](drink)
+    - han su dung [redbull](drink)
+    - [coca](drink) han bao lau
+
+# ==================== XÁC NHẬN ====================
+- intent: confirm
+  examples: |
+    - có
+    - đúng rồi
+    - ok
+    - được
+    - đồng ý
+    - chuẩn
+    - yes
+    - ừ
+    - uhm
+    - đúng
+    - chính xác
+    - okie
+    - oke
+    - oki
+    - ngon
+    - đặt luôn
+    - mua luôn
+    - lấy luôn
+    - cho luôn
+    - thế nhé
+    - vậy nhé
+    - được rồi
+    - ok luôn
+    - đồng ý rồi
+    - xác nhận
+    - confirm
+    - chốt đơn
+    - đặt đi
+    - cho đặt
+    - yes please
+    - đúng vậy
+
+# ==================== TỪ CHỐI ====================
+- intent: deny
+  examples: |
+    - không
+    - sai rồi
+    - đợi đã
+    - chưa
+    - no
+    - hủy
+    - thôi
+    - không muốn
+    - không lấy
+    - cancel
+    - bỏ qua
+    - đổi ý
+    - không đúng
+    - không phải
+    - sai
+    - làm lại
+    - chọn lại
+    - không ạ
+    - thui
+    - thoy
+    - hem
+    - hông
+    - ko
+    - k
+    - khong
+    - hủy đơn
+    - không đặt nữa
+    - đổi món
+    - chọn món khác
+    - bỏ đi
+    - thôi khỏi
+
+# ==================== CHỌN SIZE ====================
+- intent: specify_size
+  examples: |
+    - [size 500ml](size)
+    - [chai lớn](size)
+    - [chai nhỏ](size)
+    - [lon 330ml](size)
+    - [chai 1.5 lít](size)
+    - [chai 600ml](size)
+    - [lon 250ml](size)
+    - [chai to](size)
+    - [chai nhỏ](size)
+    - [chai vừa](size)
+    - [lon](size)
+    - [chai](size)
+    - [330ml](size)
+    - [500ml](size)
+    - [600ml](size)
+    - [1.5l](size)
+    - [1 lít](size)
+    - [lớn](size)
+    - [nhỏ](size)
+    - [vừa](size)
+    - [size S](size)
+    - [size M](size)
+    - [size L](size)
+    - cho tôi [size lớn](size)
+    - lấy [lon nhỏ](size)
+    - [chai 1.5 lít](size) đi
+    - cho [600ml](size)
+
+# ==================== CHỌN SỐ LƯỢNG ====================
+- intent: specify_quantity
+  examples: |
+    - [1 chai](quantity)
+    - [2 chai](quantity)
+    - [3 lon](quantity)
+    - [một chai](quantity)
+    - [hai chai](quantity)
+    - [ba lon](quantity)
+    - [bốn chai](quantity)
+    - [năm lon](quantity)
+    - [1](quantity)
+    - [2](quantity)
+    - [3](quantity)
+    - [4](quantity)
+    - [5](quantity)
+    - [10 chai](quantity)
+    - cho tôi [2 chai](quantity)
+    - lấy [3 lon](quantity)
+    - mua [1 chai](quantity)
+    - [một chai](quantity) thôi
+    - [hai chai](quantity) nhé
+    - cho [5 lon](quantity)
+    - [sáu chai](quantity)
+    - [mười chai](quantity)
+
+# ==================== THANH TOÁN ====================
+- intent: specify_payment
+  examples: |
+    - thanh toán [tiền mặt](payment_method)
+    - trả bằng [thẻ](payment_method)
+    - [tiền mặt](payment_method)
+    - [thẻ](payment_method)
+    - [chuyển khoản](payment_method)
+    - [momo](payment_method)
+    - [zalopay](payment_method)
+    - [vnpay](payment_method)
+    - [ví điện tử](payment_method)
+    - trả [tiền mặt](payment_method)
+    - thanh toán [qr](payment_method)
+    - quét [mã qr](payment_method)
+    - [cash](payment_method)
+    - [card](payment_method)
+    - cho tôi trả [tiền mặt](payment_method)
+    - thanh toán qua [chuyển khoản](payment_method)
+    - trả bằng [quẹt thẻ](payment_method)
+    - [quẹt thẻ](payment_method)
+    - thanh toán bằng [thẻ tín dụng](payment_method)
+    - [thẻ tín dụng](payment_method)
+    - [thẻ debit](payment_method)
+    - tôi trả [tiền mặt](payment_method)
+    - thanh toán không tiền mặt
+    - [banking](payment_method)
+    - quét mã đi
+    - quét mã qr đi
+    - quet ma di
+    - cho tôi quét mã
+    - tôi muốn quét mã
+    - thanh toán cho tôi đi
+    - thanh toán đi
+    - tính tiền đi
+    - tính tiền cho tôi
+    - tôi muốn thanh toán
+    - tôi cần thanh toán
+    - cho tôi thanh toán
+    - trả tiền đi
+    - trả tiền thôi
+    - thanh toán thôi
+    - mua thôi
+    - lấy đi tôi trả tiền
+    - tôi trả tiền
+    - thanh toán nào
+    - ok thanh toán
+    - được rồi thanh toán đi
+    - thanh toan cho toi di
+    - thanh toan di
+    - tra tien di
+    - tinh tien di
+    - toi muon thanh toan
+    - cho toi thanh toan
+    - cà thẻ nhe
+    - cà thẻ đi
+    - ca the nhe
+    - ca the di
+    - quẹt thẻ đi
+    - quet the di
+    - chuyển tiền qua điện thoại
+    - chuyển tiền điện thoại
+    - thanh toán bằng điện thoại
+    - trả bằng điện thoại
+    - cho tiền vào máy
+    - tôi bỏ tiền vào
+
+# ==================== HỎI TRỢ GIÚP ====================
+- intent: ask_help
+  examples: |
+    - giúp tôi với
+    - bạn làm được gì
+    - hướng dẫn sử dụng
+    - làm sao để đặt đồ
+    - tôi cần trợ giúp
+    - help
+    - không biết dùng
+    - chỉ cho tôi
+    - hướng dẫn đi
+    - cách đặt hàng
+    - cách thanh toán
+    - làm thế nào
+    - dùng sao đây
+    - hỗ trợ
+    - trợ giúp
+    - support
+    - cách mua
+    - mua như thế nào
+    - hướng dẫn mua hàng
+    - tôi chưa biết dùng
+    - chưa rõ cách đặt
+
+# ==================== TẠM BIỆT ====================
+- intent: goodbye
+  examples: |
+    - tạm biệt
+    - bye
+    - goodbye
+    - cảm ơn
+    - thôi được rồi
+    - xong rồi
+    - hẹn gặp lại
+    - bái bai
+    - bb
+    - see you
+    - tạm biệt nhé
+    - cảm ơn bạn
+    - cảm ơn nhiều
+    - thank you
+    - thanks
+    - cảm ơn máy
+    - cảm ơn shop
+    - đi đây
+    - ra về
+    - về đây
+    - tạm biệt máy
+    - bye bye
+    - chào tạm biệt
+    - xong rồi tạm biệt
+
+# ==================== HỎI KHUYẾN MÃI ====================
+- intent: ask_promotion
+  examples: |
+    - có khuyến mãi không
+    - có giảm giá không
+    - có ưu đãi gì không
+    - đang có chương trình gì
+    - có voucher không
+    - có mã giảm giá không
+    - giảm giá bao nhiêu
+    - mua nhiều có rẻ hơn không
+    - có sale không
+    - có promotion không
+    - giảm giá hôm nay
+    - hôm nay có ưu đãi gì
+    - có combo không
+    - mua 2 được giảm không
+    - ưu đãi gì
+    - khuyến mại gì
+    - co khuyen mai khong
+    - co giam gia khong
+    - co sale khong
+
+# ==================== GỢI Ý ĐỒ UỐNG ====================
+- intent: ask_recommendation
+  examples: |
+    - bạn gợi ý gì cho tôi
+    - hôm nay nên uống gì
+    - đồ uống nào ngon nhất
+    - tư vấn đồ uống cho tôi
+    - trời nóng uống gì
+    - buổi sáng uống gì tốt
+    - mệt mỏi uống gì
+    - tôi nên chọn gì
+    - nước nào ngon
+    - nước nào bán chạy
+    - best seller là gì
+    - nước nào được ưa chuộng
+    - uống gì giải khát
+    - uống gì tỉnh táo
+    - uống gì giải nhiệt
+    - uống gì bổ dưỡng
+    - đề xuất cho tôi
+    - recommend cho tôi
+    - gợi ý đi
+    - có gì ngon không
+    - cho tôi biết nước nào ngon
+    - nước nào phổ biến nhất
+    - loại nào bán chạy nhất
+    - cái nào được mua nhiều nhất
+    - top đồ uống
+    - đồ uống hot nhất
+    - nuoc nao ngon
+    - nuoc nao ban chay
+    - nuoc nao pho bien nhat
+    - go y do uong
+    - tu van nuoc uong
+    - uong gi hom nay
+    - loai nao ngon nhat
+    - nuoc nao duoc ua chuong
+    - nen uong gi
+
+# ==================== HỎI THÀNH PHẦN ====================
+- intent: ask_ingredients
+  examples: |
+    - [coca](drink) có gì
+    - thành phần [pepsi](drink)
+    - [sting](drink) làm từ gì
+    - [redbull](drink) chứa gì
+    - nguyên liệu [sprite](drink)
+    - [aquafina](drink) có thêm gì không
+    - [trà xanh](drink) gồm những gì
+    - thành phần của [lavie](drink)
+    - [birdy](drink) chứa những gì
+    - [aloe vera](drink) làm từ gì
+    - [vita milk](drink) có gì
+    - [cocoxim](drink) nguyên liệu
+    - [dr thanh](drink) thảo mộc gì
+    - [warrior](drink) thành phần
+    - [number 1](drink) có gì
+    - [trà gạo lứt](drink) làm bằng gì
+    - [c2](drink) có đường không
+    - [olong tea](drink) có đường không
+    - [vinamilk](drink) có đường không
+    - [yakult](drink) có men vi sinh không
+    - [fanta](drink) có gas không
+    - [sprite](drink) có ga không
+    - [7up](drink) có ga không
+    - [monster](drink) có caffeine không
+    - [redbull](drink) có caffeine không
+    - [c2](drink) có caffeine không
+    - [nescafe](drink) caffeine bao nhiêu
+    - [sting](drink) có caffeine không
+    - [cocoxim](drink) có đường không
+    - [revive](drink) có muối không
+    - [c2](drink) co duong khong
+    - [pepsi](drink) co caffeine khong
+    - [coca](drink) co ga khong
+    - [sprite](drink) co ga khong
+    - [redbull](drink) co caffeine khong
+    - [monster](drink) co caffeine khong
+    - [sting](drink) co duong khong
+    - [revive](drink) co muoi khong
+    - thanh phan [coca](drink)
+    - [c2](drink) lam tu gi
+    - [olong tea](drink) co duong khong
+    - [number1](drink) co caffeine khong
+    - [number 1](drink) co duong khong
+    - [tra xanh khong do](drink) co duong khong
+    - [cocoxim](drink) co ga khong
+    - [aquafina](drink) co duong khong
+    - [lavie](drink) co duong khong
+    - [yakult](drink) co men vi sinh khong
+    - [vita milk](drink) co gi
+    - [dr thanh](drink) co caffeine khong
+
+# ==================== CHỌN ĐÁ ====================
+- intent: specify_ice
+  examples: |
+    - [ít đá](ice)
+    - [nhiều đá](ice)
+    - [vừa đá](ice)
+    - [không đá](ice)
+    - [full đá](ice)
+    - cho [ít đá](ice) thôi
+    - [nhiều đá](ice) nhé
+    - [đá vừa](ice)
+    - không cần [đá](ice)
+    - [đá ít](ice) thôi
+    - [bỏ đá](ice)
+    - [thêm đá](ice)
+    - [no ice](ice)
+    - [ít ice](ice)
+
+# ==================== CHỌN ĐƯỜNG ====================
+- intent: specify_sugar
+  examples: |
+    - [ít đường](sugar)
+    - [nhiều đường](sugar)
+    - [vừa đường](sugar)
+    - [không đường](sugar)
+    - [ít ngọt](sugar)
+    - [ngọt vừa](sugar)
+    - [rất ngọt](sugar)
+    - cho [ít đường](sugar)
+    - [không đường](sugar) nhé
+    - [đường ít](sugar)
+    - [50% đường](sugar)
+    - [100% đường](sugar)
+    - [zero đường](sugar)
+    - [no sugar](sugar)
+
+# ==================== OUT OF SCOPE ====================
+- intent: out_of_scope
+  examples: |
+    - thời tiết hôm nay thế nào
+    - giá vàng hôm nay
+    - bạn có thể làm toán không
+    - cho tôi xem tin tức
+    - thủ đô của Việt Nam là gì
+    - bạn tên gì
+    - máy này do ai làm ra
+    - có wifi không
+    - nhà vệ sinh ở đâu
+    - điện thoại của tôi ở đâu
+    - cách nấu phở
+    - tư vấn du lịch
+    - mua quần áo ở đâu
+    - lịch thi đấu bóng đá
+    - tỷ giá đô la
+    - bạn là ai
+    - ai tạo ra bạn
+    - bạn thông minh không
+    - kể chuyện cười
+    - hát bài gì đi
+    - múa đi
+    - thích không
+    - bạn có cảm xúc không
+    - bạn có người yêu chưa
+    - thời gian rảnh làm gì
+    - giải bài toán này
+    - dịch tiếng anh giúp
+    - cho tôi số điện thoại
+    - địa chỉ cửa hàng ở đâu
+    - mở đến mấy giờ
+    - cần bao lâu giao hàng
+# ==================== XEM GIỎ HÀNG ====================
+- intent: show_cart
+  examples: |
+    - xem giỏ hàng
+    - giỏ hàng của tôi
+    - tôi đã đặt gì
+    - cho xem đơn hàng
+    - đơn hàng hiện tại
+    - tôi đang có gì trong giỏ
+    - kiểm tra giỏ hàng
+    - show cart
+    - cart của tôi
+    - xem lại đơn
+    - đơn hàng của tôi thế nào
+    - tôi đặt bao nhiêu rồi

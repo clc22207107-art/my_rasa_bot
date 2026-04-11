@@ -1,0 +1,201 @@
+version: "3.1"
+
+intents:
+  - greet
+  - goodbye
+  - order_drink
+  - ask_price
+  - ask_ingredients
+  - ask_recommendation
+  - ask_available_drinks
+  - ask_product_info
+  - ask_promotion
+  - confirm
+  - deny
+  - specify_size
+  - specify_ice
+  - specify_sugar
+  - specify_quantity
+  - ask_help
+  - specify_payment
+  - out_of_scope
+  - show_cart
+
+entities:
+  - drink
+  - size
+  - ice
+  - sugar
+  - quantity
+  - payment_method
+
+slots:
+  drink:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: drink
+
+  size:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: size
+    initial_value: null
+
+  ice:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: ice
+    initial_value: "vừa"
+
+  sugar:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: sugar
+    initial_value: "vừa"
+
+  quantity:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: quantity
+    initial_value: "1"
+
+  payment_method:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: payment_method
+
+  # Giỏ hàng lưu dưới dạng JSON string (hỗ trợ nhiều sản phẩm)
+  cart:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: custom
+    initial_value: null
+
+  price_per_unit:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: custom
+
+  total_price:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: custom
+
+  requested_slot:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: custom
+
+responses:
+  utter_greet:
+  - text: |
+      🥤 Xin chào! Chào mừng bạn đến với Máy Bán Nước Tự Động!
+      
+      Tôi có thể giúp bạn:
+      🍹 Xem menu & đặt đồ uống
+      💰 Hỏi giá sản phẩm
+      📋 Xem thành phần / thông tin
+      🎁 Kiểm tra khuyến mãi
+      
+      Gõ "menu" để xem danh sách hoặc cho tôi biết bạn muốn uống gì! 😊
+
+  utter_ask_drink:
+  - text: "🥤 Bạn muốn uống gì? Gõ 'menu' để xem toàn bộ danh sách sản phẩm nhé!"
+
+  utter_ask_size:
+  - text: "📦 Bạn muốn size nào? (Ví dụ: 330ml, 500ml, 1.5L)"
+
+  utter_ask_ice:
+  - text: "🧊 Bạn muốn ít đá, vừa đá hay nhiều đá?"
+
+  utter_ask_sugar:
+  - text: "🍬 Bạn muốn ít đường, vừa đường hay nhiều đường?"
+
+  utter_ask_quantity:
+  - text: "🔢 Bạn muốn mua bao nhiêu sản phẩm?"
+
+  utter_ask_payment:
+  - text: |
+      💳 Bạn muốn thanh toán bằng cách nào?
+      
+      1️⃣ Chuyển khoản (quét mã QR)
+      2️⃣ Tiền mặt (cho tiền vào máy)
+      3️⃣ Quẹt thẻ (đưa thẻ vào máy)
+
+  utter_order_confirmed:
+  - text: "✅ Đã xác nhận! Đồ uống đang được cấp phát... 🎉"
+
+  utter_order_cancelled:
+  - text: "❌ Đã hủy đơn hàng. Bạn muốn đặt món khác không?"
+
+  utter_payment_success:
+  - text: "💚 Thanh toán thành công! Đồ uống đang được cấp phát... ⏳"
+
+  utter_help:
+  - text: |
+      🤖 Tôi là Máy Bán Nước Tự Động!
+      
+      Tôi hỗ trợ:
+      1. 🍹 Đặt đồ uống — "Cho tôi 2 lon coca"
+      2. 📋 Xem menu — Gõ "menu" hoặc "có nước gì"
+      3. 💰 Hỏi giá — "Coca giá bao nhiêu?"
+      4. 🧪 Hỏi thành phần — "Redbull có gì?"
+      5. ⭐ Gợi ý uống gì — "Hôm nay uống gì ngon?"
+      6. 🎁 Khuyến mãi — "Có giảm giá không?"
+      7. 🛒 Xem giỏ hàng — "Xem giỏ hàng"
+      
+      Khi đặt hàng: Tôi sẽ thêm vào giỏ hàng trước.
+      Gõ "xác nhận" khi bạn muốn thanh toán! 😊
+
+  utter_goodbye:
+  - text: "👋 Tạm biệt! Cảm ơn bạn đã sử dụng dịch vụ. Hẹn gặp lại! 😊"
+
+  utter_out_of_scope:
+  - text: "😅 Câu hỏi này nằm ngoài phạm vi của tôi! Tôi chỉ hỗ trợ đặt đồ uống. Gõ 'help' để biết thêm."
+
+  utter_fallback:
+  - text: |
+      🤔 Xin lỗi, tôi chưa hiểu ý bạn.
+      Bạn có thể thử:
+      • Gõ "menu" để xem danh sách
+      • Nói tên đồ uống bạn muốn
+      • Gõ "help" để được hướng dẫn
+
+actions:
+  - action_get_drink_info
+  - action_calculate_price
+  - action_show_order_summary
+  - action_confirm_order
+  - action_show_price
+  - action_show_ingredients
+  - action_show_product_info
+  - action_show_menu
+  - action_recommend_drink
+  - action_process_payment
+  - action_reset_order
+  - action_check_promotion
+  - action_ask_quantity
+  - action_handle_out_of_domain
+  # Các action mới cho flow giỏ hàng
+  - action_add_to_cart
+  - action_show_cart
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true

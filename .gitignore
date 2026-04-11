@@ -1,0 +1,17 @@
+cat > .gitignore << 'EOF'
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+venv/
+.venv/
+
+# Rasa
+.rasa/
+models/
+results/
+
+# VS Code
+.vscode/
+EOF

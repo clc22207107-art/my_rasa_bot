@@ -1,0 +1,347 @@
+version: "3.1"
+
+stories:
+
+# ==================== LUỒNG ĐẶT HÀNG MỚI (CART-BASED) ====================
+# Khách đặt 1 món → vào giỏ → xác nhận → thanh toán chuyển khoản
+
+- story: Đặt Coca - vào giỏ - xác nhận - chuyển khoản
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "coca"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "chuyển khoản"
+    - action: action_process_payment
+
+- story: Đặt Pepsi - vào giỏ - xác nhận - tiền mặt
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "pepsi"
+        - quantity: "3"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "tiền mặt"
+    - action: action_process_payment
+
+- story: Đặt hàng - vào giỏ - xác nhận - quẹt thẻ - tạm biệt
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "redbull"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "quẹt thẻ"
+    - action: action_process_payment
+    - intent: goodbye
+    - action: utter_goodbye
+
+# ==================== LUỒNG THÊM NHIỀU MÓN RỒI MỚI XÁC NHẬN ====================
+
+- story: Thêm nhiều món vào giỏ rồi mới xác nhận
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "coca"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: order_drink
+      entities:
+        - drink: "pepsi"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "tiền mặt"
+    - action: action_process_payment
+
+- story: Xem menu - thêm món - thêm thêm - xác nhận
+  steps:
+    - intent: ask_available_drinks
+    - action: action_show_menu
+    - intent: order_drink
+      entities:
+        - drink: "sprite"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: order_drink
+      entities:
+        - drink: "redbull"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "chuyển khoản"
+    - action: action_process_payment
+
+# ==================== LUỒNG HỦY VÀ ĐỔI MÓN ====================
+
+- story: Hủy đơn - kết thúc
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "sprite"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: deny
+    - action: action_reset_order
+    - intent: goodbye
+    - action: utter_goodbye
+
+- story: Hủy đơn - đặt món khác
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "7up"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: deny
+    - action: action_reset_order
+    - intent: order_drink
+      entities:
+        - drink: "fanta"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "tiền mặt"
+    - action: action_process_payment
+
+- story: Hủy đơn - hỏi thông tin rồi đặt lại
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "monster"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: deny
+    - action: action_reset_order
+    - intent: ask_price
+      entities:
+        - drink: "redbull"
+    - action: action_get_drink_info
+    - action: action_show_price
+    - intent: order_drink
+      entities:
+        - drink: "redbull"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+
+# ==================== LUỒNG HỎI THÔNG TIN TRƯỚC ====================
+
+- story: Xem menu rồi đặt hàng
+  steps:
+    - intent: ask_available_drinks
+    - action: action_show_menu
+    - intent: order_drink
+      entities:
+        - drink: "sprite"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "tiền mặt"
+    - action: action_process_payment
+
+- story: Hỏi giá rồi mới đặt
+  steps:
+    - intent: ask_price
+      entities:
+        - drink: "monster"
+    - action: action_get_drink_info
+    - action: action_show_price
+    - intent: order_drink
+      entities:
+        - drink: "monster"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "chuyển khoản"
+    - action: action_process_payment
+
+- story: Hỏi thành phần rồi đặt
+  steps:
+    - intent: ask_ingredients
+      entities:
+        - drink: "yakult"
+    - action: action_get_drink_info
+    - action: action_show_ingredients
+    - intent: order_drink
+      entities:
+        - drink: "yakult"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+
+- story: Hỏi thông tin sản phẩm rồi đặt
+  steps:
+    - intent: ask_product_info
+      entities:
+        - drink: "sting"
+    - action: action_get_drink_info
+    - action: action_show_product_info
+    - intent: order_drink
+      entities:
+        - drink: "sting"
+        - quantity: "3"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+
+# ==================== LUỒNG GỢI Ý & KHUYẾN MÃI ====================
+
+- story: Nhờ gợi ý rồi đặt hàng
+  steps:
+    - intent: greet
+    - action: utter_greet
+    - intent: ask_recommendation
+    - action: action_recommend_drink
+    - intent: order_drink
+      entities:
+        - drink: "c2"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+
+- story: Hỏi khuyến mãi rồi đặt hàng
+  steps:
+    - intent: ask_promotion
+    - action: action_check_promotion
+    - intent: order_drink
+      entities:
+        - drink: "sting"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "quẹt thẻ"
+    - action: action_process_payment
+
+# ==================== LUỒNG THANH TOÁN ĐA DẠNG ====================
+
+- story: Thanh toán bằng quét mã QR
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "coca"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "quét mã"
+    - action: action_process_payment
+
+- story: Thanh toán bằng cà thẻ
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "pepsi"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "cà thẻ"
+    - action: action_process_payment
+
+# ==================== LUỒNG HOÀN CHỈNH ====================
+
+- story: Luồng hoàn chỉnh từ đầu đến cuối
+  steps:
+    - intent: greet
+    - action: utter_greet
+    - intent: ask_available_drinks
+    - action: action_show_menu
+    - intent: ask_price
+      entities:
+        - drink: "cocoxim"
+    - action: action_get_drink_info
+    - action: action_show_price
+    - intent: order_drink
+      entities:
+        - drink: "cocoxim"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "chuyển khoản"
+    - action: action_process_payment
+    - intent: goodbye
+    - action: utter_goodbye

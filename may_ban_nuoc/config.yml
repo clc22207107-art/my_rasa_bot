@@ -1,0 +1,46 @@
+recipe: default.v1
+assistant_id: drink-vending-machine-v2
+language: vi
+
+pipeline:
+  - name: WhitespaceTokenizer
+
+  - name: RegexFeaturizer
+
+  - name: LexicalSyntacticFeaturizer
+
+  - name: CountVectorsFeaturizer
+
+  - name: CountVectorsFeaturizer
+    analyzer: char_wb
+    min_ngram: 1
+    max_ngram: 4
+
+  - name: DIETClassifier
+    epochs: 150
+    constrain_similarities: true
+    entity_recognition: true
+
+  - name: EntitySynonymMapper
+
+  - name: FallbackClassifier
+    threshold: 0.55
+    ambiguity_threshold: 0.1
+
+policies:
+  - name: MemoizationPolicy
+    max_history: 8
+
+  - name: RulePolicy
+    core_fallback_threshold: 0.55
+    core_fallback_action_name: "action_handle_out_of_domain"
+    enable_fallback_prediction: true
+
+  - name: UnexpecTEDIntentPolicy
+    max_history: 8
+    epochs: 150
+
+  - name: TEDPolicy
+    max_history: 8
+    epochs: 150
+    constrain_similarities: true
