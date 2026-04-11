@@ -784,56 +784,51 @@ class ActionShowIngredients(Action):
 
         last_norm = normalize_text(tracker.latest_message.get("text", ""))
 
+        # Use accumulation pattern — NO early returns, so combined queries work
+        info_parts = []
+
+        # Specific: caffeine
         if "caffeine" in last_norm:
             if drink_data["has_caffeine"]:
-                msg = f"{drink_data['image']} **{drink_data['name']}**\n☕ Contains caffeine."
+                info_parts.append("☕ Contains caffeine.")
             else:
-                msg = f"{drink_data['image']} **{drink_data['name']}**\n✅ Caffeine-free."
-            dispatcher.utter_message(text=msg)
-            return []
+                info_parts.append("✅ Caffeine-free.")
 
+        # Specific: sugar
         if any(w in last_norm for w in ["sugar", "sweet", "sweetened"]):
             if drink_data["has_sugar"]:
-                msg = f"{drink_data['image']} **{drink_data['name']}**\n🍬 Contains sugar."
+                info_parts.append("🍬 Contains sugar.")
             else:
-                msg = f"{drink_data['image']} **{drink_data['name']}**\n✅ Sugar-free / naturally low sugar."
-            dispatcher.utter_message(text=msg)
-            return []
+                info_parts.append("✅ Sugar-free / naturally low sugar.")
 
+        # Specific: carbonation
         if any(w in last_norm for w in ["carbonated", "fizzy", "sparkling", "gas", "bubbly"]):
             has_gas = drink_data.get("category") in ["Carbonated Soft Drinks", "Energy Drinks"]
-            if has_gas:
-                msg = f"{drink_data['image']} **{drink_data['name']}**\n🫧 Carbonated."
-            else:
-                msg = f"{drink_data['image']} **{drink_data['name']}**\n✅ Not carbonated."
-            dispatcher.utter_message(text=msg)
-            return []
+            info_parts.append("🫧 Carbonated." if has_gas else "✅ Not carbonated.")
 
+        # Specific: probiotics
         if any(w in last_norm for w in ["probiotic", "bacteria", "culture", "lactobacillus"]):
-            has_probiotic = any(
-                w in drink_data["ingredients"].lower()
-                for w in ["lactobacillus", "probiotic"]
-            )
-            if has_probiotic:
-                msg = f"{drink_data['image']} **{drink_data['name']}**\n🦠 Contains probiotic bacteria."
-            else:
-                msg = f"{drink_data['image']} **{drink_data['name']}**\n❌ No probiotic bacteria."
-            dispatcher.utter_message(text=msg)
-            return []
+            has_probiotic = any(w in drink_data["ingredients"].lower() for w in ["lactobacillus", "probiotic"])
+            info_parts.append("🦠 Contains probiotic bacteria." if has_probiotic else "❌ No probiotic bacteria.")
 
-        # Default: show full ingredients
-        parts = [f"🧪 Ingredients: {drink_data['ingredients']}"]
+        # If no specific keyword matched → show full ingredients list
+        if not info_parts:
+            info_parts.append(f"🧪 Ingredients: {drink_data['ingredients']}")
 
-        # Also include price if asked
+        # Cross-query: also include price if asked
         if any(w in last_norm for w in ["price", "cost", "how much", "expensive", "cheap"]):
             price_lines = [f"  • {vol}: {price:,} VND" for vol, price in drink_data["price"].items()]
-            parts.append("💰 Price:\n" + "\n".join(price_lines))
+            info_parts.append("💰 Price:\n" + "\n".join(price_lines))
 
-        # Also include flavor if asked
+        # Cross-query: also include flavor if asked
         if any(w in last_norm for w in ["flavor", "taste", "how does it taste"]):
-            parts.append(f"😋 Flavor: {drink_data['flavor']}")
+            info_parts.append(f"😋 Flavor: {drink_data['flavor']}")
 
-        msg = f"{drink_data['image']} **{drink_data['name']}**\n" + "\n".join(parts)
+        # Cross-query: also include features if asked
+        if any(w in last_norm for w in ["features", "description", "benefits", "about"]):
+            info_parts.append(f"✨ Features: {drink_data['features']}")
+
+        msg = f"{drink_data['image']} **{drink_data['name']}**\n" + "\n".join(info_parts)
         dispatcher.utter_message(text=msg)
         return []
 
