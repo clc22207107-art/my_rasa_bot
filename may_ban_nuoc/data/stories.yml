@@ -2,10 +2,10 @@ version: "3.1"
 
 stories:
 
-# ==================== LUỒNG ĐẶT HÀNG MỚI (CART-BASED) ====================
-# Khách đặt 1 món → vào giỏ → xác nhận → thanh toán chuyển khoản
+# ==================== ORDER FLOW (CART-BASED) ====================
+# Customer orders 1 item → add to cart → confirm → bank transfer
 
-- story: Đặt Coca - vào giỏ - xác nhận - chuyển khoản
+- story: Order Coca - add to cart - confirm - bank transfer
   steps:
     - intent: order_drink
       entities:
@@ -18,10 +18,10 @@ stories:
     - action: action_confirm_order
     - intent: specify_payment
       entities:
-        - payment_method: "chuyển khoản"
+        - payment_method: "bank transfer"
     - action: action_process_payment
 
-- story: Đặt Pepsi - vào giỏ - xác nhận - tiền mặt
+- story: Order Pepsi - add to cart - confirm - cash
   steps:
     - intent: order_drink
       entities:
@@ -34,10 +34,10 @@ stories:
     - action: action_confirm_order
     - intent: specify_payment
       entities:
-        - payment_method: "tiền mặt"
+        - payment_method: "cash"
     - action: action_process_payment
 
-- story: Đặt hàng - vào giỏ - xác nhận - quẹt thẻ - tạm biệt
+- story: Order drink - add to cart - confirm - card - goodbye
   steps:
     - intent: order_drink
       entities:
@@ -50,14 +50,14 @@ stories:
     - action: action_confirm_order
     - intent: specify_payment
       entities:
-        - payment_method: "quẹt thẻ"
+        - payment_method: "card"
     - action: action_process_payment
     - intent: goodbye
     - action: utter_goodbye
 
-# ==================== LUỒNG THÊM NHIỀU MÓN RỒI MỚI XÁC NHẬN ====================
+# ==================== MULTI-ITEM ORDER FLOW ====================
 
-- story: Thêm nhiều món vào giỏ rồi mới xác nhận
+- story: Add multiple items then confirm
   steps:
     - intent: order_drink
       entities:
@@ -77,10 +77,10 @@ stories:
     - action: action_confirm_order
     - intent: specify_payment
       entities:
-        - payment_method: "tiền mặt"
+        - payment_method: "cash"
     - action: action_process_payment
 
-- story: Xem menu - thêm món - thêm thêm - xác nhận
+- story: View menu - add items - confirm
   steps:
     - intent: ask_available_drinks
     - action: action_show_menu
@@ -102,12 +102,12 @@ stories:
     - action: action_confirm_order
     - intent: specify_payment
       entities:
-        - payment_method: "chuyển khoản"
+        - payment_method: "bank transfer"
     - action: action_process_payment
 
-# ==================== LUỒNG HỦY VÀ ĐỔI MÓN ====================
+# ==================== CANCEL AND CHANGE ORDER ====================
 
-- story: Hủy đơn - kết thúc
+- story: Cancel order - end
   steps:
     - intent: order_drink
       entities:
@@ -121,7 +121,7 @@ stories:
     - intent: goodbye
     - action: utter_goodbye
 
-- story: Hủy đơn - đặt món khác
+- story: Cancel order - order something else
   steps:
     - intent: order_drink
       entities:
@@ -143,10 +143,10 @@ stories:
     - action: action_confirm_order
     - intent: specify_payment
       entities:
-        - payment_method: "tiền mặt"
+        - payment_method: "cash"
     - action: action_process_payment
 
-- story: Hủy đơn - hỏi thông tin rồi đặt lại
+- story: Cancel order - check info - reorder
   steps:
     - intent: order_drink
       entities:
@@ -172,9 +172,9 @@ stories:
     - intent: confirm
     - action: action_confirm_order
 
-# ==================== LUỒNG HỎI THÔNG TIN TRƯỚC ====================
+# ==================== INFO-FIRST FLOWS ====================
 
-- story: Xem menu rồi đặt hàng
+- story: View menu then order
   steps:
     - intent: ask_available_drinks
     - action: action_show_menu
@@ -189,10 +189,10 @@ stories:
     - action: action_confirm_order
     - intent: specify_payment
       entities:
-        - payment_method: "tiền mặt"
+        - payment_method: "cash"
     - action: action_process_payment
 
-- story: Hỏi giá rồi mới đặt
+- story: Check price then order
   steps:
     - intent: ask_price
       entities:
@@ -210,10 +210,10 @@ stories:
     - action: action_confirm_order
     - intent: specify_payment
       entities:
-        - payment_method: "chuyển khoản"
+        - payment_method: "bank transfer"
     - action: action_process_payment
 
-- story: Hỏi thành phần rồi đặt
+- story: Check ingredients then order
   steps:
     - intent: ask_ingredients
       entities:
@@ -230,7 +230,7 @@ stories:
     - intent: confirm
     - action: action_confirm_order
 
-- story: Hỏi thông tin sản phẩm rồi đặt
+- story: Check product info then order
   steps:
     - intent: ask_product_info
       entities:
@@ -247,9 +247,9 @@ stories:
     - intent: confirm
     - action: action_confirm_order
 
-# ==================== LUỒNG GỢI Ý & KHUYẾN MÃI ====================
+# ==================== RECOMMENDATION AND PROMOTION FLOWS ====================
 
-- story: Nhờ gợi ý rồi đặt hàng
+- story: Get recommendation then order
   steps:
     - intent: greet
     - action: utter_greet
@@ -265,7 +265,7 @@ stories:
     - intent: confirm
     - action: action_confirm_order
 
-- story: Hỏi khuyến mãi rồi đặt hàng
+- story: Ask promotion then order
   steps:
     - intent: ask_promotion
     - action: action_check_promotion
@@ -280,12 +280,12 @@ stories:
     - action: action_confirm_order
     - intent: specify_payment
       entities:
-        - payment_method: "quẹt thẻ"
+        - payment_method: "card"
     - action: action_process_payment
 
-# ==================== LUỒNG THANH TOÁN ĐA DẠNG ====================
+# ==================== PAYMENT METHOD FLOWS ====================
 
-- story: Thanh toán bằng quét mã QR
+- story: Pay by QR code
   steps:
     - intent: order_drink
       entities:
@@ -298,10 +298,10 @@ stories:
     - action: action_confirm_order
     - intent: specify_payment
       entities:
-        - payment_method: "quét mã"
+        - payment_method: "QR code"
     - action: action_process_payment
 
-- story: Thanh toán bằng cà thẻ
+- story: Pay by card
   steps:
     - intent: order_drink
       entities:
@@ -314,12 +314,12 @@ stories:
     - action: action_confirm_order
     - intent: specify_payment
       entities:
-        - payment_method: "cà thẻ"
+        - payment_method: "card"
     - action: action_process_payment
 
-# ==================== LUỒNG HOÀN CHỈNH ====================
+# ==================== COMPLETE FLOW ====================
 
-- story: Luồng hoàn chỉnh từ đầu đến cuối
+- story: Complete flow from start to finish
   steps:
     - intent: greet
     - action: utter_greet
@@ -341,7 +341,7 @@ stories:
     - action: action_confirm_order
     - intent: specify_payment
       entities:
-        - payment_method: "chuyển khoản"
+        - payment_method: "bank transfer"
     - action: action_process_payment
     - intent: goodbye
     - action: utter_goodbye

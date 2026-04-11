@@ -1,6 +1,6 @@
 recipe: default.v1
 assistant_id: drink-vending-machine-v2
-language: vi
+language: en
 
 pipeline:
   - name: WhitespaceTokenizer

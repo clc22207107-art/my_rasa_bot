@@ -51,7 +51,7 @@ slots:
     mappings:
       - type: from_entity
         entity: ice
-    initial_value: "vừa"
+    initial_value: "medium"
 
   sugar:
     type: text
@@ -59,7 +59,7 @@ slots:
     mappings:
       - type: from_entity
         entity: sugar
-    initial_value: "vừa"
+    initial_value: "medium"
 
   quantity:
     type: text
@@ -76,7 +76,7 @@ slots:
       - type: from_entity
         entity: payment_method
 
-  # Giỏ hàng lưu dưới dạng JSON string (hỗ trợ nhiều sản phẩm)
+  # Cart stored as JSON string (supports multiple products)
   cart:
     type: text
     influence_conversation: true
@@ -105,77 +105,77 @@ slots:
 responses:
   utter_greet:
   - text: |
-      🥤 Xin chào! Chào mừng bạn đến với Máy Bán Nước Tự Động!
-      
-      Tôi có thể giúp bạn:
-      🍹 Xem menu & đặt đồ uống
-      💰 Hỏi giá sản phẩm
-      📋 Xem thành phần / thông tin
-      🎁 Kiểm tra khuyến mãi
-      
-      Gõ "menu" để xem danh sách hoặc cho tôi biết bạn muốn uống gì! 😊
+      🥤 Hello! Welcome to the Automatic Drink Vending Machine!
+
+      I can help you:
+      🍹 Browse menu & order drinks
+      💰 Check product prices
+      📋 View ingredients / product info
+      🎁 Check promotions
+
+      Type "menu" to see the full list, or just tell me what you'd like to drink! 😊
 
   utter_ask_drink:
-  - text: "🥤 Bạn muốn uống gì? Gõ 'menu' để xem toàn bộ danh sách sản phẩm nhé!"
+  - text: "🥤 What would you like to drink? Type 'menu' to see all available products!"
 
   utter_ask_size:
-  - text: "📦 Bạn muốn size nào? (Ví dụ: 330ml, 500ml, 1.5L)"
+  - text: "📦 What size would you like? (e.g. 330ml, 500ml, 1.5L)"
 
   utter_ask_ice:
-  - text: "🧊 Bạn muốn ít đá, vừa đá hay nhiều đá?"
+  - text: "🧊 How much ice would you like? (less ice, medium, lots of ice)"
 
   utter_ask_sugar:
-  - text: "🍬 Bạn muốn ít đường, vừa đường hay nhiều đường?"
+  - text: "🍬 How sweet would you like it? (less sugar, medium, extra sweet)"
 
   utter_ask_quantity:
-  - text: "🔢 Bạn muốn mua bao nhiêu sản phẩm?"
+  - text: "🔢 How many would you like?"
 
   utter_ask_payment:
   - text: |
-      💳 Bạn muốn thanh toán bằng cách nào?
-      
-      1️⃣ Chuyển khoản (quét mã QR)
-      2️⃣ Tiền mặt (cho tiền vào máy)
-      3️⃣ Quẹt thẻ (đưa thẻ vào máy)
+      💳 How would you like to pay?
+
+      1️⃣ Bank Transfer (scan QR code)
+      2️⃣ Cash (insert money into machine)
+      3️⃣ Card (swipe/insert card)
 
   utter_order_confirmed:
-  - text: "✅ Đã xác nhận! Đồ uống đang được cấp phát... 🎉"
+  - text: "✅ Order confirmed! Your drink is being dispensed... 🎉"
 
   utter_order_cancelled:
-  - text: "❌ Đã hủy đơn hàng. Bạn muốn đặt món khác không?"
+  - text: "❌ Order cancelled. Would you like to order something else?"
 
   utter_payment_success:
-  - text: "💚 Thanh toán thành công! Đồ uống đang được cấp phát... ⏳"
+  - text: "💚 Payment successful! Your drink is being dispensed... ⏳"
 
   utter_help:
   - text: |
-      🤖 Tôi là Máy Bán Nước Tự Động!
-      
-      Tôi hỗ trợ:
-      1. 🍹 Đặt đồ uống — "Cho tôi 2 lon coca"
-      2. 📋 Xem menu — Gõ "menu" hoặc "có nước gì"
-      3. 💰 Hỏi giá — "Coca giá bao nhiêu?"
-      4. 🧪 Hỏi thành phần — "Redbull có gì?"
-      5. ⭐ Gợi ý uống gì — "Hôm nay uống gì ngon?"
-      6. 🎁 Khuyến mãi — "Có giảm giá không?"
-      7. 🛒 Xem giỏ hàng — "Xem giỏ hàng"
-      
-      Khi đặt hàng: Tôi sẽ thêm vào giỏ hàng trước.
-      Gõ "xác nhận" khi bạn muốn thanh toán! 😊
+      🤖 I am an Automatic Drink Vending Machine!
+
+      I support:
+      1. 🍹 Order drinks — "Give me 2 cans of Coca-Cola"
+      2. 📋 View menu — Type "menu" or "what drinks do you have"
+      3. 💰 Check price — "How much is Coca-Cola?"
+      4. 🧪 Ingredients — "What's in Red Bull?"
+      5. ⭐ Recommendations — "What's good today?"
+      6. 🎁 Promotions — "Any discounts?"
+      7. 🛒 View cart — "Show my cart"
+
+      When ordering: I will add items to your cart first.
+      Type "confirm" when you are ready to pay! 😊
 
   utter_goodbye:
-  - text: "👋 Tạm biệt! Cảm ơn bạn đã sử dụng dịch vụ. Hẹn gặp lại! 😊"
+  - text: "👋 Goodbye! Thank you for using our service. See you again! 😊"
 
   utter_out_of_scope:
-  - text: "😅 Câu hỏi này nằm ngoài phạm vi của tôi! Tôi chỉ hỗ trợ đặt đồ uống. Gõ 'help' để biết thêm."
+  - text: "😅 That question is outside my scope! I only support drink orders. Type 'help' for guidance."
 
   utter_fallback:
   - text: |
-      🤔 Xin lỗi, tôi chưa hiểu ý bạn.
-      Bạn có thể thử:
-      • Gõ "menu" để xem danh sách
-      • Nói tên đồ uống bạn muốn
-      • Gõ "help" để được hướng dẫn
+      🤔 Sorry, I didn't understand that.
+      You can try:
+      • Type "menu" to see the product list
+      • Say the name of the drink you want
+      • Type "help" for instructions
 
 actions:
   - action_get_drink_info
@@ -192,7 +192,6 @@ actions:
   - action_check_promotion
   - action_ask_quantity
   - action_handle_out_of_domain
-  # Các action mới cho flow giỏ hàng
   - action_add_to_cart
   - action_show_cart
 

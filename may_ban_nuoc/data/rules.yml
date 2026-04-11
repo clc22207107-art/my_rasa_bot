@@ -2,102 +2,102 @@ version: "3.1"
 
 rules:
 
-# ==================== CƠ BẢN ====================
-- rule: Chào hỏi
+# ==================== BASIC ====================
+- rule: Greet user
   steps:
     - intent: greet
     - action: utter_greet
 
-- rule: Yêu cầu giúp đỡ
+- rule: Ask for help
   steps:
     - intent: ask_help
     - action: utter_help
 
-- rule: Tạm biệt
+- rule: Goodbye
   steps:
     - intent: goodbye
     - action: utter_goodbye
 
 # ==================== MENU ====================
-- rule: Xem menu
+- rule: View menu
   steps:
     - intent: ask_available_drinks
     - action: action_show_menu
 
-# ==================== GIỎ HÀNG ====================
-- rule: Xem giỏ hàng
+# ==================== CART ====================
+- rule: View cart
   steps:
     - intent: show_cart
     - action: action_show_cart
 
-# ==================== ĐẶT HÀNG (FLOW MỚI - CART) ====================
-# Khi khách đặt món → thêm vào giỏ, CHƯA hỏi thanh toán
-- rule: Đặt hàng - thêm vào giỏ
+# ==================== ORDER (CART-BASED FLOW) ====================
+# When customer orders → add to cart, do NOT ask for payment yet
+- rule: Order drink - add to cart
   steps:
     - intent: order_drink
     - action: action_get_drink_info
     - action: action_calculate_price
     - action: action_add_to_cart
 
-# Khi có đủ số lượng ngay trong câu đặt → thêm vào giỏ luôn
-- rule: Đặt hàng có số lượng - thêm vào giỏ
+# When quantity is already in the order message → add to cart directly
+- rule: Order with quantity - add to cart
   steps:
     - intent: specify_quantity
     - action: action_calculate_price
     - action: action_add_to_cart
 
-# Xác nhận đơn hàng → tổng kết + hỏi thanh toán
-- rule: Xác nhận đơn hàng → hỏi thanh toán
+# Confirm order → show summary + ask for payment
+- rule: Confirm order - ask for payment
   steps:
     - intent: confirm
     - action: action_confirm_order
 
-# Hủy đơn hàng
-- rule: Hủy đơn hàng
+# Cancel order
+- rule: Cancel order
   steps:
     - intent: deny
     - action: action_reset_order
 
-# ==================== THANH TOÁN ====================
-# Xử lý thanh toán sau khi đã xác nhận đơn
-- rule: Xử lý thanh toán
+# ==================== PAYMENT ====================
+# Process payment after order is confirmed
+- rule: Process payment
   steps:
     - intent: specify_payment
     - action: action_process_payment
 
-# ==================== HỎI THÔNG TIN (STANDALONE) ====================
-- rule: Hỏi giá standalone
+# ==================== PRODUCT INFO (STANDALONE) ====================
+- rule: Ask price standalone
   steps:
     - intent: ask_price
     - action: action_get_drink_info
     - action: action_show_price
 
-- rule: Hỏi thành phần standalone
+- rule: Ask ingredients standalone
   steps:
     - intent: ask_ingredients
     - action: action_get_drink_info
     - action: action_show_ingredients
 
-- rule: Hỏi thông tin sản phẩm standalone
+- rule: Ask product info standalone
   steps:
     - intent: ask_product_info
     - action: action_get_drink_info
     - action: action_show_product_info
 
-# ==================== GỢI Ý ====================
-- rule: Gợi ý đồ uống
+# ==================== RECOMMENDATION ====================
+- rule: Recommend drink
   steps:
     - intent: ask_recommendation
     - action: action_recommend_drink
 
-# ==================== KHUYẾN MÃI ====================
-- rule: Kiểm tra khuyến mãi
+# ==================== PROMOTION ====================
+- rule: Check promotion
   steps:
     - intent: ask_promotion
     - action: action_check_promotion
 
 # ==================== OUT OF SCOPE ====================
-- rule: Xử lý câu hỏi ngoài phạm vi
+- rule: Handle out-of-scope questions
   steps:
     - intent: out_of_scope
     - action: action_handle_out_of_domain
