@@ -243,9 +243,10 @@ DRINKS_DB = {
         "has_caffeine": True,
         "image": "🍵",
     },
-    "tra_xanh_khong_do": {
+    # was: tra_xanh_khong_do
+    "zero_degree_green_tea": {
         "name": "Zero Degree Green Tea",
-        "aliases": ["zero degree", "zero degree green tea", "tra xanh khong do"],
+        "aliases": ["zero degree", "zero degree green tea", "tra xanh khong do", "khong do"],
         "brand": "Tan Hiep Phat",
         "volumes": ["350ml", "500ml"],
         "default_volume": "350ml",
@@ -263,7 +264,8 @@ DRINKS_DB = {
         "has_caffeine": True,
         "image": "🍵",
     },
-    "olong_tea": {
+    # was: olong_tea
+    "oolong_tea": {
         "name": "Olong Tea+",
         "aliases": ["olong tea", "oolong tea", "olong tea plus", "oolong", "olong"],
         "brand": "Tan Hiep Phat",
@@ -283,9 +285,10 @@ DRINKS_DB = {
         "has_caffeine": True,
         "image": "🍵",
     },
-    "dr_thanh": {
+    # was: dr_thanh
+    "dr_thanh_herbal": {
         "name": "Dr Thanh",
-        "aliases": ["dr thanh", "dr. thanh", "herbal drink dr thanh"],
+        "aliases": ["dr thanh", "dr. thanh", "herbal drink dr thanh", "drthanh"],
         "brand": "Tan Hiep Phat",
         "volumes": ["350ml"],
         "default_volume": "350ml",
@@ -383,7 +386,8 @@ DRINKS_DB = {
         "has_caffeine": False,
         "image": "🍶",
     },
-    "vinamilk_socola": {
+    # was: vinamilk_socola
+    "vinamilk_chocolate": {
         "name": "Vinamilk Chocolate",
         "aliases": ["vinamilk", "vinamilk chocolate", "vinamilk milk"],
         "brand": "Vinamilk",
@@ -583,9 +587,10 @@ DRINKS_DB = {
         "has_caffeine": False,
         "image": "🌵",
     },
-    "wake_up_247": {
+    # was: wake_up_247
+    "wakeup247": {
         "name": "Wake Up 247",
-        "aliases": ["wake up", "wake up 247", "wakeup247"],
+        "aliases": ["wake up", "wake up 247", "wakeup247", "wake up coffee"],
         "brand": "Tan Hiep Phat",
         "volumes": ["240ml"],
         "default_volume": "240ml",
@@ -603,9 +608,10 @@ DRINKS_DB = {
         "has_caffeine": True,
         "image": "☕",
     },
-    "tra_gao_rut": {
+    # was: tra_gao_rut
+    "brown_rice_tea": {
         "name": "Roasted Brown Rice Tea",
-        "aliases": ["brown rice tea", "roasted rice tea", "roasted brown rice tea", "tra gao lut"],
+        "aliases": ["brown rice tea", "roasted rice tea", "roasted brown rice tea", "tra gao lut", "rice tea"],
         "brand": "Fami",
         "volumes": ["350ml"],
         "default_volume": "350ml",
@@ -623,9 +629,10 @@ DRINKS_DB = {
         "has_caffeine": False,
         "image": "🌾",
     },
-    "vita_milk": {
+    # was: vita_milk
+    "soy_milk": {
         "name": "Vita Milk Soy Milk",
-        "aliases": ["vita milk", "vitamilk", "soy milk vita", "vita soy milk"],
+        "aliases": ["vita milk", "vitamilk", "soy milk vita", "vita soy milk", "soy milk"],
         "brand": "Vita Food",
         "volumes": ["200ml"],
         "default_volume": "200ml",
@@ -644,6 +651,17 @@ DRINKS_DB = {
         "image": "🫘",
     },
 }
+
+# ============================================================
+# KEY RENAME MAPPING (old -> new) for reference
+# ============================================================
+# tra_xanh_khong_do  -> zero_degree_green_tea
+# olong_tea          -> oolong_tea
+# dr_thanh           -> dr_thanh_herbal
+# vinamilk_socola    -> vinamilk_chocolate
+# wake_up_247        -> wakeup247
+# tra_gao_rut        -> brown_rice_tea
+# vita_milk          -> soy_milk
 
 # ============================================================
 # LOOKUP FUNCTIONS
