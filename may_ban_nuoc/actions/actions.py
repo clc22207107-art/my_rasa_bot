@@ -160,7 +160,7 @@ DRINKS_DB = {
         "sales": 1050, "stock": 110, "expiry_months": 12,
         "has_sugar": True, "has_caffeine": True, "image": "🍵",
     },
-    "tra_xanh_khong_do": {
+    "zero_degree_green_tea": {
         "name": "Zero Degree Green Tea",
         "aliases": ["zero degree", "zero degree green tea", "tra xanh khong do", "khong do"],
         "brand": "Tan Hiep Phat", "volumes": ["350ml", "500ml"], "default_volume": "350ml",
@@ -172,7 +172,7 @@ DRINKS_DB = {
         "sales": 980, "stock": 100, "expiry_months": 12,
         "has_sugar": True, "has_caffeine": True, "image": "🍵",
     },
-    "olong_tea": {
+    "oolong_tea": {
         "name": "Olong Tea+",
         "aliases": ["olong tea", "oolong tea", "olong", "oolong", "olong tea plus"],
         "brand": "Tan Hiep Phat", "volumes": ["350ml"], "default_volume": "350ml",
@@ -184,7 +184,7 @@ DRINKS_DB = {
         "sales": 650, "stock": 75, "expiry_months": 12,
         "has_sugar": True, "has_caffeine": True, "image": "🍵",
     },
-    "dr_thanh": {
+    "dr_thanh_herbal": {
         "name": "Dr Thanh",
         "aliases": ["dr thanh", "dr. thanh", "herbal drink dr thanh", "drthanh"],
         "brand": "Tan Hiep Phat", "volumes": ["350ml"], "default_volume": "350ml",
@@ -244,7 +244,7 @@ DRINKS_DB = {
         "sales": 800, "stock": 120, "expiry_months": 1,
         "has_sugar": True, "has_caffeine": False, "image": "🍶",
     },
-    "vinamilk": {
+    "vinamilk_chocolate": {
         "name": "Vinamilk Chocolate",
         "aliases": ["vinamilk", "vinamilk chocolate", "vinamilk milk"],
         "brand": "Vinamilk", "volumes": ["180ml", "250ml"], "default_volume": "180ml",
@@ -365,7 +365,7 @@ DRINKS_DB = {
         "sales": 430, "stock": 55, "expiry_months": 12,
         "has_sugar": True, "has_caffeine": False, "image": "🌵",
     },
-    "wake_up_247": {
+    "wakeup247": {
         "name": "Wake Up 247",
         "aliases": ["wake up", "wake up 247", "wakeup247"],
         "brand": "Tan Hiep Phat", "volumes": ["240ml"], "default_volume": "240ml",
@@ -377,7 +377,7 @@ DRINKS_DB = {
         "sales": 450, "stock": 55, "expiry_months": 12,
         "has_sugar": True, "has_caffeine": True, "image": "☕",
     },
-    "tra_gao_rut": {
+    "brown_rice_tea": {
         "name": "Roasted Brown Rice Tea",
         "aliases": ["brown rice tea", "roasted rice tea", "roasted brown rice tea", "tra gao lut"],
         "brand": "Fami", "volumes": ["350ml"], "default_volume": "350ml",
@@ -389,7 +389,7 @@ DRINKS_DB = {
         "sales": 280, "stock": 40, "expiry_months": 12,
         "has_sugar": True, "has_caffeine": False, "image": "🌾",
     },
-    "vita_milk": {
+    "soy_milk": {
         "name": "Vita Milk Soy Milk",
         "aliases": ["vita milk", "vitamilk", "soy milk vita", "vita soy milk"],
         "brand": "Vita Food", "volumes": ["200ml"], "default_volume": "200ml",
@@ -418,7 +418,6 @@ BANK_QR_INFO = {
 # ============================================================
 
 def normalize_text(text: str) -> str:
-    """Normalize text: lowercase, remove accents and special characters."""
     if not text:
         return ""
     text = text.replace('đ', 'd').replace('Đ', 'd')
@@ -429,12 +428,10 @@ def normalize_text(text: str) -> str:
 
 
 def find_drink(name: str):
-    """Find a drink by name or alias. Returns (key, drink_data) or (None, None)."""
     if not name:
         return None, None
     name_norm = normalize_text(name)
     name_no_space = name_norm.replace(' ', '')
-
     for key, drink in DRINKS_DB.items():
         key_norm = normalize_text(key)
         if name_norm == key_norm:
@@ -454,12 +451,10 @@ def find_drink(name: str):
 
 
 def find_drink_from_message(message: str):
-    """Find the best matching drink from a user message."""
     if not message:
         return None, None
     msg_norm = normalize_text(message)
     msg_no_space = msg_norm.replace(' ', '')
-
     candidates = []
     for key, drink in DRINKS_DB.items():
         for alias in drink["aliases"]:
@@ -469,7 +464,6 @@ def find_drink_from_message(message: str):
                 continue
             if alias_norm in msg_norm or alias_no_space in msg_no_space:
                 candidates.append((len(alias_norm), key, drink))
-
     if not candidates:
         return None, None
     candidates.sort(key=lambda x: x[0], reverse=True)
@@ -478,17 +472,10 @@ def find_drink_from_message(message: str):
 
 
 def find_all_drinks_from_message(message: str):
-    """
-    Find ALL products mentioned in a single message, with quantities.
-    Example: "give me 2 coca and 1 pepsi"
-    Returns list of (key, drink_data, quantity)
-    """
     if not message:
         return []
     msg_norm = normalize_text(message)
     msg_no_space = msg_norm.replace(' ', '')
-
-    # Step 1: Find all (alias, key, drink) matches in message, prefer longest alias
     candidates = []
     for key, drink in DRINKS_DB.items():
         for alias in drink["aliases"]:
@@ -502,40 +489,27 @@ def find_all_drinks_from_message(message: str):
             elif alias_no_space in msg_no_space:
                 pos = msg_no_space.find(alias_no_space)
                 candidates.append((len(alias_norm), pos, alias_norm, key, drink))
-
     if not candidates:
         return []
-
-    # Step 2: Remove duplicates per key — keep longest alias match
     best_per_key = {}
     for length, pos, alias_norm, key, drink in candidates:
         if key not in best_per_key or length > best_per_key[key][0]:
             best_per_key[key] = (length, pos, alias_norm, key, drink)
-
-    # Step 3: Sort by position in message
     sorted_matches = sorted(best_per_key.values(), key=lambda x: x[1])
-
-    # Step 4: For each product, find quantity in text BEFORE its position
     word_nums = {
         "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
-        "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10,
-        "a": 1,
+        "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10, "a": 1,
     }
-
     results = []
     for length, pos, alias_norm, key, drink in sorted_matches:
-        # Take text before the alias (up to 25 chars, after last separator)
         prefix = msg_norm[:pos]
-        # Cut from nearest separator (and, with, plus, also, ,)
         for sep in [" and ", " with ", " plus ", " also ", ","]:
             idx = prefix.rfind(sep)
             if idx >= 0:
                 prefix = prefix[idx + len(sep):]
                 break
         prefix = prefix.strip()
-
         qty = 1
-        # Look for digits first
         nums = re.findall(r'\d+', prefix)
         if nums:
             qty = int(nums[-1])
@@ -544,14 +518,11 @@ def find_all_drinks_from_message(message: str):
                 if word in prefix.split():
                     qty = num
                     break
-
         results.append((key, drink, qty))
-
     return results
 
 
 def resolve_drink(tracker):
-    """Get the drink from the latest message or fall back to slot."""
     last_msg = tracker.latest_message.get("text", "")
     key, drink_data = find_drink_from_message(last_msg)
     if drink_data:
@@ -561,13 +532,11 @@ def resolve_drink(tracker):
 
 
 def parse_quantity(qty_str: str) -> int:
-    """Parse a quantity string (e.g. '2 bottles', 'three') to int."""
     if not qty_str:
         return 1
     words = {
         "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
-        "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10,
-        "a": 1,
+        "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10, "a": 1,
     }
     qty_lower = qty_str.lower()
     for word, num in words.items():
@@ -578,7 +547,6 @@ def parse_quantity(qty_str: str) -> int:
 
 
 def resolve_volume(drink_data: dict, size_slot: str) -> str:
-    """Resolve size slot to a valid volume string."""
     if not size_slot:
         return drink_data["default_volume"]
     size_lower = size_slot.lower()
@@ -594,7 +562,6 @@ def resolve_volume(drink_data: dict, size_slot: str) -> str:
 
 
 def get_cart(tracker) -> list:
-    """Get cart from slot (JSON string). Returns list of dicts."""
     cart_str = tracker.get_slot("cart")
     if not cart_str:
         return []
@@ -609,7 +576,6 @@ def cart_total(cart: list) -> int:
 
 
 def format_cart(cart: list) -> str:
-    """Display cart as a formatted table."""
     if not cart:
         return "🛒 Your cart is empty."
     lines = ["🛒 **SHOPPING CART**\n" + "─" * 32]
@@ -624,34 +590,24 @@ def format_cart(cart: list) -> str:
 
 
 def detect_payment_method(text: str) -> str:
-    """
-    Detect payment method from user message.
-    Returns: 'qr' | 'cash' | 'card' | 'pay' (general request) | ''
-    """
     norm = normalize_text(text)
-
-    # Bank transfer / QR — check before card to avoid "scan" confusion
     qr_keywords = [
         "bank transfer", "wire transfer", "qr code", "qr", "scan qr",
         "transfer", "internet banking", "banking", "momo", "zalopay",
         "vnpay", "zalo pay", "e wallet", "ewallet",
     ]
-    # Card payment
     card_keywords = [
         "swipe card", "card", "credit card", "debit card", "visa",
         "mastercard", "atm", "bank card", "insert card",
     ]
-    # Cash
     cash_keywords = [
         "cash", "paper money", "insert money", "coins", "pay cash",
         "put money", "drop money",
     ]
-    # General payment request (no method specified)
     pay_general_keywords = [
         "pay", "checkout", "payment", "buy now", "check out",
         "i want to pay", "ready to pay", "let me pay",
     ]
-
     for kw in qr_keywords:
         if kw in norm:
             return "qr"
@@ -677,7 +633,6 @@ class ActionShowMenu(Action):
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         last_norm = normalize_text(tracker.latest_message.get("text", ""))
-
         if any(w in last_norm for w in ["new product", "new item", "new arrival", "what s new", "latest", "recently added", "just released"]):
             new_products = [(k, v) for k, v in DRINKS_DB.items() if v["is_new"]]
             if not new_products:
@@ -687,15 +642,10 @@ class ActionShowMenu(Action):
             for key, d in new_products:
                 default_vol = d["default_volume"]
                 price = d["price"][default_vol]
-                lines.append(
-                    f"\n{d['image']} **{d['name']}**\n"
-                    f"   💰 Price: {price:,} VND ({default_vol})\n"
-                    f"   ✨ {d['features']}"
-                )
+                lines.append(f"\n{d['image']} **{d['name']}**\n   💰 Price: {price:,} VND ({default_vol})\n   ✨ {d['features']}")
             lines.append("\n💬 Would you like more info or to order any of these?")
             dispatcher.utter_message(text="\n".join(lines))
             return []
-
         categories = {}
         for key, drink in DRINKS_DB.items():
             cat = drink["category"]
@@ -721,14 +671,10 @@ class ActionGetDrinkInfo(Action):
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         key, drink_data = resolve_drink(tracker)
         if not drink_data:
-            dispatcher.utter_message(
-                text="❌ Sorry, I couldn't find that product in our menu. Type 'menu' to see the full list!"
-            )
+            dispatcher.utter_message(text="❌ Sorry, I couldn't find that product in our menu. Type 'menu' to see the full list!")
             return [SlotSet("drink", None)]
         if drink_data["stock"] == 0:
-            dispatcher.utter_message(
-                text=f"😔 Sorry, **{drink_data['name']}** is currently out of stock. Would you like to choose another product?"
-            )
+            dispatcher.utter_message(text=f"😔 Sorry, **{drink_data['name']}** is currently out of stock. Would you like to choose another product?")
             return [SlotSet("drink", None)]
         return [SlotSet("drink", key)]
 
@@ -742,31 +688,19 @@ class ActionShowPrice(Action):
         if not drink_data:
             dispatcher.utter_message(text="Which product would you like to check the price of? (Type 'menu' to see the list)")
             return []
-
         last_norm = normalize_text(tracker.latest_message.get("text", ""))
         parts = []
-
-        # Always include price
         price_lines = [f"  • {vol}: {price:,} VND" for vol, price in drink_data["price"].items()]
         parts.append("💰 Price:\n" + "\n".join(price_lines))
-
-        # Also include flavor if asked
         if any(w in last_norm for w in ["flavor", "taste", "what does it taste", "how does it taste"]):
             parts.append(f"😋 Flavor: {drink_data['flavor']}")
-
-        # Also include features/description if asked
         if any(w in last_norm for w in ["features", "description", "about", "benefits", "properties"]):
             parts.append(f"✨ Features: {drink_data['features']}")
-
-        # Also include ingredients if asked
         if any(w in last_norm for w in ["ingredient", "made of", "contain", "what s in", "what is in"]):
             parts.append(f"🧪 Ingredients: {drink_data['ingredients']}")
-
-        # Also include sizes if asked
         if any(w in last_norm for w in ["size", "volume", "ml", "liter"]):
             vols_str = ", ".join(f"{v}: {drink_data['price'][v]:,} VND" for v in drink_data["volumes"])
             parts.append(f"📦 Sizes & Prices: {vols_str}")
-
         msg = f"{drink_data['image']} **{drink_data['name']}**\n" + "\n".join(parts)
         dispatcher.utter_message(text=msg)
         return []
@@ -781,53 +715,27 @@ class ActionShowIngredients(Action):
         if not drink_data:
             dispatcher.utter_message(text="Which product would you like to check the ingredients of?")
             return []
-
         last_norm = normalize_text(tracker.latest_message.get("text", ""))
-
-        # Use accumulation pattern — NO early returns, so combined queries work
         info_parts = []
-
-        # Specific: caffeine
         if "caffeine" in last_norm:
-            if drink_data["has_caffeine"]:
-                info_parts.append("☕ Contains caffeine.")
-            else:
-                info_parts.append("✅ Caffeine-free.")
-
-        # Specific: sugar
+            info_parts.append("☕ Contains caffeine." if drink_data["has_caffeine"] else "✅ Caffeine-free.")
         if any(w in last_norm for w in ["sugar", "sweet", "sweetened"]):
-            if drink_data["has_sugar"]:
-                info_parts.append("🍬 Contains sugar.")
-            else:
-                info_parts.append("✅ Sugar-free / naturally low sugar.")
-
-        # Specific: carbonation
+            info_parts.append("🍬 Contains sugar." if drink_data["has_sugar"] else "✅ Sugar-free / naturally low sugar.")
         if any(w in last_norm for w in ["carbonated", "fizzy", "sparkling", "gas", "bubbly"]):
             has_gas = drink_data.get("category") in ["Carbonated Soft Drinks", "Energy Drinks"]
             info_parts.append("🫧 Carbonated." if has_gas else "✅ Not carbonated.")
-
-        # Specific: probiotics
         if any(w in last_norm for w in ["probiotic", "bacteria", "culture", "lactobacillus"]):
             has_probiotic = any(w in drink_data["ingredients"].lower() for w in ["lactobacillus", "probiotic"])
             info_parts.append("🦠 Contains probiotic bacteria." if has_probiotic else "❌ No probiotic bacteria.")
-
-        # If no specific keyword matched → show full ingredients list
         if not info_parts:
             info_parts.append(f"🧪 Ingredients: {drink_data['ingredients']}")
-
-        # Cross-query: also include price if asked
         if any(w in last_norm for w in ["price", "cost", "how much", "expensive", "cheap"]):
             price_lines = [f"  • {vol}: {price:,} VND" for vol, price in drink_data["price"].items()]
             info_parts.append("💰 Price:\n" + "\n".join(price_lines))
-
-        # Cross-query: also include flavor if asked
         if any(w in last_norm for w in ["flavor", "taste", "how does it taste"]):
             info_parts.append(f"😋 Flavor: {drink_data['flavor']}")
-
-        # Cross-query: also include features if asked
         if any(w in last_norm for w in ["features", "description", "benefits", "about"]):
             info_parts.append(f"✨ Features: {drink_data['features']}")
-
         msg = f"{drink_data['image']} **{drink_data['name']}**\n" + "\n".join(info_parts)
         dispatcher.utter_message(text=msg)
         return []
@@ -842,27 +750,18 @@ class ActionShowProductInfo(Action):
         if not drink_data:
             dispatcher.utter_message(text="Which product would you like info on? (Type 'menu' to browse)")
             return []
-
         last_norm = normalize_text(tracker.latest_message.get("text", ""))
-
         stock_keywords = [
             "stock", "quantity", "available", "in stock", "out of stock",
             "how many left", "remaining", "left", "sold out", "do you have",
             "do you still have", "do you carry",
         ]
-
         info_parts = []
-
-        # Price (combined query support)
         if any(w in last_norm for w in ["price", "cost", "how much", "expensive", "cheap", "afford"]):
             price_lines = [f"  • {vol}: {price:,} VND" for vol, price in drink_data["price"].items()]
             info_parts.append("💰 Price:\n" + "\n".join(price_lines))
-
-        # Ingredients (combined query support)
         if any(w in last_norm for w in ["ingredient", "made of", "contain", "what s in", "what is in", "recipe"]):
             info_parts.append(f"🧪 Ingredients: {drink_data['ingredients']}")
-
-        # Stock
         if any(w in last_norm for w in stock_keywords):
             stock = drink_data["stock"]
             if stock == 0:
@@ -872,74 +771,35 @@ class ActionShowProductInfo(Action):
             else:
                 status = f"✅ {stock} in stock"
             info_parts.append(f"📦 Stock: {status}")
-
-        # Flavor
-        flavor_keywords = [
-            "flavor", "taste", "what does it taste", "is it good",
-            "sweet", "bitter", "sour", "how does it taste",
-            "what is the flavor", "what does it taste like",
-        ]
+        flavor_keywords = ["flavor", "taste", "what does it taste", "is it good", "sweet", "bitter", "sour", "how does it taste", "what is the flavor", "what does it taste like"]
         if any(w in last_norm for w in flavor_keywords):
             info_parts.append(f"😋 Flavor: {drink_data['flavor']}")
-
-        # Volume / size
         if any(w in last_norm for w in ["size", "volume", "ml", "liter", "how many sizes", "can or bottle"]):
             vols_str = ", ".join(f"{v}: {drink_data['price'][v]:,} VND" for v in drink_data["volumes"])
             info_parts.append(f"📦 Sizes & Prices: {vols_str}")
-
-        # Brand
         if any(w in last_norm for w in ["brand", "manufacturer", "made by", "company", "who makes"]):
             info_parts.append(f"🏭 Brand: {drink_data['brand']}")
-
-        # Features / description
         if any(w in last_norm for w in ["features", "description", "benefits", "about", "info", "properties"]):
             info_parts.append(f"✨ Features: {drink_data['features']}")
-
-        # Expiry
         if any(w in last_norm for w in ["expiry", "expiration", "shelf life", "best before", "how long", "expire"]):
             info_parts.append(f"📅 Shelf life: {drink_data['expiry_months']} months from production date")
-
-        # Caffeine
         if "caffeine" in last_norm:
-            val = "☕ Contains caffeine." if drink_data["has_caffeine"] else "✅ Caffeine-free."
-            info_parts.append(val)
-
-        # Sugar
+            info_parts.append("☕ Contains caffeine." if drink_data["has_caffeine"] else "✅ Caffeine-free.")
         if any(w in last_norm for w in ["sugar", "sweet", "sweetened"]):
-            val = "🍬 Contains sugar." if drink_data["has_sugar"] else "✅ Sugar-free / naturally low sugar."
-            info_parts.append(val)
-
-        # Carbonation
+            info_parts.append("🍬 Contains sugar." if drink_data["has_sugar"] else "✅ Sugar-free / naturally low sugar.")
         if any(w in last_norm for w in ["carbonated", "fizzy", "sparkling", "gas", "bubbly"]):
             has_gas = drink_data.get("category") in ["Carbonated Soft Drinks", "Energy Drinks"]
-            val = "🫧 Carbonated." if has_gas else "✅ Not carbonated."
-            info_parts.append(val)
-
-        # Slogan
+            info_parts.append("🫧 Carbonated." if has_gas else "✅ Not carbonated.")
         if any(w in last_norm for w in ["slogan", "tagline", "motto"]):
-            slogan = drink_data.get("features", "No slogan info available.")
-            info_parts.append(f"🎯 Slogan / Tagline: {slogan}")
-
-        # Popularity / sales
-        if any(w in last_norm for w in ["popular", "best seller", "sales", "rating", "rank",
-                                         "how popular", "how many sold", "sold"]):
+            info_parts.append(f"🎯 Slogan / Tagline: {drink_data.get('features', 'No slogan info available.')}")
+        if any(w in last_norm for w in ["popular", "best seller", "sales", "rating", "rank", "how popular", "how many sold", "sold"]):
             stars = "⭐" * int(drink_data["popularity"])
-            info_parts.append(
-                f"📊 Popularity: {stars} ({drink_data['popularity']}/10)\n"
-                f"🛒 Total sold: {drink_data['sales']:,} units"
-            )
-
-        # New product
+            info_parts.append(f"📊 Popularity: {stars} ({drink_data['popularity']}/10)\n🛒 Total sold: {drink_data['sales']:,} units")
         if any(w in last_norm for w in ["new", "new product", "newly released", "just released"]):
-            val = "🆕 This is a NEW product!" if drink_data["is_new"] else "✅ This is an established product, not new."
-            info_parts.append(val)
-
-        # Compile result
+            info_parts.append("🆕 This is a NEW product!" if drink_data["is_new"] else "✅ This is an established product, not new.")
         if info_parts:
-            header = f"{drink_data['image']} **{drink_data['name']}**"
-            msg = header + "\n" + "\n".join(info_parts)
+            msg = f"{drink_data['image']} **{drink_data['name']}**\n" + "\n".join(info_parts)
         else:
-            # Fallback: show full overview
             new_badge = " 🆕" if drink_data["is_new"] else ""
             vols_str = ", ".join(f"{v}: {drink_data['price'][v]:,} VND" for v in drink_data["volumes"])
             msg = (
@@ -949,7 +809,6 @@ class ActionShowProductInfo(Action):
                 f"😋 Flavor: {drink_data['flavor']}\n"
                 f"✨ Features: {drink_data['features']}"
             )
-
         dispatcher.utter_message(text=msg)
         return []
 
@@ -959,11 +818,6 @@ class ActionShowProductInfo(Action):
 # ============================================================
 
 class ActionAddToCart(Action):
-    """
-    Add products to the shopping cart when customer places an order.
-    Supports multiple products in a single message (e.g. "give me 2 coca and 1 pepsi").
-    Only confirms what was added, does not prompt further.
-    """
     def name(self) -> Text:
         return "action_add_to_cart"
 
@@ -971,37 +825,25 @@ class ActionAddToCart(Action):
         last_msg = tracker.latest_message.get("text", "")
         size_slot = tracker.get_slot("size")
         cart = get_cart(tracker)
-
-        # Find all products + quantities in the message
         found_items = find_all_drinks_from_message(last_msg)
-
-        # Fallback: if nothing found from message, use slot
         if not found_items:
             drink_slot = tracker.get_slot("drink")
             key, drink_data = find_drink(drink_slot)
             if not drink_data:
-                dispatcher.utter_message(
-                    text="❌ I couldn't find that product. Type 'menu' to see the full list!"
-                )
+                dispatcher.utter_message(text="❌ I couldn't find that product. Type 'menu' to see the full list!")
                 return []
             qty_slot = tracker.get_slot("quantity") or "1"
             qty = parse_quantity(qty_slot)
             found_items = [(key, drink_data, qty)]
-
         added_lines = []
         last_key = None
         for key, drink_data, qty in found_items:
             if drink_data["stock"] == 0:
-                dispatcher.utter_message(
-                    text=f"😔 **{drink_data['name']}** is out of stock. Would you like to choose something else?"
-                )
+                dispatcher.utter_message(text=f"😔 **{drink_data['name']}** is out of stock. Would you like to choose something else?")
                 continue
-
             volume = resolve_volume(drink_data, size_slot)
             unit_price = drink_data["price"].get(volume, list(drink_data["price"].values())[0])
             subtotal = unit_price * qty
-
-            # Merge with existing cart item if same product & volume
             existing = next((item for item in cart if item["key"] == key and item["volume"] == volume), None)
             if existing:
                 existing["qty"] += qty
@@ -1018,13 +860,9 @@ class ActionAddToCart(Action):
                 })
             added_lines.append(f"  ✅ {drink_data['image']} {qty} × {drink_data['name']} ({volume})")
             last_key = key
-
         if not added_lines:
             return []
-
-        msg = "➕ **Added to cart:**\n" + "\n".join(added_lines)
-        dispatcher.utter_message(text=msg)
-
+        dispatcher.utter_message(text="➕ **Added to cart:**\n" + "\n".join(added_lines))
         return [
             SlotSet("cart", json.dumps(cart, ensure_ascii=False)),
             SlotSet("drink", last_key),
@@ -1032,7 +870,6 @@ class ActionAddToCart(Action):
 
 
 class ActionShowCart(Action):
-    """Display the current shopping cart."""
     def name(self) -> Text:
         return "action_show_cart"
 
@@ -1041,25 +878,16 @@ class ActionShowCart(Action):
         if not cart:
             dispatcher.utter_message(text="🛒 Your cart is empty. Please choose a drink first!")
             return []
-        msg = format_cart(cart) + (
-            "\n\n💬 Type 'confirm' to place your order, or add more products!"
-        )
-        dispatcher.utter_message(text=msg)
+        dispatcher.utter_message(text=format_cart(cart) + "\n\n💬 Type 'confirm' to place your order, or add more products!")
         return []
 
 
 class ActionConfirmOrder(Action):
-    """
-    Confirm the order: show cart summary and ask for payment method.
-    Called when customer says 'confirm', 'ok', 'yes', etc.
-    """
     def name(self) -> Text:
         return "action_confirm_order"
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         cart = get_cart(tracker)
-
-        # If cart is empty, try to reconstruct from old slots (backwards compatibility)
         if not cart:
             drink_slot = tracker.get_slot("drink")
             _, drink_data = find_drink(drink_slot)
@@ -1079,13 +907,10 @@ class ActionConfirmOrder(Action):
             else:
                 dispatcher.utter_message(text="⚠️ Your cart is empty! Please select a product first.")
                 return []
-
         total = cart_total(cart)
-        cart_display = format_cart(cart)
-
         msg = (
             f"✅ **ORDER CONFIRMATION**\n\n"
-            f"{cart_display}\n\n"
+            f"{format_cart(cart)}\n\n"
             f"💳 How would you like to pay?\n\n"
             f"1️⃣ **Bank Transfer** — Scan QR code\n"
             f"2️⃣ **Cash** — Insert money into machine\n"
@@ -1097,61 +922,43 @@ class ActionConfirmOrder(Action):
 
 
 class ActionProcessPayment(Action):
-    """
-    Process payment — recognizes many synonymous phrases.
-    Only called after the customer has confirmed the order.
-    """
     def name(self) -> Text:
         return "action_process_payment"
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         last_msg = tracker.latest_message.get("text", "")
         payment_slot = tracker.get_slot("payment_method") or ""
-
         method = detect_payment_method(last_msg)
         if not method:
             method = detect_payment_method(payment_slot)
-
         cart = get_cart(tracker)
         total_price = cart_total(cart) if cart else int(tracker.get_slot("total_price") or 0)
-
         if method == "qr":
             qr = BANK_QR_INFO
             msg = (
-                f"📲 **BANK TRANSFER / QR PAYMENT**\n"
-                f"{'═' * 35}\n"
+                f"📲 **BANK TRANSFER / QR PAYMENT**\n{'═'*35}\n"
                 f"{qr['qr_text']}\n\n"
-                f"💰 Amount to transfer: **{total_price:,} VND**\n"
-                f"{'═' * 35}\n"
-                f"⏳ After a successful transfer,\n"
-                f"   the machine will automatically dispense your product!\n"
+                f"💰 Amount to transfer: **{total_price:,} VND**\n{'═'*35}\n"
+                f"⏳ After a successful transfer,\n   the machine will automatically dispense your product!\n"
                 f"📞 Contact support if you don't receive your order."
             )
-
         elif method == "cash":
             msg = (
-                f"💵 **CASH PAYMENT**\n"
-                f"{'═' * 35}\n"
+                f"💵 **CASH PAYMENT**\n{'═'*35}\n"
                 f"💰 Amount to pay: **{total_price:,} VND**\n\n"
-                f"👇 Please insert money into the cash slot\n"
-                f"   on the right side of the machine.\n\n"
+                f"👇 Please insert money into the cash slot\n   on the right side of the machine.\n\n"
                 f"ℹ️ Accepted bills: 5K, 10K, 20K, 50K, 100K, 200K, 500K VND\n"
                 f"⚡ The machine will automatically return change!"
             )
-
         elif method == "card":
             msg = (
-                f"💳 **CARD PAYMENT**\n"
-                f"{'═' * 35}\n"
+                f"💳 **CARD PAYMENT**\n{'═'*35}\n"
                 f"💰 Amount: **{total_price:,} VND**\n\n"
-                f"👇 Please insert or swipe your card\n"
-                f"   in the card reader on the left side.\n\n"
+                f"👇 Please insert or swipe your card\n   in the card reader on the left side.\n\n"
                 f"✅ Accepted: Visa, Mastercard, Domestic ATM\n"
                 f"⏳ Waiting for transaction confirmation..."
             )
-
         elif method == "pay":
-            # Customer said "pay" but didn't specify method → ask again
             dispatcher.utter_message(
                 text=(
                     f"💳 How would you like to pay **{total_price:,} VND**?\n\n"
@@ -1161,36 +968,22 @@ class ActionProcessPayment(Action):
                 )
             )
             return []
-
         else:
             dispatcher.utter_message(
                 text=(
-                    f"❓ I didn't recognize your payment method.\n"
-                    f"Please choose:\n"
+                    f"❓ I didn't recognize your payment method.\nPlease choose:\n"
                     f"1️⃣ **Bank Transfer** (scan QR code)\n"
                     f"2️⃣ **Cash** (insert money into machine)\n"
                     f"3️⃣ **Card** (swipe/insert card)"
                 )
             )
             return []
-
         dispatcher.utter_message(text=msg)
-        dispatcher.utter_message(
-            text=(
-                f"\n🎉 **Payment successful!**\n"
-                f"🥤 Your drink is being dispensed...\n"
-                f"Thank you for using our service! 😊"
-            )
-        )
-
+        dispatcher.utter_message(text="\n🎉 **Payment successful!**\n🥤 Your drink is being dispensed...\nThank you for using our service! 😊")
         return [
-            SlotSet("cart", None),
-            SlotSet("drink", None),
-            SlotSet("size", None),
-            SlotSet("quantity", "1"),
-            SlotSet("payment_method", None),
-            SlotSet("price_per_unit", None),
-            SlotSet("total_price", None),
+            SlotSet("cart", None), SlotSet("drink", None), SlotSet("size", None),
+            SlotSet("quantity", "1"), SlotSet("payment_method", None),
+            SlotSet("price_per_unit", None), SlotSet("total_price", None),
         ]
 
 
@@ -1208,20 +1001,13 @@ class ActionResetOrder(Action):
             )
         )
         return [
-            SlotSet("cart", None),
-            SlotSet("drink", None),
-            SlotSet("size", None),
-            SlotSet("quantity", "1"),
-            SlotSet("payment_method", None),
-            SlotSet("price_per_unit", None),
-            SlotSet("total_price", None),
+            SlotSet("cart", None), SlotSet("drink", None), SlotSet("size", None),
+            SlotSet("quantity", "1"), SlotSet("payment_method", None),
+            SlotSet("price_per_unit", None), SlotSet("total_price", None),
         ]
 
 
-# Backwards-compatible actions for existing stories/rules
-
 class ActionCalculatePrice(Action):
-    """Backwards compatible — calculates price for a single product."""
     def name(self) -> Text:
         return "action_calculate_price"
 
@@ -1229,26 +1015,20 @@ class ActionCalculatePrice(Action):
         drink_slot = tracker.get_slot("drink")
         size_slot = tracker.get_slot("size")
         quantity_slot = tracker.get_slot("quantity") or "1"
-
         _, drink_data = find_drink(drink_slot)
         if not drink_data:
             return []
-
         volume = resolve_volume(drink_data, size_slot)
         quantity = parse_quantity(quantity_slot)
         price_per_unit = drink_data["price"].get(volume, list(drink_data["price"].values())[0])
         total = price_per_unit * quantity
-
         return [
-            SlotSet("size", volume),
-            SlotSet("quantity", str(quantity)),
-            SlotSet("price_per_unit", str(price_per_unit)),
-            SlotSet("total_price", str(total)),
+            SlotSet("size", volume), SlotSet("quantity", str(quantity)),
+            SlotSet("price_per_unit", str(price_per_unit)), SlotSet("total_price", str(total)),
         ]
 
 
 class ActionShowOrderSummary(Action):
-    """Backwards compatible — shows order summary for a single product."""
     def name(self) -> Text:
         return "action_show_order_summary"
 
@@ -1258,21 +1038,16 @@ class ActionShowOrderSummary(Action):
         quantity_slot = tracker.get_slot("quantity") or "1"
         total_price = tracker.get_slot("total_price") or "0"
         price_per_unit = tracker.get_slot("price_per_unit") or "0"
-
         _, drink_data = find_drink(drink_slot)
         if not drink_data:
             dispatcher.utter_message(text="⚠️ No product in the order yet.")
             return []
-
         quantity = parse_quantity(quantity_slot)
         msg = (
-            f"🛒 **CART**\n"
-            f"{'─' * 30}\n"
+            f"🛒 **CART**\n{'─'*30}\n"
             f"{drink_data['image']} {drink_data['name']} ({size_slot})\n"
             f"   x{quantity} × {int(price_per_unit):,} VND = {int(total_price):,} VND\n"
-            f"{'─' * 30}\n"
-            f"💵 **Total: {int(total_price):,} VND**\n"
-            f"{'─' * 30}\n\n"
+            f"{'─'*30}\n💵 **Total: {int(total_price):,} VND**\n{'─'*30}\n\n"
             f"💬 Would you like to:\n"
             f"  🛍️ Add another product → Say the product name\n"
             f"  ✅ Confirm order → Type 'confirm'\n"
@@ -1300,8 +1075,6 @@ class ActionRecommendDrink(Action):
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         last_norm = normalize_text(tracker.latest_message.get("text", ""))
-
-        # Best selling → top 3 by sales
         if any(w in last_norm for w in ["best selling", "most sold", "buy most", "sold most"]):
             top3 = sorted(DRINKS_DB.items(), key=lambda x: x[1]["sales"], reverse=True)[:3]
             lines = ["🏆 **TOP 3 BEST SELLERS**\n" + "─" * 32]
@@ -1310,8 +1083,6 @@ class ActionRecommendDrink(Action):
             lines.append("\n💬 Which one would you like?")
             dispatcher.utter_message(text="\n".join(lines))
             return []
-
-        # Most popular → top 3 by popularity
         if any(w in last_norm for w in ["popular", "famous", "well known", "trending", "most popular"]):
             top3 = sorted(DRINKS_DB.items(), key=lambda x: x[1]["popularity"], reverse=True)[:3]
             lines = ["🌟 **TOP 3 MOST POPULAR**\n" + "─" * 32]
@@ -1320,8 +1091,6 @@ class ActionRecommendDrink(Action):
             lines.append("\n💬 Which one would you like?")
             dispatcher.utter_message(text="\n".join(lines))
             return []
-
-        # General recommendation → top 5 by popularity
         top5 = sorted(DRINKS_DB.items(), key=lambda x: x[1]["popularity"], reverse=True)[:5]
         lines = ["🌟 **TODAY'S DRINK RECOMMENDATIONS**\n" + "─" * 35]
         for i, (key, d) in enumerate(top5, 1):
@@ -1339,8 +1108,7 @@ class ActionCheckPromotion(Action):
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         msg = (
-            "🎉 **CURRENT PROMOTIONS**\n"
-            "─" * 35 + "\n"
+            "🎉 **CURRENT PROMOTIONS**\n" + "─" * 35 + "\n"
             "🔥 Buy 2 get 1 free on Sting and Number 1!\n"
             "💚 10% off when buying 5 or more products\n"
             "🆕 New products: Aloe Vera & Roasted Brown Rice Tea — 15% off\n"
@@ -1361,16 +1129,13 @@ class ActionHandleOutOfDomain(Action):
             (
                 "🚫 Sorry, that question is outside my capabilities.\n"
                 "I'm just a drink vending machine, I only support:\n\n"
-                "🍹 Ordering drinks\n"
-                "💰 Checking product prices\n"
-                "🧪 Ingredients / product info\n"
-                "⭐ Drink recommendations\n\n"
+                "🍹 Ordering drinks\n💰 Checking product prices\n"
+                "🧪 Ingredients / product info\n⭐ Drink recommendations\n\n"
                 "👉 Type 'menu' to see the list, or tell me what you'd like to drink!"
             ),
             (
                 "🤖 I can't answer that — I only serve drinks!\n\n"
-                "Would you like to:\n"
-                "• View menu → type 'menu'\n"
+                "Would you like to:\n• View menu → type 'menu'\n"
                 "• Order a drink → say the product name\n"
                 "• Check a price → 'How much is [product]?'"
             ),

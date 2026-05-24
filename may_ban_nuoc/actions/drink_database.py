@@ -243,7 +243,6 @@ DRINKS_DB = {
         "has_caffeine": True,
         "image": "🍵",
     },
-    # was: tra_xanh_khong_do
     "zero_degree_green_tea": {
         "name": "Zero Degree Green Tea",
         "aliases": ["zero degree", "zero degree green tea", "tra xanh khong do", "khong do"],
@@ -264,7 +263,6 @@ DRINKS_DB = {
         "has_caffeine": True,
         "image": "🍵",
     },
-    # was: olong_tea
     "oolong_tea": {
         "name": "Olong Tea+",
         "aliases": ["olong tea", "oolong tea", "olong tea plus", "oolong", "olong"],
@@ -285,7 +283,6 @@ DRINKS_DB = {
         "has_caffeine": True,
         "image": "🍵",
     },
-    # was: dr_thanh
     "dr_thanh_herbal": {
         "name": "Dr Thanh",
         "aliases": ["dr thanh", "dr. thanh", "herbal drink dr thanh", "drthanh"],
@@ -386,7 +383,6 @@ DRINKS_DB = {
         "has_caffeine": False,
         "image": "🍶",
     },
-    # was: vinamilk_socola
     "vinamilk_chocolate": {
         "name": "Vinamilk Chocolate",
         "aliases": ["vinamilk", "vinamilk chocolate", "vinamilk milk"],
@@ -587,7 +583,6 @@ DRINKS_DB = {
         "has_caffeine": False,
         "image": "🌵",
     },
-    # was: wake_up_247
     "wakeup247": {
         "name": "Wake Up 247",
         "aliases": ["wake up", "wake up 247", "wakeup247", "wake up coffee"],
@@ -608,7 +603,6 @@ DRINKS_DB = {
         "has_caffeine": True,
         "image": "☕",
     },
-    # was: tra_gao_rut
     "brown_rice_tea": {
         "name": "Roasted Brown Rice Tea",
         "aliases": ["brown rice tea", "roasted rice tea", "roasted brown rice tea", "tra gao lut", "rice tea"],
@@ -629,7 +623,6 @@ DRINKS_DB = {
         "has_caffeine": False,
         "image": "🌾",
     },
-    # was: vita_milk
     "soy_milk": {
         "name": "Vita Milk Soy Milk",
         "aliases": ["vita milk", "vitamilk", "soy milk vita", "vita soy milk", "soy milk"],
@@ -678,6 +671,7 @@ def find_drink(name: str):
                 return key, drink
     return None, None
 
+
 def get_menu_list():
     """Return list of drink names with base prices, grouped by category."""
     categories = {}
@@ -690,10 +684,12 @@ def get_menu_list():
         categories[cat].append(f"{drink['name']} ({default_vol}) - {price:,} VND")
     return categories
 
+
 def get_recommendations():
     """Top 5 most popular products."""
     sorted_drinks = sorted(DRINKS_DB.items(), key=lambda x: x[1]["popularity"], reverse=True)
     return [(k, v) for k, v in sorted_drinks[:5]]
+
 
 def get_new_products():
     """Return new products."""

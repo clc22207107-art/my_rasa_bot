@@ -3,7 +3,6 @@ version: "3.1"
 stories:
 
 # ==================== ORDER FLOW (CART-BASED) ====================
-# Customer orders 1 item → add to cart → confirm → bank transfer
 
 - story: Order Coca - add to cart - confirm - bank transfer
   steps:
@@ -247,6 +246,120 @@ stories:
     - intent: confirm
     - action: action_confirm_order
 
+# ==================== NEW KEY DRINKS IN STORIES ====================
+
+- story: Order zero degree green tea
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "zero degree"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "cash"
+    - action: action_process_payment
+
+- story: Order oolong tea
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "oolong tea"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "card"
+    - action: action_process_payment
+
+- story: Order dr thanh
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "dr thanh"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "bank transfer"
+    - action: action_process_payment
+
+- story: Order soy milk (vita milk)
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "vita milk"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "cash"
+    - action: action_process_payment
+
+- story: Order brown rice tea
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "roasted brown rice tea"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "cash"
+    - action: action_process_payment
+
+- story: Order wake up 247
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "wake up 247"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "card"
+    - action: action_process_payment
+
+- story: Order vinamilk chocolate
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "vinamilk"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "cash"
+    - action: action_process_payment
+
 # ==================== RECOMMENDATION AND PROMOTION FLOWS ====================
 
 - story: Get recommendation then order
@@ -345,3 +458,32 @@ stories:
     - action: action_process_payment
     - intent: goodbye
     - action: utter_goodbye
+
+# ==================== VIEW CART FLOW ====================
+
+- story: Add items - view cart - confirm
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "coca"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: show_cart
+    - action: action_show_cart
+    - intent: order_drink
+      entities:
+        - drink: "redbull"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: show_cart
+    - action: action_show_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "momo"
+    - action: action_process_payment

@@ -92,6 +92,12 @@ nlu:
     - [warrior](drink) thanks
     - [birdy](drink) please
     - [wake up](drink) one bottle
+    - [brown rice tea](drink) please
+    - [rice tea](drink) one bottle
+    - [wakeup247](drink) please
+    - [soy milk vita](drink) one
+    - [vinamilk](drink) please
+    - [khong do](drink) one bottle
 
 # ==================== ASK PRICE ====================
 - intent: ask_price
@@ -105,7 +111,7 @@ nlu:
     - price check for [revive](drink)
     - how much does [c2](drink) cost
     - how much for [sprite](drink)
-    - price of [green tea](drink)
+    - price of [zero degree green tea](drink)
     - [mineral water](drink) how much
     - what's the price of [lavie](drink)
     - tell me the price of [fanta](drink)
@@ -113,6 +119,7 @@ nlu:
     - [nestea](drink) how much
     - [oolong tea](drink) price
     - [roasted brown rice tea](drink) price
+    - [brown rice tea](drink) price
     - [energy drink](drink) how much
     - [warrior](drink) price
     - price of [redbull](drink)
@@ -123,9 +130,11 @@ nlu:
     - is [monster](drink) expensive
     - [cocoxim](drink) price
     - price of [yakult](drink)
-    - [vinamilk](drink) how much per bottle
+    - [vinamilk chocolate](drink) how much per bottle
     - [vita milk](drink) price
+    - [soy milk](drink) price
     - [aloe vera](drink) how much
+    - [wake up 247](drink) price
     - [wake up](drink) price
     - price of [th true milk](drink)
     - [dutch lady](drink) how much
@@ -143,6 +152,7 @@ nlu:
     - [number 1](drink) price
     - how much is [zero degree](drink)
     - [dr thanh](drink) price
+    - [khong do](drink) how much
 
 # ==================== ASK AVAILABLE DRINKS ====================
 - intent: ask_available_drinks
@@ -199,16 +209,18 @@ nlu:
     - what flavors does [fanta](drink) have
     - what flavors does [mirinda](drink) have
     - what flavor is [nestea](drink)
-    - info about [green tea](drink)
+    - info about [zero degree green tea](drink)
     - is [roasted brown rice tea](drink) good
+    - is [brown rice tea](drink) good
     - what's in [warrior](drink)
     - what is [birdy](drink)
     - how many flavors does [monster](drink) have
     - benefits of [dr thanh](drink)
     - what type of drink is [yakult](drink)
-    - what flavor is [vinamilk](drink)
+    - what flavor is [vinamilk chocolate](drink)
     - info about [aloe vera](drink)
     - what brand is [vita milk](drink)
+    - what brand is [soy milk](drink)
     - describe [wake up 247](drink)
     - what's in [th true milk](drink)
     - info on [dutch lady](drink)
@@ -231,10 +243,11 @@ nlu:
     - is [aquafina](drink) available
     - is [monster](drink) in stock
     - is [c2](drink) still for sale
-    - is [green tea](drink) available
+    - is [zero degree](drink) available
     - is [oolong tea](drink) in stock
     - is [yakult](drink) sold out
     - is [vita milk](drink) available
+    - is [soy milk](drink) available
     - is [cocoxim](drink) available
     - is [revive](drink) in stock
     - is [number 1](drink) available
@@ -244,6 +257,7 @@ nlu:
     - is [lipton](drink) in stock
     - is [vita milk](drink) a new product
     - is [aloe vera](drink) new
+    - is [brown rice tea](drink) new
     - is [roasted brown rice tea](drink) new
     - is [cocoxim](drink) a new product
     - is [monster](drink) new
@@ -298,6 +312,9 @@ nlu:
     - size and price of [dutch lady](drink)
     - brand and flavor of [dr thanh](drink)
     - is [aloe vera](drink) new and how much does it cost
+    - is [brown rice tea](drink) new and how much
+    - [wakeup247](drink) info
+    - [khong do](drink) info
 
 # ==================== CONFIRM ====================
 - intent: confirm
@@ -552,19 +569,22 @@ nlu:
     - what does [redbull](drink) contain
     - ingredients of [sprite](drink)
     - does [aquafina](drink) have additives
-    - what's in [green tea](drink)
+    - what's in [zero degree green tea](drink)
+    - what's in [zero degree](drink)
     - ingredients of [lavie](drink)
     - what's in [birdy](drink)
     - what is [aloe vera](drink) made of
     - what's in [vita milk](drink)
+    - what's in [soy milk](drink)
     - ingredients of [cocoxim](drink)
     - what herbs are in [dr thanh](drink)
     - ingredients of [warrior](drink)
     - what's in [number 1](drink)
     - what is [roasted brown rice tea](drink) made of
+    - what is [brown rice tea](drink) made of
     - does [c2](drink) have sugar
     - does [oolong tea](drink) have sugar
-    - does [vinamilk](drink) have sugar
+    - does [vinamilk chocolate](drink) have sugar
     - does [yakult](drink) have probiotics
     - does [fanta](drink) have gas
     - is [sprite](drink) carbonated
@@ -586,7 +606,7 @@ nlu:
     - does [revive](drink) have salt
     - ingredients of [coca](drink)
     - what is [c2](drink) made of
-    - does [oolong tea](drink) have sugar
+    - does [oolong](drink) have sugar
     - does [number1](drink) have caffeine
     - does [number 1](drink) have sugar
     - does [zero degree](drink) have sugar
@@ -596,6 +616,8 @@ nlu:
     - does [yakult](drink) have probiotics
     - what's in [vita milk](drink)
     - does [dr thanh](drink) have caffeine
+    - does [wake up 247](drink) have caffeine
+    - does [wakeup247](drink) have caffeine
 
 # ==================== SPECIFY ICE ====================
 - intent: specify_ice
