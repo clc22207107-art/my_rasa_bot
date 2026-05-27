@@ -2,7 +2,7 @@
 speech_input.py — Automatic Drink Vending Machine
 ==================================================
 STT: faster-whisper model "medium" (offline, local)
-TTS: Piper TTS (offline, local)
+TTS: Piper TTS v1.4.2 (offline, local)
 
 Pipeline:
     Mic → faster-whisper → text → Rasa REST API → response → Piper TTS → Loa
@@ -19,10 +19,7 @@ import requests
 import time
 import sys
 import os
-import wave
-import tempfile
 import warnings
-import subprocess
 import re
 warnings.filterwarnings("ignore")
 
@@ -41,21 +38,21 @@ SENDER_ID = "voice_user"
 # Pi 5   : đổi thành "small" hoặc "base" cho nhẹ hơn
 WHISPER_MODEL_SIZE = "medium"
 WHISPER_DEVICE     = "cpu"
-WHISPER_COMPUTE    = "int8"   # int8 nhanh hơn float32 trên CPU
+WHISPER_COMPUTE    = "int8"
 
 # ── TTS: Piper ───────────────────────────────────────────────
 PIPER_MODEL_PATH  = os.path.expanduser("~/piper_models/en_US-lessac-medium.onnx")
 PIPER_CONFIG_PATH = os.path.expanduser("~/piper_models/en_US-lessac-medium.onnx.json")
 
 # ── Ghi âm ───────────────────────────────────────────────────
-SAMPLE_RATE       = 16000  # Hz — faster-whisper yêu cầu 16kHz
-SILENCE_THRESHOLD = 0.012  # Ngưỡng im lặng, tăng nếu môi trường ồn
-SILENCE_DURATION  = 1.5    # Giây im lặng → tự dừng ghi
-MAX_RECORD_SEC    = 10     # Giới hạn ghi tối đa
+SAMPLE_RATE       = 16000
+SILENCE_THRESHOLD = 0.012
+SILENCE_DURATION  = 1.5
+MAX_RECORD_SEC    = 10
 
 # ── Chế độ xác nhận ─────────────────────────────────────────
-# True  = hỏi xác nhận trước khi gửi (an toàn hơn, dùng khi test)
-# False = tự động gửi luôn sau khi nhận dạng (dùng khi deploy)
+# True  = hỏi xác nhận trước khi gửi (dùng khi test)
+# False = tự động gửi luôn (dùng khi deploy)
 CONFIRM_BEFORE_SEND = False
 
 # ============================================================
@@ -80,8 +77,8 @@ print(f"  [2/2] Đang tải TTS (Piper lessac-medium)...",
       end=" ", flush=True)
 t0 = time.time()
 if not os.path.exists(PIPER_MODEL_PATH):
-    print(f"\n  ❌ Không tìm thấy Piper model: {PIPER_MODEL_PATH}")
-    print("  Chạy lệnh sau để download:")
+    print(f"\n  Không tìm thấy Piper model: {PIPER_MODEL_PATH}")
+    print("  Download bằng lệnh:")
     print("    mkdir -p ~/piper_models && cd ~/piper_models")
     print("    wget https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx")
     print("    wget https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx.json")
@@ -89,18 +86,18 @@ if not os.path.exists(PIPER_MODEL_PATH):
 tts_voice = PiperVoice.load(PIPER_MODEL_PATH, config_path=PIPER_CONFIG_PATH)
 print(f"OK ({time.time()-t0:.1f}s)")
 
-print("\n  ✅ Tất cả model đã sẵn sàng!")
+print("\n  Tất cả model da san sang!")
 print(f"  Rasa : {RASA_URL}")
-print(f"  Mode : {'Xác nhận trước khi gửi' if CONFIRM_BEFORE_SEND else 'Tự động gửi'}\n")
+print(f"  Mode : {'Xac nhan truoc khi gui' if CONFIRM_BEFORE_SEND else 'Tu dong gui'}\n")
 
 # ============================================================
-# GHI ÂM
+# GHI AM
 # ============================================================
 
 def record_audio():
     """
-    Ghi âm từ mic đến khi phát hiện im lặng sau tiếng nói.
-    Returns numpy float32 array 1D hoặc None.
+    Ghi am tu mic den khi phat hien im lang sau tieng noi.
+    Returns numpy float32 array 1D hoac None.
     """
     chunk_dur   = 0.08
     chunk_size  = int(SAMPLE_RATE * chunk_dur)
@@ -131,8 +128,8 @@ def record_audio():
                     break
 
             bars  = min(int(vol * 800), 25)
-            label = "🎙️  Đang nghe..." if speech_found else "⏳ Chờ tiếng nói..."
-            print(f"\r  [{'█' * bars:<25}] {label}   ", end="", flush=True)
+            label = "Dang nghe..." if speech_found else "Cho tieng noi..."
+            print(f"\r  [{'|' * bars:<25}] {label}   ", end="", flush=True)
 
     print("\r" + " " * 60 + "\r", end="")
 
@@ -147,25 +144,22 @@ def record_audio():
 # ============================================================
 
 def stt(audio):
-    """
-    Nhận dạng giọng nói tiếng Anh bằng faster-whisper.
-    Returns text string hoặc None.
-    """
-    print("  🔍 Đang nhận dạng...", end=" ", flush=True)
+    """Nhan dang giong noi tieng Anh bang faster-whisper."""
+    print("  Dang nhan dang...", end=" ", flush=True)
     t0 = time.time()
 
     segments, info = stt_model.transcribe(
         audio,
         language                   = "en",
         beam_size                  = 5,
-        best_of                    = 5,       # chọn kết quả tốt nhất trong 5 lần
-        temperature                = [0.0, 0.2, 0.4],  # thử nhiều temperature
+        best_of                    = 5,
+        temperature                = [0.0, 0.2, 0.4],
         vad_filter                 = True,
         vad_parameters             = {"min_silence_duration_ms": 300},
         condition_on_previous_text = False,
-        no_speech_threshold        = 0.4,     # nhạy hơn với tiếng nói nhỏ
+        no_speech_threshold        = 0.4,
         word_timestamps            = False,
-        initial_prompt             = (        # gợi ý context cho model
+        initial_prompt             = (
             "Customer ordering drinks at a vending machine. "
             "Products: Coca-Cola, Pepsi, Sprite, Red Bull, Sting, Monster, "
             "7UP, Fanta, Mirinda, Aquafina, Lavie, Revive, C2, Yakult, "
@@ -183,34 +177,29 @@ def stt(audio):
 
 
 # ============================================================
-# TEXT TO SPEECH — Piper TTS
+# TEXT TO SPEECH — Piper TTS v1.4.2
 # ============================================================
 
 def clean_text_for_tts(text: str) -> str:
-    """Làm sạch text trước khi đọc — bỏ emoji, markdown, ký tự đặc biệt."""
-    # Bỏ emoji
+    """Lam sach text truoc khi doc — bo emoji, markdown."""
+    # Bo emoji (dung \U 8-digit de tranh parse nham range ASCII)
     text = re.sub(
-        r'[\U00010000-\U0010ffff\u2600-\u26FF\u2700-\u27BF'
-        r'\u1F300-\u1F9FF\u2300-\u23FF\u2B50⭐⚡🥤🐂👾🍵🍋🍊💧⚗️🌿🍑🥥🍶🫘🍫🥛☕🌵🌾]',
+        r'[\U00010000-\U0010FFFF\u2600-\u26FF\u2700-\u27BF'
+        r'\U0001F300-\U0001F9FF\u2300-\u23FF\u2B50]',
         '', text, flags=re.UNICODE
     )
-    # Bỏ markdown
+    # Bo markdown bold/italic
     text = re.sub(r'\*+', '', text)
     text = re.sub(r'_+', '', text)
-    # Bỏ dấu phân cách
+    # Bo duong ke ngang
     text = re.sub(r'[─═]+', '.', text)
-    # Bỏ số thứ tự kiểu 1️⃣ 2️⃣
-    text = re.sub(r'\d️⃣', '', text)
-    # Normalize khoảng trắng
+    # Normalize khoang trang
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
 
 def tts(text: str):
-    """
-    Đọc text thành giọng nói bằng Piper và phát ra loa.
-    Hoàn toàn offline.
-    """
+    """Doc text thanh giong noi bang Piper va phat ra loa qua sounddevice."""
     if not text or not text.strip():
         return
 
@@ -218,36 +207,18 @@ def tts(text: str):
     if not clean:
         return
 
-    # Tạo WAV tạm
-    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
-        tmp_path = tmp.name
-
     try:
-        with wave.open(tmp_path, "wb") as wav_file:
-            tts_voice.synthesize(clean, wav_file)
+        # synthesize() tra ve cac AudioChunk voi audio_float_array la float32 [-1, 1]
+        audio_parts = [chunk.audio_float_array for chunk in tts_voice.synthesize(clean)]
+        if not audio_parts:
+            return
 
-        # Phát bằng sox play
-        subprocess.run(
-            ["play", "-q", tmp_path],
-            check=True,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-    except subprocess.CalledProcessError:
-        # Fallback: aplay
-        try:
-            subprocess.run(
-                ["aplay", "-q", tmp_path],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-            )
-        except Exception:
-            print("  ⚠️  Không phát được audio")
+        audio = np.concatenate(audio_parts)
+        sd.play(audio, samplerate=tts_voice.config.sample_rate)
+        sd.wait()
+
     except Exception as e:
-        print(f"  ⚠️  TTS error: {e}")
-    finally:
-        if os.path.exists(tmp_path):
-            os.unlink(tmp_path)
+        print(f"  TTS error: {e}")
 
 
 # ============================================================
@@ -255,7 +226,7 @@ def tts(text: str):
 # ============================================================
 
 def chat(message: str) -> list:
-    """Gửi message đến Rasa REST API."""
+    """Gui message den Rasa REST API."""
     try:
         r = requests.post(
             RASA_URL,
@@ -265,19 +236,19 @@ def chat(message: str) -> list:
         r.raise_for_status()
         return r.json()
     except requests.exceptions.ConnectionError:
-        print("\n  ❌ Không kết nối được Rasa!")
-        print("  → Terminal 1: rasa run actions")
-        print("  → Terminal 2: rasa run --enable-api --cors \"*\"")
+        print("\n  Khong ket noi duoc Rasa!")
+        print("  -> Terminal 1: rasa run actions")
+        print("  -> Terminal 2: rasa run --enable-api --cors \"*\"")
         return []
     except Exception as e:
-        print(f"\n  ❌ Lỗi Rasa: {e}")
+        print(f"\n  Loi Rasa: {e}")
         return []
 
 
 def handle_responses(responses: list):
-    """In response ra màn hình và đọc to bằng TTS."""
+    """In response ra man hinh va doc to bang TTS."""
     if not responses:
-        print("  Bot: (không có phản hồi)")
+        print("  Bot: (khong co phan hoi)")
         return
 
     print()
@@ -289,37 +260,37 @@ def handle_responses(responses: list):
 
 
 # ============================================================
-# VÒNG LẶP CHÍNH
+# VONG LAP CHINH
 # ============================================================
 
 def main():
-    # Kiểm tra kết nối Rasa
-    print("  Kiểm tra kết nối Rasa...", end=" ", flush=True)
+    # Kiem tra ket noi Rasa
+    print("  Kiem tra ket noi Rasa...", end=" ", flush=True)
     responses = chat("hello")
     if responses:
-        print("✅ OK\n")
+        print("OK\n")
         handle_responses(responses)
     else:
-        print("❌ Chưa kết nối\n")
-        print("  → Chạy Rasa trước:")
+        print("Chua ket noi\n")
+        print("  -> Chay Rasa truoc:")
         print("    Terminal 1: rasa run actions")
         print("    Terminal 2: rasa run --enable-api --cors \"*\"\n")
 
-    print("─" * 55)
-    print("  Hướng dẫn:")
-    print("  • Nói vào mic → bot tự nhận dạng và trả lời")
-    print("  • Gõ thủ công nếu mic không nhận")
-    print("  • Ctrl+C hoặc nói 'goodbye' để thoát")
-    print("─" * 55 + "\n")
+    print("-" * 55)
+    print("  Huong dan:")
+    print("  - Noi vao mic -> bot tu nhan dang va tra loi")
+    print("  - Go thu cong neu mic khong nhan")
+    print("  - Ctrl+C hoac noi 'goodbye' de thoat")
+    print("-" * 55 + "\n")
 
     while True:
-        print("🎙️  Bắt đầu nói...")
+        print("Bat dau noi...")
 
-        # 1. Ghi âm
+        # 1. Ghi am
         audio = record_audio()
 
         if audio is None:
-            print("  Không nghe thấy. Gõ thủ công (Enter để thử lại):")
+            print("  Khong nghe thay. Go thu cong (Enter de thu lai):")
             manual = input("  > ").strip()
             if not manual:
                 continue
@@ -328,33 +299,33 @@ def main():
             # 2. STT
             text = stt(audio)
             if not text:
-                print("  ❌ Không nhận ra. Gõ thủ công (Enter để thử lại):")
+                print("  Khong nhan ra. Go thu cong (Enter de thu lai):")
                 manual = input("  > ").strip()
                 if not manual:
                     continue
                 text = manual
 
-        # 3. Hiển thị text nhận dạng
-        print(f"\n  Bạn: \"{text}\"")
+        # 3. Hien thi text nhan dang
+        print(f"\n  Ban: \"{text}\"")
 
-        # 4. Xác nhận (tắt bằng CONFIRM_BEFORE_SEND = False)
+        # 4. Xac nhan (tat bang CONFIRM_BEFORE_SEND = False)
         if CONFIRM_BEFORE_SEND:
-            choice = input("  [Enter]=gửi  [s]=sửa  [q]=thoát: ").strip().lower()
+            choice = input("  [Enter]=gui  [s]=sua  [q]=thoat: ").strip().lower()
             if choice == "q":
                 tts("Goodbye! Thank you for using our service!")
-                print("\n  Tạm biệt!\n")
+                print("\n  Tam biet!\n")
                 break
             elif choice == "s":
-                text = input("  Nhập lại: ").strip()
+                text = input("  Nhap lai: ").strip()
                 if not text:
                     continue
 
-        # 5. Gửi đến Rasa
-        print("  ⏳ Đang xử lý...")
+        # 5. Gui den Rasa
+        print("  Dang xu ly...")
         responses = chat(text)
         handle_responses(responses)
 
-        # 6. Thoát nếu goodbye
+        # 6. Thoat neu goodbye
         if text.lower() in ["goodbye", "bye", "exit", "quit"]:
             break
 
@@ -367,5 +338,5 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("\n\n  Dừng bởi Ctrl+C\n")
+        print("\n\n  Dung boi Ctrl+C\n")
         sys.exit(0)
