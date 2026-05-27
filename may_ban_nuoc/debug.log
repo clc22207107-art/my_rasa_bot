@@ -1,0 +1,210 @@
+/home/vyvy/Desktop/may_ban_nuoc/venv/lib/python3.10/site-packages/rasa/core/tracker_store.py:1044: MovedIn20Warning: Deprecated API features detected! These feature(s) are not compatible with SQLAlchemy 2.0. To prevent incompatible upgrades prior to updating applications, ensure requirements files are pinned to "sqlalchemy<2.0". Set environment variable SQLALCHEMY_WARN_20=1 to show all deprecation warnings.  Set environment variable SQLALCHEMY_SILENCE_UBER_WARNING=1 to silence this message. (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+  Base: DeclarativeMeta = declarative_base()
+/home/vyvy/Desktop/may_ban_nuoc/venv/lib/python3.10/site-packages/rasa/shared/utils/validation.py:134: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+  import pkg_resources
+/home/vyvy/Desktop/may_ban_nuoc/venv/lib/python3.10/site-packages/pkg_resources/__init__.py:3147: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('mpl_toolkits')`.
+Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
+  declare_namespace(pkg)
+/home/vyvy/Desktop/may_ban_nuoc/venv/lib/python3.10/site-packages/pkg_resources/__init__.py:3147: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('ruamel')`.
+Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
+  declare_namespace(pkg)
+<frozen importlib._bootstrap>:283: DeprecationWarning: the load_module() method is deprecated and slated for removal in Python 3.12; use exec_module() instead
+[93m/home/vyvy/Desktop/may_ban_nuoc/venv/lib/python3.10/site-packages/rasa/shared/core/slot_mappings.py:224: UserWarning: Slot auto-fill has been removed in 3.0 and replaced with a new explicit mechanism to set slots. Please refer to https://rasa.com/docs/rasa/domain#slots to learn more.
+  rasa.shared.utils.io.raise_warning(
+[0m2026-05-27 21:04:31 DEBUG    h5py._conv  - Creating converter from 7 to 5
+2026-05-27 21:04:31 DEBUG    h5py._conv  - Creating converter from 5 to 7
+2026-05-27 21:04:31 DEBUG    h5py._conv  - Creating converter from 7 to 5
+2026-05-27 21:04:31 DEBUG    h5py._conv  - Creating converter from 5 to 7
+2026-05-27 21:04:31 DEBUG    jax._src.path  - etils.epath was not found. Using pathlib for file I/O.
+/home/vyvy/Desktop/may_ban_nuoc/venv/lib/python3.10/site-packages/tensorflow/lite/python/util.py:52: DeprecationWarning: jax.xla_computation is deprecated. Please use the AOT APIs.
+  from jax import xla_computation as _xla_computation
+/home/vyvy/Desktop/may_ban_nuoc/venv/lib/python3.10/site-packages/packaging/requirements.py:113: PyparsingDeprecationWarning: 'parseString' deprecated - use 'parse_string'
+  req = REQUIREMENT.parseString(requirement_string)
+/home/vyvy/Desktop/may_ban_nuoc/venv/lib/python3.10/site-packages/matplotlib/fontconfig_pattern.py:66: PyparsingDeprecationWarning: 'setParseAction' deprecated - use 'set_parse_action'
+  ).setParseAction(self._family)
+/home/vyvy/Desktop/may_ban_nuoc/venv/lib/python3.10/site-packages/matplotlib/fontconfig_pattern.py:127: PyparsingDeprecationWarning: 'parseString' deprecated - use 'parse_string'
+  self._parser.parseString(pattern)
+/home/vyvy/Desktop/may_ban_nuoc/venv/lib/python3.10/site-packages/matplotlib/fontconfig_pattern.py:134: PyparsingDeprecationWarning: 'resetCache' deprecated - use 'reset_cache'
+  self._parser.resetCache()
+<frozen importlib._bootstrap>:283: DeprecationWarning: the load_module() method is deprecated and slated for removal in Python 3.12; use exec_module() instead
+2026-05-27 21:04:32 DEBUG    rasa.telemetry  - Skipping telemetry reporting: no license hash found.
+2026-05-27 21:04:32 DEBUG    rasa.cli.utils  - Parameter 'credentials' not set. Using default location 'credentials.yml' instead.
+/home/vyvy/Desktop/may_ban_nuoc/venv/lib/python3.10/site-packages/sanic_cors/extension.py:39: DeprecationWarning: distutils Version classes are deprecated. Use packaging.version instead.
+  SANIC_VERSION = LooseVersion(sanic_version)
+2026-05-27 21:04:32 INFO     root  - Connecting to channel 'cmdline' which was specified by the '--connector' argument. Any other channels will be ignored. To connect to all given channels, omit the '--connector' argument.
+2026-05-27 21:04:32 DEBUG    sanic.root  - Sanic-CORS: Configuring CORS with resources: {'/*': {'origins': [''], 'methods': 'DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT', 'allow_headers': ['.*'], 'expose_headers': 'filename', 'supports_credentials': True, 'max_age': None, 'send_wildcard': False, 'automatic_options': True, 'vary_header': True, 'resources': {'/*': {'origins': ''}}, 'intercept_exceptions': True, 'always_send': True}}
+2026-05-27 21:04:32 DEBUG    rasa.core.utils  - Available web server routes: 
+/webhooks/rest                                     GET                            rasa_core_no_api.custom_webhook_CmdlineInput.health
+/webhooks/rest/webhook                             POST                           rasa_core_no_api.custom_webhook_CmdlineInput.receive
+/                                                  GET                            rasa_core_no_api.hello
+2026-05-27 21:04:32 INFO     root  - Starting Rasa server on http://0.0.0.0:5005
+2026-05-27 21:04:32 DEBUG    rasa.core.utils  - Using the default number of Sanic workers (1).
+[93m/home/vyvy/Desktop/may_ban_nuoc/venv/lib/python3.10/site-packages/rasa/shared/core/slot_mappings.py:224: UserWarning: Slot auto-fill has been removed in 3.0 and replaced with a new explicit mechanism to set slots. Please refer to https://rasa.com/docs/rasa/domain#slots to learn more.
+  rasa.shared.utils.io.raise_warning(
+[0m2026-05-27 21:04:33 DEBUG    rasa.telemetry  - Skipping telemetry reporting: no license hash found.
+2026-05-27 21:04:33 DEBUG    rasa.core.tracker_store  - Connected to InMemoryTrackerStore.
+2026-05-27 21:04:33 DEBUG    rasa.core.lock_store  - Connected to lock store 'InMemoryLockStore'.
+2026-05-27 21:04:33 DEBUG    rasa.core.nlg.generator  - Instantiated NLG to 'TemplatedNaturalLanguageGenerator'.
+2026-05-27 21:04:33 INFO     rasa.core.processor  - Loading model models/20260527-173958-chilly-recursion.tar.gz...
+2026-05-27 21:04:33 DEBUG    rasa.engine.storage.local_model_storage  - Extracted model to '/tmp/tmpgpxbjvjp'.
+2026-05-27 21:04:33 DEBUG    rasa.engine.graph  - Node 'nlu_message_converter' loading 'NLUMessageConverter.load' and kwargs: '{}'.
+2026-05-27 21:04:33 DEBUG    rasa.engine.graph  - Node 'run_WhitespaceTokenizer0' loading 'WhitespaceTokenizer.load' and kwargs: '{}'.
+2026-05-27 21:04:33 DEBUG    rasa.engine.graph  - Node 'run_RegexFeaturizer1' loading 'RegexFeaturizer.load' and kwargs: '{}'.
+2026-05-27 21:04:33 DEBUG    rasa.engine.storage.local_model_storage  - Resource 'train_RegexFeaturizer1' was requested for reading.
+2026-05-27 21:04:33 DEBUG    rasa.engine.graph  - Node 'run_LexicalSyntacticFeaturizer2' loading 'LexicalSyntacticFeaturizer.load' and kwargs: '{}'.
+2026-05-27 21:04:33 DEBUG    rasa.engine.storage.local_model_storage  - Resource 'train_LexicalSyntacticFeaturizer2' was requested for reading.
+2026-05-27 21:04:33 DEBUG    rasa.engine.graph  - Node 'run_CountVectorsFeaturizer3' loading 'CountVectorsFeaturizer.load' and kwargs: '{}'.
+2026-05-27 21:04:33 DEBUG    rasa.engine.storage.local_model_storage  - Resource 'train_CountVectorsFeaturizer3' was requested for reading.
+2026-05-27 21:04:33 DEBUG    rasa.engine.graph  - Node 'run_CountVectorsFeaturizer4' loading 'CountVectorsFeaturizer.load' and kwargs: '{}'.
+2026-05-27 21:04:33 DEBUG    rasa.engine.storage.local_model_storage  - Resource 'train_CountVectorsFeaturizer4' was requested for reading.
+2026-05-27 21:04:33 DEBUG    rasa.engine.graph  - Node 'run_DIETClassifier5' loading 'DIETClassifier.load' and kwargs: '{}'.
+2026-05-27 21:04:33 DEBUG    rasa.engine.storage.local_model_storage  - Resource 'train_DIETClassifier5' was requested for reading.
+2026-05-27 21:04:33 DEBUG    rasa.utils.tensorflow.models  - Loading the model from /tmp/tmpawdn9klo/train_DIETClassifier5/DIETClassifier.tf_model with finetune_mode=False...
+2026-05-27 21:04:33 DEBUG    rasa.nlu.classifiers.diet_classifier  - Following metrics will be logged during training: 
+2026-05-27 21:04:33 DEBUG    rasa.nlu.classifiers.diet_classifier  -   t_loss (total loss)
+2026-05-27 21:04:33 DEBUG    rasa.nlu.classifiers.diet_classifier  -   i_acc (intent acc)
+2026-05-27 21:04:33 DEBUG    rasa.nlu.classifiers.diet_classifier  -   i_loss (intent loss)
+2026-05-27 21:04:33 DEBUG    rasa.nlu.classifiers.diet_classifier  -   e_f1 (entity f1)
+2026-05-27 21:04:33 DEBUG    rasa.nlu.classifiers.diet_classifier  -   e_loss (entity loss)
+/usr/local/lib/python3.10/random.py:370: DeprecationWarning: non-integer arguments to randrange() have been deprecated since Python 3.10 and will be removed in a subsequent version
+  return self.randrange(a, b+1)
+2026-05-27 21:04:53 DEBUG    rasa.utils.tensorflow.models  - Finished loading the model.
+2026-05-27 21:04:53 DEBUG    rasa.engine.graph  - Node 'run_EntitySynonymMapper6' loading 'EntitySynonymMapper.load' and kwargs: '{}'.
+2026-05-27 21:04:53 DEBUG    rasa.engine.storage.local_model_storage  - Resource 'train_EntitySynonymMapper6' was requested for reading.
+2026-05-27 21:04:53 DEBUG    rasa.engine.graph  - Node 'run_FallbackClassifier7' loading 'FallbackClassifier.load' and kwargs: '{}'.
+2026-05-27 21:04:53 DEBUG    rasa.engine.graph  - Node 'run_RegexMessageHandler' loading 'RegexMessageHandler.load' and kwargs: '{}'.
+2026-05-27 21:04:53 DEBUG    rasa.engine.graph  - Node 'domain_provider' loading 'DomainProvider.load' and kwargs: '{}'.
+2026-05-27 21:04:53 DEBUG    rasa.engine.storage.local_model_storage  - Resource 'domain_provider' was requested for reading.
+2026-05-27 21:04:53 DEBUG    rasa.engine.graph  - Node 'run_MemoizationPolicy0' loading 'MemoizationPolicy.load' and kwargs: '{}'.
+2026-05-27 21:04:53 DEBUG    rasa.engine.storage.local_model_storage  - Resource 'train_MemoizationPolicy0' was requested for reading.
+2026-05-27 21:04:53 DEBUG    rasa.engine.graph  - Node 'run_RulePolicy1' loading 'RulePolicy.load' and kwargs: '{}'.
+2026-05-27 21:04:53 DEBUG    rasa.engine.storage.local_model_storage  - Resource 'train_RulePolicy1' was requested for reading.
+2026-05-27 21:04:53 DEBUG    rasa.engine.graph  - Node 'run_UnexpecTEDIntentPolicy2' loading 'UnexpecTEDIntentPolicy.load' and kwargs: '{}'.
+2026-05-27 21:04:53 DEBUG    rasa.engine.storage.local_model_storage  - Resource 'train_UnexpecTEDIntentPolicy2' was requested for reading.
+2026-05-27 21:04:53 DEBUG    rasa.utils.tensorflow.models  - Loading the model from /tmp/tmpawdn9klo/train_UnexpecTEDIntentPolicy2/unexpected_intent_policy.tf_model with finetune_mode=False...
+2026-05-27 21:05:02 DEBUG    rasa.utils.tensorflow.models  - Finished loading the model.
+2026-05-27 21:05:02 WARNING  rasa.shared.utils.common  - The UnexpecTED Intent Policy is currently experimental and might change or be removed in the future 🔬 Please share your feedback on it in the forum (https://forum.rasa.com) to help us make this feature ready for production.
+2026-05-27 21:05:02 DEBUG    rasa.engine.graph  - Node 'run_TEDPolicy3' loading 'TEDPolicy.load' and kwargs: '{}'.
+2026-05-27 21:05:02 DEBUG    rasa.engine.storage.local_model_storage  - Resource 'train_TEDPolicy3' was requested for reading.
+2026-05-27 21:05:02 DEBUG    rasa.utils.tensorflow.models  - Loading the model from /tmp/tmpawdn9klo/train_TEDPolicy3/ted_policy.tf_model with finetune_mode=False...
+2026-05-27 21:05:10 DEBUG    rasa.utils.tensorflow.models  - Finished loading the model.
+2026-05-27 21:05:10 DEBUG    rasa.engine.graph  - Node 'rule_only_data_provider' loading 'RuleOnlyDataProvider.load' and kwargs: '{}'.
+2026-05-27 21:05:10 DEBUG    rasa.engine.storage.local_model_storage  - Resource 'train_RulePolicy1' was requested for reading.
+2026-05-27 21:05:10 DEBUG    rasa.engine.graph  - Node 'select_prediction' loading 'DefaultPolicyPredictionEnsemble.load' and kwargs: '{}'.
+2026-05-27 21:05:10 INFO     root  - Rasa server is up and running.
+2026-05-27 21:05:10 INFO     root  - Enabling coroutine debugging. Loop id 110000094473968.
+[92mBot loaded. Type a message and press enter (use '/stop' to exit): [0m
+Your input ->   
+
+
+
+
+
+
+                                                                                                                                                                              give me 2 coca and 1 pepsi give  Your input ->  give me 2 coca and 1 pepsigive                                                                                                                  
+2026-05-27 21:05:40 DEBUG    rasa.core.lock_store  - Issuing ticket for conversation '0fa89c53dde54335b65a37d845c201c5'.
+2026-05-27 21:05:40 DEBUG    rasa.core.lock_store  - Acquiring lock for conversation '0fa89c53dde54335b65a37d845c201c5'.
+2026-05-27 21:05:40 DEBUG    rasa.core.lock_store  - Acquired lock for conversation '0fa89c53dde54335b65a37d845c201c5'.
+2026-05-27 21:05:40 DEBUG    rasa.core.tracker_store  - Could not find tracker for conversation ID '0fa89c53dde54335b65a37d845c201c5'.
+2026-05-27 21:05:40 DEBUG    rasa.core.tracker_store  - No event broker configured. Skipping streaming events.
+2026-05-27 21:05:40 DEBUG    rasa.core.processor  - Starting a new session for conversation ID '0fa89c53dde54335b65a37d845c201c5'.
+2026-05-27 21:05:40 DEBUG    rasa.core.processor  - {"prediction_events": [], "event": "processor.actions.policy_prediction", "level": "debug"}
+2026-05-27 21:05:40 DEBUG    rasa.core.processor  - {"action_name": "action_session_start", "rasa_events": ["<rasa.shared.core.events.SessionStarted object at 0x746ca4bdf9a0>", "ActionExecuted(action: action_listen, policy: None, confidence: None)"], "event": "processor.actions.log", "level": "debug"}
+2026-05-27 21:05:40 DEBUG    rasa.core.processor  - {"slot_values": "\tdrink: None\n\tsize: None\n\tice: medium\n\tsugar: medium\n\tquantity: 1\n\tpayment_method: None\n\tcart: None\n\tprice_per_unit: None\n\ttotal_price: None\n\trequested_slot: None\n\tsession_started_metadata: None", "event": "processor.slots.log", "level": "debug"}
+2026-05-27 21:05:40 DEBUG    rasa.engine.runner.dask  - Running graph with inputs: {'__message__': [<rasa.core.channels.channel.UserMessage object at 0x746ca4cadb40>], '__tracker__': <rasa.shared.core.trackers.DialogueStateTracker object at 0x746ca4cad990>}, targets: ['run_RegexMessageHandler'] and ExecutionContext(model_id='4a053253dddd47a2a7fb61fb5f6448da', should_add_diagnostic_data=False, is_finetuning=False, node_name=None).
+2026-05-27 21:05:40 DEBUG    rasa.engine.graph  - Node 'nlu_message_converter' running 'NLUMessageConverter.convert_user_message'.
+2026-05-27 21:05:40 DEBUG    rasa.engine.graph  - Node 'run_WhitespaceTokenizer0' running 'WhitespaceTokenizer.process'.
+2026-05-27 21:05:40 DEBUG    rasa.engine.graph  - Node 'run_RegexFeaturizer1' running 'RegexFeaturizer.process'.
+2026-05-27 21:05:40 DEBUG    rasa.engine.graph  - Node 'run_LexicalSyntacticFeaturizer2' running 'LexicalSyntacticFeaturizer.process'.
+2026-05-27 21:05:40 DEBUG    rasa.engine.graph  - Node 'run_CountVectorsFeaturizer3' running 'CountVectorsFeaturizer.process'.
+2026-05-27 21:05:40 DEBUG    rasa.engine.graph  - Node 'run_CountVectorsFeaturizer4' running 'CountVectorsFeaturizer.process'.
+2026-05-27 21:05:40 DEBUG    rasa.engine.graph  - Node 'run_DIETClassifier5' running 'DIETClassifier.process'.
+2026-05-27 21:05:40 DEBUG    rasa.engine.graph  - Node 'run_EntitySynonymMapper6' running 'EntitySynonymMapper.process'.
+2026-05-27 21:05:40 DEBUG    rasa.engine.graph  - Node 'run_FallbackClassifier7' running 'FallbackClassifier.process'.
+2026-05-27 21:05:40 DEBUG    rasa.engine.graph  - Node 'domain_provider' running 'DomainProvider.provide_inference'.
+2026-05-27 21:05:40 DEBUG    rasa.engine.graph  - Node 'run_RegexMessageHandler' running 'RegexMessageHandler.process'.
+2026-05-27 21:05:40 DEBUG    rasa.core.processor  - {"parse_data_text": "give me 2 coca and 1 pepsigive", "parse_data_intent": {"name": "ask_product_info", "confidence": 0.9999737739562988}, "parse_data_entities": [{"entity": "quantity", "start": 8, "end": 9, "confidence_entity": 0.7824583053588867, "value": "2", "extractor": "DIETClassifier", "processors": ["EntitySynonymMapper"]}, {"entity": "drink", "start": 10, "end": 14, "confidence_entity": 0.9977335929870605, "value": "coca", "extractor": "DIETClassifier", "processors": ["EntitySynonymMapper"]}, {"entity": "quantity", "start": 19, "end": 20, "confidence_entity": 0.7359042763710022, "value": "1", "extractor": "DIETClassifier", "processors": ["EntitySynonymMapper"]}, {"entity": "drink", "start": 21, "end": 30, "confidence_entity": 0.9880830645561218, "value": "pepsigive", "extractor": "DIETClassifier"}], "event": "processor.message.parse", "level": "debug"}
+2026-05-27 21:05:40 DEBUG    rasa.core.processor  - {"slot_values": "\tdrink: None\n\tsize: None\n\tice: medium\n\tsugar: medium\n\tquantity: 1\n\tpayment_method: None\n\tcart: None\n\tprice_per_unit: None\n\ttotal_price: None\n\trequested_slot: None\n\tsession_started_metadata: None", "event": "processor.slots.log", "level": "debug"}
+2026-05-27 21:05:40 DEBUG    rasa.core.processor  - Logged UserUtterance - tracker now has 4 events.
+2026-05-27 21:05:40 DEBUG    rasa.core.actions.action  - Validating extracted slots: drink
+quantity
+2026-05-27 21:05:40 DEBUG    rasa.core.processor  - {"action_extract_slot": "action_extract_slots", "len_extraction_events": 2, "rasa_events": ["SlotSet(key: drink, value: pepsigive)", "SlotSet(key: quantity, value: 1)"], "event": "processor.extract.slots", "level": "debug"}
+2026-05-27 21:05:40 DEBUG    rasa.engine.runner.dask  - Running graph with inputs: {'__tracker__': <rasa.shared.core.trackers.DialogueStateTracker object at 0x746ca4cad990>}, targets: ['select_prediction'] and ExecutionContext(model_id='4a053253dddd47a2a7fb61fb5f6448da', should_add_diagnostic_data=False, is_finetuning=False, node_name=None).
+2026-05-27 21:05:40 DEBUG    rasa.engine.graph  - Node 'rule_only_data_provider' running 'RuleOnlyDataProvider.provide'.
+2026-05-27 21:05:40 DEBUG    rasa.engine.graph  - Node 'domain_provider' running 'DomainProvider.provide_inference'.
+2026-05-27 21:05:40 DEBUG    rasa.engine.graph  - Node 'run_MemoizationPolicy0' running 'MemoizationPolicy.predict_action_probabilities'.
+2026-05-27 21:05:40 DEBUG    rasa.core.policies.memoization  - {"tracker_states": [{"slots": {"ice": [1.0], "sugar": [1.0], "quantity": [1.0]}}, {"user": {"intent": "ask_product_info", "entities": ["drink", "quantity"]}, "slots": {"drink": [1.0], "ice": [1.0], "sugar": [1.0], "quantity": [1.0]}, "prev_action": {"action_name": "action_listen"}}], "event": "memoization.predict.actions", "level": "debug"}
+2026-05-27 21:05:40 DEBUG    rasa.core.policies.memoization  - There is no memorised next action
+2026-05-27 21:05:40 DEBUG    rasa.engine.graph  - Node 'run_RulePolicy1' running 'RulePolicy.predict_action_probabilities'.
+2026-05-27 21:05:40 DEBUG    rasa.core.policies.rule_policy  - {"current_states": "\n[state 0] slots: {'ice': (1.0,), 'sugar': (1.0,), 'quantity': (1.0,)}\n[state 1] user text: give me 2 coca and 1 pepsigive | previous action name: action_listen | slots: {'drink': (1.0,), 'ice': (1.0,), 'sugar': (1.0,), 'quantity': (1.0,)}", "event": "rule_policy.actions.find", "level": "debug"}
+2026-05-27 21:05:40 DEBUG    rasa.core.policies.rule_policy  - There is no applicable rule.
+2026-05-27 21:05:40 DEBUG    rasa.core.policies.rule_policy  - {"current_states": "\n[state 0] slots: {'ice': (1.0,), 'sugar': (1.0,), 'quantity': (1.0,)}\n[state 1] user intent: ask_product_info | user entities: ('drink', 'quantity') | previous action name: action_listen | slots: {'drink': (1.0,), 'ice': (1.0,), 'sugar': (1.0,), 'quantity': (1.0,)}", "event": "rule_policy.actions.find", "level": "debug"}
+2026-05-27 21:05:40 DEBUG    rasa.core.policies.rule_policy  - There is a rule for the next action 'action_get_drink_info'.
+2026-05-27 21:05:40 DEBUG    rasa.engine.graph  - Node 'run_TEDPolicy3' running 'TEDPolicy.predict_action_probabilities'.
+2026-05-27 21:05:40 DEBUG    rasa.core.policies.ted_policy  - TED predicted 'action_get_drink_info' based on user intent.
+2026-05-27 21:05:40 DEBUG    rasa.engine.graph  - Node 'run_UnexpecTEDIntentPolicy2' running 'UnexpecTEDIntentPolicy.predict_action_probabilities'.
+2026-05-27 21:05:41 DEBUG    rasa.core.policies.unexpected_intent_policy  - Querying for intent `ask_product_info`.
+2026-05-27 21:05:41 DEBUG    rasa.core.policies.unexpected_intent_policy  - Score for intent `ask_product_info` is `0.16974420845508575`, while threshold is `-0.10323119163513184`.
+2026-05-27 21:05:41 DEBUG    rasa.core.policies.unexpected_intent_policy  - Top 5 intents (in ascending order) that are likely here are: `[('order_drink', 0.2339692), ('ask_ingredients', 0.25710317), ('greet', 0.4191144), ('ask_available_drinks', 0.5789515), ('ask_price', 0.61302996)]`.
+2026-05-27 21:05:41 DEBUG    rasa.engine.graph  - Node 'select_prediction' running 'DefaultPolicyPredictionEnsemble.combine_predictions_from_kwargs'.
+2026-05-27 21:05:41 DEBUG    rasa.core.policies.ensemble  - Made prediction using user intent.
+2026-05-27 21:05:41 DEBUG    rasa.core.policies.ensemble  - Added `DefinePrevUserUtteredFeaturization(False)` event.
+2026-05-27 21:05:41 DEBUG    rasa.core.policies.ensemble  - Predicted next action using RulePolicy.
+2026-05-27 21:05:41 DEBUG    rasa.core.processor  - Predicted next action 'action_get_drink_info' with confidence 1.00.
+2026-05-27 21:05:41 DEBUG    rasa.core.actions.action  - Calling action endpoint to run action 'action_get_drink_info'.
+2026-05-27 21:05:41 DEBUG    rasa.core.processor  - {"prediction_events": ["<rasa.shared.core.events.DefinePrevUserUtteredFeaturization object at 0x746ca4b703d0>"], "event": "processor.actions.policy_prediction", "level": "debug"}
+2026-05-27 21:05:41 DEBUG    rasa.core.processor  - {"action_name": "action_get_drink_info", "rasa_events": ["SlotSet(key: drink, value: pepsi)"], "event": "processor.actions.log", "level": "debug"}
+2026-05-27 21:05:41 DEBUG    rasa.core.processor  - {"slot_values": "\tdrink: pepsi\n\tsize: None\n\tice: medium\n\tsugar: medium\n\tquantity: 1\n\tpayment_method: None\n\tcart: None\n\tprice_per_unit: None\n\ttotal_price: None\n\trequested_slot: None\n\tsession_started_metadata: None", "event": "processor.slots.log", "level": "debug"}
+2026-05-27 21:05:41 DEBUG    rasa.engine.runner.dask  - Running graph with inputs: {'__tracker__': <rasa.shared.core.trackers.DialogueStateTracker object at 0x746ca4cad990>}, targets: ['select_prediction'] and ExecutionContext(model_id='4a053253dddd47a2a7fb61fb5f6448da', should_add_diagnostic_data=False, is_finetuning=False, node_name=None).
+2026-05-27 21:05:41 DEBUG    rasa.engine.graph  - Node 'rule_only_data_provider' running 'RuleOnlyDataProvider.provide'.
+2026-05-27 21:05:41 DEBUG    rasa.engine.graph  - Node 'domain_provider' running 'DomainProvider.provide_inference'.
+2026-05-27 21:05:41 DEBUG    rasa.engine.graph  - Node 'run_MemoizationPolicy0' running 'MemoizationPolicy.predict_action_probabilities'.
+2026-05-27 21:05:41 DEBUG    rasa.core.policies.memoization  - {"tracker_states": [{"slots": {"ice": [1.0], "sugar": [1.0], "quantity": [1.0]}}, {"user": {"intent": "ask_product_info", "entities": ["drink", "quantity"]}, "slots": {"drink": [1.0], "ice": [1.0], "sugar": [1.0], "quantity": [1.0]}, "prev_action": {"action_name": "action_listen"}}, {"user": {"intent": "ask_product_info", "entities": ["drink", "quantity"]}, "slots": {"drink": [1.0], "ice": [1.0], "sugar": [1.0], "quantity": [1.0]}, "prev_action": {"action_name": "action_get_drink_info"}}], "event": "memoization.predict.actions", "level": "debug"}
+2026-05-27 21:05:41 DEBUG    rasa.core.policies.memoization  - There is no memorised next action
+2026-05-27 21:05:41 DEBUG    rasa.engine.graph  - Node 'run_RulePolicy1' running 'RulePolicy.predict_action_probabilities'.
+2026-05-27 21:05:41 DEBUG    rasa.core.policies.rule_policy  - {"current_states": "\n[state 0] slots: {'ice': (1.0,), 'sugar': (1.0,), 'quantity': (1.0,)}\n[state 1] user intent: ask_product_info | user entities: ('drink', 'quantity') | previous action name: action_listen | slots: {'drink': (1.0,), 'ice': (1.0,), 'sugar': (1.0,), 'quantity': (1.0,)}\n[state 2] user intent: ask_product_info | user entities: ('drink', 'quantity') | previous action name: action_get_drink_info | slots: {'drink': (1.0,), 'ice': (1.0,), 'sugar': (1.0,), 'quantity': (1.0,)}", "event": "rule_policy.actions.find", "level": "debug"}
+2026-05-27 21:05:41 DEBUG    rasa.core.policies.rule_policy  - There is a rule for the next action 'action_show_product_info'.
+2026-05-27 21:05:41 DEBUG    rasa.engine.graph  - Node 'run_TEDPolicy3' running 'TEDPolicy.predict_action_probabilities'.
+2026-05-27 21:05:41 DEBUG    rasa.core.policies.ted_policy  - TED predicted 'action_calculate_price' based on user intent.
+2026-05-27 21:05:41 DEBUG    rasa.engine.graph  - Node 'run_UnexpecTEDIntentPolicy2' running 'UnexpecTEDIntentPolicy.predict_action_probabilities'.
+2026-05-27 21:05:41 DEBUG    rasa.core.policies.unexpected_intent_policy  - Skipping predictions for UnexpecTEDIntentPolicy as either there is no event of type `UserUttered`, event's intent is new and not in domain or there is an event of type `ActionExecuted` after the last `UserUttered`.
+2026-05-27 21:05:41 DEBUG    rasa.engine.graph  - Node 'select_prediction' running 'DefaultPolicyPredictionEnsemble.combine_predictions_from_kwargs'.
+2026-05-27 21:05:41 DEBUG    rasa.core.policies.ensemble  - Predicted next action using RulePolicy.
+2026-05-27 21:05:41 DEBUG    rasa.core.processor  - Predicted next action 'action_show_product_info' with confidence 1.00.
+2026-05-27 21:05:41 DEBUG    rasa.core.actions.action  - Calling action endpoint to run action 'action_show_product_info'.
+2026-05-27 21:05:41 DEBUG    rasa.core.processor  - {"prediction_events": [], "event": "processor.actions.policy_prediction", "level": "debug"}
+2026-05-27 21:05:41 DEBUG    rasa.core.processor  - {"action_name": "action_show_product_info", "rasa_events": ["BotUttered('\ud83e\udd64 **Pepsi**\n\ud83c\udfed Brand: PepsiCo\n\ud83d\udce6 Sizes & Prices: 330ml: 11,000 VND, 500ml: 14,000 VND, 1.5L: 26,000 VND\n\ud83d\ude0b Flavor: Slightly lighter than Coca-Cola, carbonated, hint of vanilla\n\u2728 Features: Globally popular carbonated soft drink', {\"elements\": null, \"quick_replies\": null, \"buttons\": null, \"attachment\": null, \"image\": null, \"custom\": null}, {}, 1779890741.1707814)"], "event": "processor.actions.log", "level": "debug"}
+2026-05-27 21:05:41 DEBUG    rasa.core.processor  - {"slot_values": "\tdrink: pepsi\n\tsize: None\n\tice: medium\n\tsugar: medium\n\tquantity: 1\n\tpayment_method: None\n\tcart: None\n\tprice_per_unit: None\n\ttotal_price: None\n\trequested_slot: None\n\tsession_started_metadata: None", "event": "processor.slots.log", "level": "debug"}
+2026-05-27 21:05:41 DEBUG    rasa.engine.runner.dask  - Running graph with inputs: {'__tracker__': <rasa.shared.core.trackers.DialogueStateTracker object at 0x746ca4cad990>}, targets: ['select_prediction'] and ExecutionContext(model_id='4a053253dddd47a2a7fb61fb5f6448da', should_add_diagnostic_data=False, is_finetuning=False, node_name=None).
+2026-05-27 21:05:41 DEBUG    rasa.engine.graph  - Node 'rule_only_data_provider' running 'RuleOnlyDataProvider.provide'.
+2026-05-27 21:05:41 DEBUG    rasa.engine.graph  - Node 'domain_provider' running 'DomainProvider.provide_inference'.
+2026-05-27 21:05:41 DEBUG    rasa.engine.graph  - Node 'run_MemoizationPolicy0' running 'MemoizationPolicy.predict_action_probabilities'.
+2026-05-27 21:05:41 DEBUG    rasa.core.policies.memoization  - {"tracker_states": [{"slots": {"ice": [1.0], "sugar": [1.0], "quantity": [1.0]}}, {"user": {"intent": "ask_product_info", "entities": ["drink", "quantity"]}, "slots": {"drink": [1.0], "ice": [1.0], "sugar": [1.0], "quantity": [1.0]}, "prev_action": {"action_name": "action_listen"}}, {"user": {"intent": "ask_product_info", "entities": ["drink", "quantity"]}, "slots": {"drink": [1.0], "ice": [1.0], "sugar": [1.0], "quantity": [1.0]}, "prev_action": {"action_name": "action_get_drink_info"}}, {"user": {"intent": "ask_product_info", "entities": ["drink", "quantity"]}, "slots": {"drink": [1.0], "ice": [1.0], "sugar": [1.0], "quantity": [1.0]}, "prev_action": {"action_name": "action_show_product_info"}}], "event": "memoization.predict.actions", "level": "debug"}
+2026-05-27 21:05:41 DEBUG    rasa.core.policies.memoization  - There is no memorised next action
+2026-05-27 21:05:41 DEBUG    rasa.engine.graph  - Node 'run_RulePolicy1' running 'RulePolicy.predict_action_probabilities'.
+2026-05-27 21:05:41 DEBUG    rasa.core.policies.rule_policy  - {"current_states": "\n[state 0] slots: {'ice': (1.0,), 'sugar': (1.0,), 'quantity': (1.0,)}\n[state 1] user intent: ask_product_info | user entities: ('drink', 'quantity') | previous action name: action_listen | slots: {'drink': (1.0,), 'ice': (1.0,), 'sugar': (1.0,), 'quantity': (1.0,)}\n[state 2] user intent: ask_product_info | user entities: ('drink', 'quantity') | previous action name: action_get_drink_info | slots: {'drink': (1.0,), 'ice': (1.0,), 'sugar': (1.0,), 'quantity': (1.0,)}\n[state 3] user intent: ask_product_info | user entities: ('drink', 'quantity') | previous action name: action_show_product_info | slots: {'drink': (1.0,), 'ice': (1.0,), 'sugar': (1.0,), 'quantity': (1.0,)}", "event": "rule_policy.actions.find", "level": "debug"}
+2026-05-27 21:05:41 DEBUG    rasa.core.policies.rule_policy  - There is a rule for the next action 'action_listen'.
+2026-05-27 21:05:41 DEBUG    rasa.engine.graph  - Node 'run_TEDPolicy3' running 'TEDPolicy.predict_action_probabilities'.
+2026-05-27 21:05:41 DEBUG    rasa.core.policies.ted_policy  - TED predicted 'action_listen' based on user intent.
+2026-05-27 21:05:41 DEBUG    rasa.engine.graph  - Node 'run_UnexpecTEDIntentPolicy2' running 'UnexpecTEDIntentPolicy.predict_action_probabilities'.
+2026-05-27 21:05:41 DEBUG    rasa.core.policies.unexpected_intent_policy  - Skipping predictions for UnexpecTEDIntentPolicy as either there is no event of type `UserUttered`, event's intent is new and not in domain or there is an event of type `ActionExecuted` after the last `UserUttered`.
+2026-05-27 21:05:41 DEBUG    rasa.engine.graph  - Node 'select_prediction' running 'DefaultPolicyPredictionEnsemble.combine_predictions_from_kwargs'.
+2026-05-27 21:05:41 DEBUG    rasa.core.policies.ensemble  - Predicted next action using RulePolicy.
+2026-05-27 21:05:41 DEBUG    rasa.core.processor  - Predicted next action 'action_listen' with confidence 1.00.
+2026-05-27 21:05:41 DEBUG    rasa.core.processor  - {"prediction_events": [], "event": "processor.actions.policy_prediction", "level": "debug"}
+2026-05-27 21:05:41 DEBUG    rasa.core.processor  - {"action_name": "action_listen", "rasa_events": [], "event": "processor.actions.log", "level": "debug"}
+2026-05-27 21:05:41 DEBUG    rasa.core.tracker_store  - No event broker configured. Skipping streaming events.
+2026-05-27 21:05:41 DEBUG    rasa.core.lock_store  - Deleted lock for conversation '0fa89c53dde54335b65a37d845c201c5'.
+[94m🥤 **Pepsi**
+🏭 Brand: PepsiCo
+📦 Sizes & Prices: 330ml: 11,000 VND, 500ml: 14,000 VND, 1.5L: 26,000 VND
+😋 Flavor: Slightly lighter than Coca-Cola, carbonated, hint of vanilla
+✨ Features: Globally popular carbonated soft drink[0m
+Your input ->   
+
+
+
+
+
+
+                                                                                                                                                                              

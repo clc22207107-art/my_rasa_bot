@@ -35,8 +35,6 @@ rules:
 - rule: Order drink - add to cart
   steps:
     - intent: order_drink
-    - action: action_get_drink_info
-    - action: action_calculate_price
     - action: action_add_to_cart
 
 # When quantity is already in the order message → add to cart directly
