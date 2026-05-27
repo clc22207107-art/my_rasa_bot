@@ -450,8 +450,8 @@ def seed_products(conn: sqlite3.Connection):
                 (id, name, brand, category, default_volume,
                  ingredients, flavor, features, image,
                  is_new, has_sugar, has_caffeine,
-                 popularity, expiry_months, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 popularity, sales, expiry_months, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             product_id,
             data["name"],
@@ -466,6 +466,7 @@ def seed_products(conn: sqlite3.Connection):
             1 if data["has_sugar"] else 0,
             1 if data["has_caffeine"] else 0,
             data["popularity"],
+            data.get("sales", 0),
             data["expiry_months"],
             now,
         ))

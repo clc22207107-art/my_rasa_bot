@@ -1,6 +1,7 @@
 """
 actions.py - Automatic Drink Vending Machine (Rasa Custom Actions)
 Enhanced version with multi-product cart, improved payment flow
+Refactored: DRINKS_DB hardcode → SQLite via DatabaseManager
 """
 
 from rasa_sdk import Action, Tracker
@@ -10,402 +11,26 @@ from typing import Any, Dict, List, Text, Optional
 import re
 import unicodedata
 import json
+import os
+import sys
+import sqlite3
 
 # ============================================================
-# INLINE DATABASE (30 products)
+# DATABASE IMPORT
 # ============================================================
 
-DRINKS_DB = {
-    "coca": {
-        "name": "Coca-Cola",
-        "aliases": ["coca", "coca cola", "coke", "coca-cola", "cocacola"],
-        "brand": "Coca-Cola Company", "volumes": ["330ml", "500ml", "1.5L"],
-        "default_volume": "330ml", "price": {"330ml": 12000, "500ml": 15000, "1.5L": 28000},
-        "ingredients": "Water, sugar, CO2, caramel color, phosphoric acid, natural flavoring, caffeine",
-        "flavor": "Classic sweet taste, carbonated, light caramel aroma",
-        "features": "Classic carbonated soft drink, great refreshment",
-        "category": "Carbonated Soft Drinks", "is_new": False, "popularity": 9.5,
-        "sales": 1500, "stock": 120, "expiry_months": 9,
-        "has_sugar": True, "has_caffeine": True, "image": "🥤",
-    },
-    "pepsi": {
-        "name": "Pepsi",
-        "aliases": ["pepsi"],
-        "brand": "PepsiCo", "volumes": ["330ml", "500ml", "1.5L"],
-        "default_volume": "330ml", "price": {"330ml": 11000, "500ml": 14000, "1.5L": 26000},
-        "ingredients": "Water, sugar, CO2, phosphoric acid, caramel color, natural flavoring, caffeine",
-        "flavor": "Slightly lighter than Coca-Cola, carbonated, hint of vanilla",
-        "features": "Globally popular carbonated soft drink",
-        "category": "Carbonated Soft Drinks", "is_new": False, "popularity": 9.0,
-        "sales": 1300, "stock": 100, "expiry_months": 9,
-        "has_sugar": True, "has_caffeine": True, "image": "🥤",
-    },
-    "sting": {
-        "name": "Sting",
-        "aliases": ["sting", "sting energy", "sting energy drink"],
-        "brand": "PepsiCo", "volumes": ["330ml"], "default_volume": "330ml",
-        "price": {"330ml": 10000},
-        "ingredients": "Water, sugar, citric acid, taurine, caffeine, Vitamins B3, B6, B12, strawberry flavor",
-        "flavor": "Sweet taste with distinctive strawberry flavor",
-        "features": "Popular energy drink, affordable, quick energy boost",
-        "category": "Energy Drinks", "is_new": False, "popularity": 8.8,
-        "sales": 200, "stock": 150, "expiry_months": 12,
-        "has_sugar": True, "has_caffeine": True, "image": "⚡",
-    },
-    "redbull": {
-        "name": "Red Bull",
-        "aliases": ["redbull", "red bull", "red bull energy", "redbull energy", "bull"],
-        "brand": "Red Bull GmbH", "volumes": ["250ml"], "default_volume": "250ml",
-        "price": {"250ml": 18000},
-        "ingredients": "Water, sugar, citric acid, taurine (1000mg), caffeine (80mg), niacinamide, Vitamins B6, B12",
-        "flavor": "Clean sweet taste, slightly tart, lightly carbonated",
-        "features": "Premium imported energy drink, boosts focus and stamina",
-        "category": "Energy Drinks", "is_new": False, "popularity": 9.2,
-        "sales": 900, "stock": 80, "expiry_months": 18,
-        "has_sugar": True, "has_caffeine": True, "image": "🐂",
-    },
-    "sprite": {
-        "name": "Sprite",
-        "aliases": ["sprite"],
-        "brand": "Coca-Cola Company", "volumes": ["330ml", "500ml"],
-        "default_volume": "330ml", "price": {"330ml": 11000, "500ml": 14000},
-        "ingredients": "Water, sugar, CO2, citric acid, natural lemon flavor",
-        "flavor": "Sweet-sour taste, fresh lemon aroma, carbonated",
-        "features": "Colorless carbonated soft drink, refreshing in summer",
-        "category": "Carbonated Soft Drinks", "is_new": False, "popularity": 8.5,
-        "sales": 1000, "stock": 90, "expiry_months": 9,
-        "has_sugar": True, "has_caffeine": False, "image": "🍋",
-    },
-    "7up": {
-        "name": "7UP",
-        "aliases": ["7up", "7 up", "seven up"],
-        "brand": "PepsiCo", "volumes": ["330ml", "500ml"],
-        "default_volume": "330ml", "price": {"330ml": 10000, "500ml": 13000},
-        "ingredients": "Water, sugar, CO2, citric acid, lemon & lime flavor",
-        "flavor": "Mildly sweet-sour, lemon-lime aroma, carbonated",
-        "features": "Clear carbonated soft drink, refreshing",
-        "category": "Carbonated Soft Drinks", "is_new": False, "popularity": 8.0,
-        "sales": 800, "stock": 70, "expiry_months": 9,
-        "has_sugar": True, "has_caffeine": False, "image": "🍋",
-    },
-    "fanta": {
-        "name": "Fanta",
-        "aliases": ["fanta", "fanta orange", "fanta grape"],
-        "brand": "Coca-Cola Company", "volumes": ["330ml", "500ml"],
-        "default_volume": "330ml", "price": {"330ml": 11000, "500ml": 14000},
-        "ingredients": "Water, sugar, CO2, citric acid, natural orange/grape flavor, food coloring",
-        "flavor": "Rich sweet taste, fruity flavor (orange or grape), carbonated",
-        "features": "Fruit-flavored carbonated soft drink, variety of flavors",
-        "category": "Carbonated Soft Drinks", "is_new": False, "popularity": 8.2,
-        "sales": 850, "stock": 85, "expiry_months": 9,
-        "has_sugar": True, "has_caffeine": False, "image": "🍊",
-    },
-    "mirinda": {
-        "name": "Mirinda",
-        "aliases": ["mirinda", "mirinda orange"],
-        "brand": "PepsiCo", "volumes": ["330ml"], "default_volume": "330ml",
-        "price": {"330ml": 10000},
-        "ingredients": "Water, sugar, CO2, citric acid, orange flavor, food coloring",
-        "flavor": "Rich sweet taste, bold orange flavor, carbonated",
-        "features": "Orange-flavored carbonated soft drink",
-        "category": "Carbonated Soft Drinks", "is_new": False, "popularity": 7.5,
-        "sales": 600, "stock": 60, "expiry_months": 9,
-        "has_sugar": True, "has_caffeine": False, "image": "🍊",
-    },
-    "aquafina": {
-        "name": "Aquafina",
-        "aliases": ["aquafina", "aquafina water"],
-        "brand": "PepsiCo", "volumes": ["500ml", "1.5L"], "default_volume": "500ml",
-        "price": {"500ml": 7000, "1.5L": 12000},
-        "ingredients": "Purified water (7-step RO filtration)",
-        "flavor": "Pure, odorless, tasteless",
-        "features": "Purified bottled water, 7-step RO filtered",
-        "category": "Purified Water", "is_new": False, "popularity": 8.8,
-        "sales": 1100, "stock": 200, "expiry_months": 24,
-        "has_sugar": False, "has_caffeine": False, "image": "💧",
-    },
-    "lavie": {
-        "name": "La Vie",
-        "aliases": ["lavie", "la vie", "la vie water"],
-        "brand": "Nestlé", "volumes": ["500ml", "1.5L"], "default_volume": "500ml",
-        "price": {"500ml": 8000, "1.5L": 13000},
-        "ingredients": "Natural mineral water, natural minerals (Ca, Mg, Na...)",
-        "flavor": "Clean light taste, contains natural minerals",
-        "features": "Natural mineral water, replenishes body minerals",
-        "category": "Mineral Water", "is_new": False, "popularity": 8.5,
-        "sales": 950, "stock": 180, "expiry_months": 24,
-        "has_sugar": False, "has_caffeine": False, "image": "💧",
-    },
-    "revive": {
-        "name": "Revive",
-        "aliases": ["revive", "revive electrolyte"],
-        "brand": "Coca-Cola Company", "volumes": ["500ml"], "default_volume": "500ml",
-        "price": {"500ml": 10000},
-        "ingredients": "Water, sugar, salt, potassium citrate, sodium citrate, zinc gluconate, Vitamin C, lemon-salt flavor",
-        "flavor": "Mildly salty-sweet, distinctive lemon-salt flavor",
-        "features": "Electrolyte drink for rehydration, ideal post-exercise or when dehydrated",
-        "category": "Electrolyte Drinks", "is_new": False, "popularity": 8.3,
-        "sales": 700, "stock": 90, "expiry_months": 12,
-        "has_sugar": True, "has_caffeine": False, "image": "⚗️",
-    },
-    "c2": {
-        "name": "C2",
-        "aliases": ["c2", "c2 green tea", "c2 lemon"],
-        "brand": "URC Vietnam", "volumes": ["360ml", "455ml"], "default_volume": "360ml",
-        "price": {"360ml": 9000, "455ml": 11000},
-        "ingredients": "Water, sugar, green tea extract, citric acid, lemon flavor, Vitamin C",
-        "flavor": "Mildly sweet, green tea and fresh lemon flavor",
-        "features": "Popular bottled green tea, rich in antioxidants",
-        "category": "Bottled Tea", "is_new": False, "popularity": 8.7,
-        "sales": 1050, "stock": 110, "expiry_months": 12,
-        "has_sugar": True, "has_caffeine": True, "image": "🍵",
-    },
-    "zero_degree_green_tea": {
-        "name": "Zero Degree Green Tea",
-        "aliases": ["zero degree", "zero degree green tea", "tra xanh khong do", "khong do"],
-        "brand": "Tan Hiep Phat", "volumes": ["350ml", "500ml"], "default_volume": "350ml",
-        "price": {"350ml": 9000, "500ml": 12000},
-        "ingredients": "Water, green tea extract, sugar, citric acid, jasmine flavor",
-        "flavor": "Light tea taste, subtle jasmine floral notes, less sweet",
-        "features": "Vietnamese green tea, low calorie, naturally refreshing",
-        "category": "Bottled Tea", "is_new": False, "popularity": 8.6,
-        "sales": 980, "stock": 100, "expiry_months": 12,
-        "has_sugar": True, "has_caffeine": True, "image": "🍵",
-    },
-    "oolong_tea": {
-        "name": "Olong Tea+",
-        "aliases": ["olong tea", "oolong tea", "olong", "oolong", "olong tea plus"],
-        "brand": "Tan Hiep Phat", "volumes": ["350ml"], "default_volume": "350ml",
-        "price": {"350ml": 9000},
-        "ingredients": "Water, oolong tea extract, low sugar, natural tea flavor",
-        "flavor": "Rich tea taste, distinctive oolong aroma, less sweet",
-        "features": "Low-sugar oolong tea, aids digestion and weight management",
-        "category": "Bottled Tea", "is_new": False, "popularity": 7.8,
-        "sales": 650, "stock": 75, "expiry_months": 12,
-        "has_sugar": True, "has_caffeine": True, "image": "🍵",
-    },
-    "dr_thanh_herbal": {
-        "name": "Dr Thanh",
-        "aliases": ["dr thanh", "dr. thanh", "herbal drink dr thanh", "drthanh"],
-        "brand": "Tan Hiep Phat", "volumes": ["350ml"], "default_volume": "350ml",
-        "price": {"350ml": 10000},
-        "ingredients": "Water, extract of 9 herbs (monk fruit, honeysuckle, chrysanthemum...), sugar, citric acid",
-        "flavor": "Clean sweet taste, light herbal aroma, slightly bitter",
-        "features": "Herbal drink for cooling, detoxifying, health benefits",
-        "category": "Herbal Drinks", "is_new": False, "popularity": 8.0,
-        "sales": 720, "stock": 80, "expiry_months": 12,
-        "has_sugar": True, "has_caffeine": False, "image": "🌿",
-    },
-    "monster": {
-        "name": "Monster Energy",
-        "aliases": ["monster", "monster energy"],
-        "brand": "Monster Beverage Corporation", "volumes": ["355ml", "500ml"], "default_volume": "355ml",
-        "price": {"355ml": 25000, "500ml": 35000},
-        "ingredients": "Water, sugar, CO2, taurine, ginseng extract, L-carnitine, caffeine (160mg/500ml), Vitamin B",
-        "flavor": "Strong sweet taste, carbonated, mixed fruit flavor",
-        "features": "Premium imported energy drink, high caffeine, popular with gym-goers and gamers",
-        "category": "Energy Drinks", "is_new": False, "popularity": 8.9,
-        "sales": 560, "stock": 60, "expiry_months": 24,
-        "has_sugar": True, "has_caffeine": True, "image": "👾",
-    },
-    "number1": {
-        "name": "Number 1",
-        "aliases": ["number 1", "number1", "no 1", "num 1"],
-        "brand": "Tan Hiep Phat", "volumes": ["330ml"], "default_volume": "330ml",
-        "price": {"330ml": 10000},
-        "ingredients": "Water, sugar, taurine, inositol, caffeine, Vitamins B3, B6, B12",
-        "flavor": "Sweet taste, light ginseng flavor",
-        "features": "Vietnamese energy drink, good value, suitable for everyone",
-        "category": "Energy Drinks", "is_new": False, "popularity": 7.5,
-        "sales": 700, "stock": 100, "expiry_months": 12,
-        "has_sugar": True, "has_caffeine": True, "image": "⚡",
-    },
-    "warrior": {
-        "name": "Warrior",
-        "aliases": ["warrior"],
-        "brand": "Tan Hiep Phat", "volumes": ["330ml"], "default_volume": "330ml",
-        "price": {"330ml": 9000},
-        "ingredients": "Water, sugar, taurine (800mg), caffeine, Vitamins B6, B12, niacin, citric acid",
-        "flavor": "Sweet taste, lightly carbonated, fruit flavor",
-        "features": "Budget energy drink, popular among students",
-        "category": "Energy Drinks", "is_new": False, "popularity": 7.0,
-        "sales": 580, "stock": 90, "expiry_months": 12,
-        "has_sugar": True, "has_caffeine": True, "image": "⚡",
-    },
-    "yakult": {
-        "name": "Yakult",
-        "aliases": ["yakult"],
-        "brand": "Yakult Honsha", "volumes": ["65ml"], "default_volume": "65ml",
-        "price": {"65ml": 8000},
-        "ingredients": "Water, skim milk, sugar, Lactobacillus casei Shirota probiotic bacteria (6.5 billion/bottle)",
-        "flavor": "Distinctive sweet-sour taste, milky aroma",
-        "features": "Probiotic drinking yogurt, good for digestion and immune system",
-        "category": "Drinkable Yogurt", "is_new": False, "popularity": 8.4,
-        "sales": 800, "stock": 120, "expiry_months": 1,
-        "has_sugar": True, "has_caffeine": False, "image": "🍶",
-    },
-    "vinamilk_chocolate": {
-        "name": "Vinamilk Chocolate",
-        "aliases": ["vinamilk", "vinamilk chocolate", "vinamilk milk"],
-        "brand": "Vinamilk", "volumes": ["180ml", "250ml"], "default_volume": "180ml",
-        "price": {"180ml": 8000, "250ml": 12000},
-        "ingredients": "Fresh milk, sugar, cocoa powder, vanilla flavor",
-        "flavor": "Sweet, creamy, rich chocolate aroma",
-        "features": "Chocolate-flavored UHT milk, rich in calcium and protein",
-        "category": "Milk", "is_new": False, "popularity": 8.0,
-        "sales": 650, "stock": 85, "expiry_months": 6,
-        "has_sugar": True, "has_caffeine": False, "image": "🍫",
-    },
-    "th_true_milk": {
-        "name": "TH True Milk",
-        "aliases": ["th true milk", "th milk", "th truemilk"],
-        "brand": "TH Group", "volumes": ["180ml", "500ml", "1L"], "default_volume": "180ml",
-        "price": {"180ml": 9000, "500ml": 18000, "1L": 32000},
-        "ingredients": "100% pure fresh milk, Vitamins A, D, B2, calcium",
-        "flavor": "Clean sweet taste, lightly creamy, natural milk aroma",
-        "features": "100% pure fresh milk, no preservatives, from clean farms",
-        "category": "Milk", "is_new": False, "popularity": 8.7,
-        "sales": 750, "stock": 80, "expiry_months": 1,
-        "has_sugar": True, "has_caffeine": False, "image": "🥛",
-    },
-    "dutch_lady": {
-        "name": "Dutch Lady",
-        "aliases": ["dutch lady", "dutchlady", "dutch lady milk"],
-        "brand": "FrieslandCampina", "volumes": ["180ml", "1L"], "default_volume": "180ml",
-        "price": {"180ml": 8500, "1L": 30000},
-        "ingredients": "Fresh milk, sugar, Vitamins (A, D, B1, B2, B6, C), calcium, iron",
-        "flavor": "Moderately sweet, aromatic, lightly creamy",
-        "features": "UHT milk rich in nutrients, vitamins and minerals",
-        "category": "Milk", "is_new": False, "popularity": 8.1,
-        "sales": 600, "stock": 70, "expiry_months": 6,
-        "has_sugar": True, "has_caffeine": False, "image": "🥛",
-    },
-    "nescafe": {
-        "name": "Nescafé RTD",
-        "aliases": ["nescafe", "nescafé", "nescafe coffee"],
-        "brand": "Nestlé", "volumes": ["180ml"], "default_volume": "180ml",
-        "price": {"180ml": 15000},
-        "ingredients": "Water, sugar, instant coffee (2%), milk, natural coffee flavor",
-        "flavor": "Lightly bitter, coffee aroma, moderately sweet",
-        "features": "Ready-to-drink coffee, convenient, quick alertness boost",
-        "slogan": "Open up",
-        "category": "Canned Coffee", "is_new": False, "popularity": 7.8,
-        "sales": 480, "stock": 60, "expiry_months": 12,
-        "has_sugar": True, "has_caffeine": True, "image": "☕",
-    },
-    "birdy": {
-        "name": "Café Birdy",
-        "aliases": ["birdy", "birdy coffee", "cafe birdy"],
-        "brand": "Ajinomoto", "volumes": ["170ml"], "default_volume": "170ml",
-        "price": {"170ml": 12000},
-        "ingredients": "Water, sugar, Robusta coffee, condensed milk, coffee flavor",
-        "flavor": "Rich bitter taste, milky sweetness, strong Robusta coffee aroma",
-        "features": "Famous Thai canned coffee, distinctive rich flavor",
-        "category": "Canned Coffee", "is_new": False, "popularity": 7.5,
-        "sales": 400, "stock": 50, "expiry_months": 12,
-        "has_sugar": True, "has_caffeine": True, "image": "☕",
-    },
-    "lipton": {
-        "name": "Lipton Peach Tea",
-        "aliases": ["lipton", "lipton peach tea", "lipton tea"],
-        "brand": "Unilever", "volumes": ["330ml", "455ml"], "default_volume": "330ml",
-        "price": {"330ml": 10000, "455ml": 13000},
-        "ingredients": "Water, sugar, tea extract, citric acid, natural peach flavor, Vitamin C",
-        "flavor": "Mildly sweet, fresh peach aroma",
-        "features": "Bottled peach tea, refreshing, fewer calories than soda",
-        "category": "Bottled Tea", "is_new": False, "popularity": 7.9,
-        "sales": 680, "stock": 80, "expiry_months": 12,
-        "has_sugar": True, "has_caffeine": True, "image": "🍑",
-    },
-    "nestea": {
-        "name": "Nestea Peach Tea",
-        "aliases": ["nestea", "nestea peach tea", "nestea tea"],
-        "brand": "Nestlé", "volumes": ["330ml"], "default_volume": "330ml",
-        "price": {"330ml": 10000},
-        "ingredients": "Water, sugar, tea extract, peach flavor, citric acid, Vitamin C",
-        "flavor": "Sweet-sour, stronger peach flavor than Lipton",
-        "features": "Canned peach tea, great refreshment",
-        "category": "Bottled Tea", "is_new": False, "popularity": 7.6,
-        "sales": 550, "stock": 65, "expiry_months": 12,
-        "has_sugar": True, "has_caffeine": True, "image": "🍑",
-    },
-    "cocoxim": {
-        "name": "Cocoxim Coconut Water",
-        "aliases": ["cocoxim", "cocoxim coconut", "coconut water", "coconut"],
-        "brand": "Cocoxim", "volumes": ["330ml", "1L"], "default_volume": "330ml",
-        "price": {"330ml": 15000, "1L": 38000},
-        "ingredients": "100% pure fresh coconut water, no added sugar, no preservatives",
-        "flavor": "Naturally mildly sweet, refreshing coconut flavor",
-        "features": "Pure coconut water, rich in natural electrolytes, no added sugar",
-        "category": "Coconut Water / Fruit Juice", "is_new": False, "popularity": 8.3,
-        "sales": 620, "stock": 70, "expiry_months": 12,
-        "has_sugar": False, "has_caffeine": False, "image": "🥥",
-    },
-    "twister": {
-        "name": "Twister Orange Juice",
-        "aliases": ["twister", "twister orange", "twister orange juice"],
-        "brand": "Coca-Cola Company", "volumes": ["455ml"], "default_volume": "455ml",
-        "price": {"455ml": 12000},
-        "ingredients": "Orange juice (15%), water, sugar, citric acid, Vitamin C, natural orange flavor",
-        "flavor": "Sweet-sour, fresh orange taste",
-        "features": "Popular orange juice, rich in Vitamin C",
-        "category": "Fruit Juice", "is_new": False, "popularity": 7.7,
-        "sales": 500, "stock": 60, "expiry_months": 9,
-        "has_sugar": True, "has_caffeine": False, "image": "🍊",
-    },
-    "aloe_vera": {
-        "name": "Aloe Vera Drink",
-        "aliases": ["aloe vera", "aloe", "aloe vera drink"],
-        "brand": "Woongjin", "volumes": ["500ml"], "default_volume": "500ml",
-        "price": {"500ml": 18000},
-        "ingredients": "Water, sugar, aloe vera pulp (8%), citric acid, Vitamin C, aloe vera flavor",
-        "flavor": "Mildly sweet, refreshing, with crunchy aloe vera pieces",
-        "features": "Korean aloe vera drink, good for skin and digestion",
-        "category": "Fruit / Herbal Drinks", "is_new": True, "popularity": 8.1,
-        "sales": 430, "stock": 55, "expiry_months": 12,
-        "has_sugar": True, "has_caffeine": False, "image": "🌵",
-    },
-    "wakeup247": {
-        "name": "Wake Up 247",
-        "aliases": ["wake up", "wake up 247", "wakeup247"],
-        "brand": "Tan Hiep Phat", "volumes": ["240ml"], "default_volume": "240ml",
-        "price": {"240ml": 13000},
-        "ingredients": "Water, roasted ground coffee (Robusta & Arabica), sugar, milk, coffee flavor",
-        "flavor": "Rich bitter taste, roasted coffee aroma, moderately sweet",
-        "features": "Vietnamese canned coffee, rich flavor, great value",
-        "category": "Canned Coffee", "is_new": False, "popularity": 7.6,
-        "sales": 450, "stock": 55, "expiry_months": 12,
-        "has_sugar": True, "has_caffeine": True, "image": "☕",
-    },
-    "brown_rice_tea": {
-        "name": "Roasted Brown Rice Tea",
-        "aliases": ["brown rice tea", "roasted rice tea", "roasted brown rice tea", "tra gao lut"],
-        "brand": "Fami", "volumes": ["350ml"], "default_volume": "350ml",
-        "price": {"350ml": 10000},
-        "ingredients": "Water, roasted brown rice, palm sugar, refined salt, natural rice flavor",
-        "flavor": "Nutty toasted rice aroma, mildly sweet, rustic flavor",
-        "features": "Vietnamese roasted brown rice tea, suitable for dieters and diabetics",
-        "category": "Herbal Tea", "is_new": True, "popularity": 7.2,
-        "sales": 280, "stock": 40, "expiry_months": 12,
-        "has_sugar": True, "has_caffeine": False, "image": "🌾",
-    },
-    "soy_milk": {
-        "name": "Vita Milk Soy Milk",
-        "aliases": ["vita milk", "vitamilk", "soy milk vita", "vita soy milk"],
-        "brand": "Vita Food", "volumes": ["200ml"], "default_volume": "200ml",
-        "price": {"200ml": 9000},
-        "ingredients": "Water, soybeans (20%), sugar, salt, Vitamin D, calcium",
-        "flavor": "Distinctively sweet and creamy soy bean taste, lightly fragrant",
-        "features": "Famous Thai soy milk, rich in plant-based protein",
-        "category": "Plant-Based Milk", "is_new": False, "popularity": 7.9,
-        "sales": 520, "stock": 65, "expiry_months": 12,
-        "has_sugar": True, "has_caffeine": False, "image": "🫘",
-    },
-}
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, BASE_DIR)
+
+from database import DatabaseManager
+
+# 1 instance dùng chung toàn bộ actions
+_db = DatabaseManager()
 
 # ============================================================
 # QR CODE PLACEHOLDER
 # ============================================================
+
 BANK_QR_INFO = {
     "bank": "Vietcombank",
     "account": "1234567890",
@@ -428,56 +53,88 @@ def normalize_text(text: str) -> str:
 
 
 def find_drink(name: str):
+    """
+    Tìm drink theo name/alias.
+    Trước: duyệt DRINKS_DB hardcode.
+    Sau  : query SQLite qua DatabaseManager.
+    Returns (key, drink_data) hoặc (None, None).
+    """
     if not name:
         return None, None
+
     name_norm = normalize_text(name)
     name_no_space = name_norm.replace(' ', '')
-    for key, drink in DRINKS_DB.items():
-        key_norm = normalize_text(key)
-        if name_norm == key_norm:
-            return key, drink
-        for alias in drink["aliases"]:
+
+    # Thử exact alias
+    drink = _db.find_drink_by_alias(name_norm)
+    if drink:
+        return drink["id"], drink
+
+    drink = _db.find_drink_by_alias(name_no_space)
+    if drink:
+        return drink["id"], drink
+
+    # Fuzzy match qua toàn bộ drinks + aliases
+    all_drinks = _db.get_all_drinks()
+    for d in all_drinks:
+        key = d["id"]
+        if name_norm == normalize_text(key):
+            return key, d
+        for alias in d["aliases"]:
             alias_norm = normalize_text(alias)
             alias_no_space = alias_norm.replace(' ', '')
             if name_norm == alias_norm:
-                return key, drink
+                return key, d
             if name_no_space == alias_no_space:
-                return key, drink
+                return key, d
             if len(alias_norm) >= 4 and alias_norm in name_norm:
-                return key, drink
+                return key, d
             if len(name_norm) >= 4 and name_norm in alias_norm:
-                return key, drink
+                return key, d
+
     return None, None
 
 
 def find_drink_from_message(message: str):
+    """Tìm drink phù hợp nhất từ message của user."""
     if not message:
         return None, None
+
     msg_norm = normalize_text(message)
     msg_no_space = msg_norm.replace(' ', '')
+
     candidates = []
-    for key, drink in DRINKS_DB.items():
+    for drink in _db.get_all_drinks():
         for alias in drink["aliases"]:
             alias_norm = normalize_text(alias)
             alias_no_space = alias_norm.replace(' ', '')
             if len(alias_norm) < 2:
                 continue
             if alias_norm in msg_norm or alias_no_space in msg_no_space:
-                candidates.append((len(alias_norm), key, drink))
+                candidates.append((len(alias_norm), drink["id"], drink))
+
     if not candidates:
         return None, None
+
     candidates.sort(key=lambda x: x[0], reverse=True)
     _, best_key, best_drink = candidates[0]
     return best_key, best_drink
 
 
 def find_all_drinks_from_message(message: str):
+    """
+    Tìm TẤT CẢ sản phẩm trong 1 message kèm số lượng.
+    Ví dụ: "give me 2 coca and 1 pepsi"
+    Returns list of (key, drink_data, quantity).
+    """
     if not message:
         return []
+
     msg_norm = normalize_text(message)
     msg_no_space = msg_norm.replace(' ', '')
+
     candidates = []
-    for key, drink in DRINKS_DB.items():
+    for drink in _db.get_all_drinks():
         for alias in drink["aliases"]:
             alias_norm = normalize_text(alias)
             alias_no_space = alias_norm.replace(' ', '')
@@ -485,21 +142,26 @@ def find_all_drinks_from_message(message: str):
                 continue
             if alias_norm in msg_norm:
                 pos = msg_norm.find(alias_norm)
-                candidates.append((len(alias_norm), pos, alias_norm, key, drink))
+                candidates.append((len(alias_norm), pos, alias_norm, drink["id"], drink))
             elif alias_no_space in msg_no_space:
                 pos = msg_no_space.find(alias_no_space)
-                candidates.append((len(alias_norm), pos, alias_norm, key, drink))
+                candidates.append((len(alias_norm), pos, alias_norm, drink["id"], drink))
+
     if not candidates:
         return []
+
     best_per_key = {}
     for length, pos, alias_norm, key, drink in candidates:
         if key not in best_per_key or length > best_per_key[key][0]:
             best_per_key[key] = (length, pos, alias_norm, key, drink)
+
     sorted_matches = sorted(best_per_key.values(), key=lambda x: x[1])
+
     word_nums = {
         "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
         "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10, "a": 1,
     }
+
     results = []
     for length, pos, alias_norm, key, drink in sorted_matches:
         prefix = msg_norm[:pos]
@@ -509,6 +171,7 @@ def find_all_drinks_from_message(message: str):
                 prefix = prefix[idx + len(sep):]
                 break
         prefix = prefix.strip()
+
         qty = 1
         nums = re.findall(r'\d+', prefix)
         if nums:
@@ -518,7 +181,9 @@ def find_all_drinks_from_message(message: str):
                 if word in prefix.split():
                     qty = num
                     break
+
         results.append((key, drink, qty))
+
     return results
 
 
@@ -623,6 +288,17 @@ def detect_payment_method(text: str) -> str:
     return ""
 
 
+def _get_latest_pending_order_id() -> Optional[int]:
+    """Lấy order pending gần nhất."""
+    conn = sqlite3.connect(_db.db_path)
+    conn.row_factory = sqlite3.Row
+    row = conn.execute(
+        "SELECT id FROM orders WHERE status='pending' ORDER BY id DESC LIMIT 1"
+    ).fetchone()
+    conn.close()
+    return row["id"] if row else None
+
+
 # ============================================================
 # ACTIONS
 # ============================================================
@@ -633,28 +309,26 @@ class ActionShowMenu(Action):
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         last_norm = normalize_text(tracker.latest_message.get("text", ""))
+
         if any(w in last_norm for w in ["new product", "new item", "new arrival", "what s new", "latest", "recently added", "just released"]):
-            new_products = [(k, v) for k, v in DRINKS_DB.items() if v["is_new"]]
+            new_products = _db.get_new_products()
             if not new_products:
                 dispatcher.utter_message(text="There are no new products at the moment. Type 'menu' to see all products!")
                 return []
             lines = ["🆕 **NEW PRODUCTS**\n" + "─" * 35]
-            for key, d in new_products:
+            for d in new_products:
                 default_vol = d["default_volume"]
                 price = d["price"][default_vol]
-                lines.append(f"\n{d['image']} **{d['name']}**\n   💰 Price: {price:,} VND ({default_vol})\n   ✨ {d['features']}")
+                lines.append(
+                    f"\n{d['image']} **{d['name']}**\n"
+                    f"   💰 Price: {price:,} VND ({default_vol})\n"
+                    f"   ✨ {d['features']}"
+                )
             lines.append("\n💬 Would you like more info or to order any of these?")
             dispatcher.utter_message(text="\n".join(lines))
             return []
-        categories = {}
-        for key, drink in DRINKS_DB.items():
-            cat = drink["category"]
-            if cat not in categories:
-                categories[cat] = []
-            default_vol = drink["default_volume"]
-            price = drink["price"][default_vol]
-            new_badge = " 🆕" if drink["is_new"] else ""
-            categories[cat].append(f"  {drink['image']} {drink['name']}{new_badge} ({default_vol}) - {price:,} VND")
+
+        categories = _db.get_menu_by_category()
         lines = ["📋 DRINK MENU\n" + "─" * 35]
         for cat, items in categories.items():
             lines.append(f"\n🏷️ {cat}:")
@@ -669,12 +343,32 @@ class ActionGetDrinkInfo(Action):
         return "action_get_drink_info"
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        # Với intent order_drink: KHÔNG scan message (vì message có thể chứa nhiều sản phẩm)
+        # Chỉ dùng entity slot do Rasa NLU extract
+        # ActionAddToCart sẽ tự scan message để xử lý multi-product
+        intent = tracker.latest_message.get("intent", {}).get("name", "")
+
+        if intent == "order_drink":
+            # Với order_drink, bỏ qua action này — ActionAddToCart tự xử lý
+            drink_slot = tracker.get_slot("drink")
+            if drink_slot:
+                key, drink_data = find_drink(drink_slot)
+                if drink_data:
+                    return [SlotSet("drink", key)]
+            return []
+
+        # Với các intent khác (ask_price, ask_ingredients, ask_product_info)
+        # dùng resolve_drink() bình thường
         key, drink_data = resolve_drink(tracker)
         if not drink_data:
-            dispatcher.utter_message(text="❌ Sorry, I couldn't find that product in our menu. Type 'menu' to see the full list!")
+            dispatcher.utter_message(
+                text="❌ Sorry, I couldn't find that product in our menu. Type 'menu' to see the full list!"
+            )
             return [SlotSet("drink", None)]
         if drink_data["stock"] == 0:
-            dispatcher.utter_message(text=f"😔 Sorry, **{drink_data['name']}** is currently out of stock. Would you like to choose another product?")
+            dispatcher.utter_message(
+                text=f"😔 Sorry, **{drink_data['name']}** is currently out of stock. Would you like to choose another product?"
+            )
             return [SlotSet("drink", None)]
         return [SlotSet("drink", key)]
 
@@ -688,10 +382,13 @@ class ActionShowPrice(Action):
         if not drink_data:
             dispatcher.utter_message(text="Which product would you like to check the price of? (Type 'menu' to see the list)")
             return []
+
         last_norm = normalize_text(tracker.latest_message.get("text", ""))
         parts = []
+
         price_lines = [f"  • {vol}: {price:,} VND" for vol, price in drink_data["price"].items()]
         parts.append("💰 Price:\n" + "\n".join(price_lines))
+
         if any(w in last_norm for w in ["flavor", "taste", "what does it taste", "how does it taste"]):
             parts.append(f"😋 Flavor: {drink_data['flavor']}")
         if any(w in last_norm for w in ["features", "description", "about", "benefits", "properties"]):
@@ -701,8 +398,8 @@ class ActionShowPrice(Action):
         if any(w in last_norm for w in ["size", "volume", "ml", "liter"]):
             vols_str = ", ".join(f"{v}: {drink_data['price'][v]:,} VND" for v in drink_data["volumes"])
             parts.append(f"📦 Sizes & Prices: {vols_str}")
-        msg = f"{drink_data['image']} **{drink_data['name']}**\n" + "\n".join(parts)
-        dispatcher.utter_message(text=msg)
+
+        dispatcher.utter_message(text=f"{drink_data['image']} **{drink_data['name']}**\n" + "\n".join(parts))
         return []
 
 
@@ -715,8 +412,10 @@ class ActionShowIngredients(Action):
         if not drink_data:
             dispatcher.utter_message(text="Which product would you like to check the ingredients of?")
             return []
+
         last_norm = normalize_text(tracker.latest_message.get("text", ""))
         info_parts = []
+
         if "caffeine" in last_norm:
             info_parts.append("☕ Contains caffeine." if drink_data["has_caffeine"] else "✅ Caffeine-free.")
         if any(w in last_norm for w in ["sugar", "sweet", "sweetened"]):
@@ -727,8 +426,10 @@ class ActionShowIngredients(Action):
         if any(w in last_norm for w in ["probiotic", "bacteria", "culture", "lactobacillus"]):
             has_probiotic = any(w in drink_data["ingredients"].lower() for w in ["lactobacillus", "probiotic"])
             info_parts.append("🦠 Contains probiotic bacteria." if has_probiotic else "❌ No probiotic bacteria.")
+
         if not info_parts:
             info_parts.append(f"🧪 Ingredients: {drink_data['ingredients']}")
+
         if any(w in last_norm for w in ["price", "cost", "how much", "expensive", "cheap"]):
             price_lines = [f"  • {vol}: {price:,} VND" for vol, price in drink_data["price"].items()]
             info_parts.append("💰 Price:\n" + "\n".join(price_lines))
@@ -736,8 +437,8 @@ class ActionShowIngredients(Action):
             info_parts.append(f"😋 Flavor: {drink_data['flavor']}")
         if any(w in last_norm for w in ["features", "description", "benefits", "about"]):
             info_parts.append(f"✨ Features: {drink_data['features']}")
-        msg = f"{drink_data['image']} **{drink_data['name']}**\n" + "\n".join(info_parts)
-        dispatcher.utter_message(text=msg)
+
+        dispatcher.utter_message(text=f"{drink_data['image']} **{drink_data['name']}**\n" + "\n".join(info_parts))
         return []
 
 
@@ -750,6 +451,7 @@ class ActionShowProductInfo(Action):
         if not drink_data:
             dispatcher.utter_message(text="Which product would you like info on? (Type 'menu' to browse)")
             return []
+
         last_norm = normalize_text(tracker.latest_message.get("text", ""))
         stock_keywords = [
             "stock", "quantity", "available", "in stock", "out of stock",
@@ -757,6 +459,7 @@ class ActionShowProductInfo(Action):
             "do you still have", "do you carry",
         ]
         info_parts = []
+
         if any(w in last_norm for w in ["price", "cost", "how much", "expensive", "cheap", "afford"]):
             price_lines = [f"  • {vol}: {price:,} VND" for vol, price in drink_data["price"].items()]
             info_parts.append("💰 Price:\n" + "\n".join(price_lines))
@@ -794,9 +497,10 @@ class ActionShowProductInfo(Action):
             info_parts.append(f"🎯 Slogan / Tagline: {drink_data.get('features', 'No slogan info available.')}")
         if any(w in last_norm for w in ["popular", "best seller", "sales", "rating", "rank", "how popular", "how many sold", "sold"]):
             stars = "⭐" * int(drink_data["popularity"])
-            info_parts.append(f"📊 Popularity: {stars} ({drink_data['popularity']}/10)\n🛒 Total sold: {drink_data['sales']:,} units")
+            info_parts.append(f"📊 Popularity: {stars} ({drink_data['popularity']}/10)\n🛒 Total sold: {drink_data.get('sales', 0):,} units")
         if any(w in last_norm for w in ["new", "new product", "newly released", "just released"]):
             info_parts.append("🆕 This is a NEW product!" if drink_data["is_new"] else "✅ This is an established product, not new.")
+
         if info_parts:
             msg = f"{drink_data['image']} **{drink_data['name']}**\n" + "\n".join(info_parts)
         else:
@@ -809,6 +513,7 @@ class ActionShowProductInfo(Action):
                 f"😋 Flavor: {drink_data['flavor']}\n"
                 f"✨ Features: {drink_data['features']}"
             )
+
         dispatcher.utter_message(text=msg)
         return []
 
@@ -825,25 +530,40 @@ class ActionAddToCart(Action):
         last_msg = tracker.latest_message.get("text", "")
         size_slot = tracker.get_slot("size")
         cart = get_cart(tracker)
+
         found_items = find_all_drinks_from_message(last_msg)
+
         if not found_items:
             drink_slot = tracker.get_slot("drink")
             key, drink_data = find_drink(drink_slot)
             if not drink_data:
                 dispatcher.utter_message(text="❌ I couldn't find that product. Type 'menu' to see the full list!")
                 return []
-            qty_slot = tracker.get_slot("quantity") or "1"
-            qty = parse_quantity(qty_slot)
+            qty = parse_quantity(tracker.get_slot("quantity") or "1")
             found_items = [(key, drink_data, qty)]
+
         added_lines = []
         last_key = None
+
         for key, drink_data, qty in found_items:
-            if drink_data["stock"] == 0:
-                dispatcher.utter_message(text=f"😔 **{drink_data['name']}** is out of stock. Would you like to choose something else?")
-                continue
             volume = resolve_volume(drink_data, size_slot)
+
+            # Kiểm tra tồn kho thực tế từ DB
+            if not _db.check_stock_available(key, volume, qty):
+                current_stock = _db.get_stock(key, volume)
+                if current_stock == 0:
+                    dispatcher.utter_message(
+                        text=f"😔 **{drink_data['name']}** ({volume}) is out of stock. Would you like to choose something else?"
+                    )
+                else:
+                    dispatcher.utter_message(
+                        text=f"⚠️ Only **{current_stock}** units of {drink_data['name']} ({volume}) left. You requested {qty}."
+                    )
+                continue
+
             unit_price = drink_data["price"].get(volume, list(drink_data["price"].values())[0])
             subtotal = unit_price * qty
+
             existing = next((item for item in cart if item["key"] == key and item["volume"] == volume), None)
             if existing:
                 existing["qty"] += qty
@@ -858,10 +578,13 @@ class ActionAddToCart(Action):
                     "unit_price": unit_price,
                     "subtotal": subtotal,
                 })
+
             added_lines.append(f"  ✅ {drink_data['image']} {qty} × {drink_data['name']} ({volume})")
             last_key = key
+
         if not added_lines:
             return []
+
         dispatcher.utter_message(text="➕ **Added to cart:**\n" + "\n".join(added_lines))
         return [
             SlotSet("cart", json.dumps(cart, ensure_ascii=False)),
@@ -878,7 +601,9 @@ class ActionShowCart(Action):
         if not cart:
             dispatcher.utter_message(text="🛒 Your cart is empty. Please choose a drink first!")
             return []
-        dispatcher.utter_message(text=format_cart(cart) + "\n\n💬 Type 'confirm' to place your order, or add more products!")
+        dispatcher.utter_message(
+            text=format_cart(cart) + "\n\n💬 Type 'confirm' to place your order, or add more products!"
+        )
         return []
 
 
@@ -888,6 +613,7 @@ class ActionConfirmOrder(Action):
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         cart = get_cart(tracker)
+
         if not cart:
             drink_slot = tracker.get_slot("drink")
             _, drink_data = find_drink(drink_slot)
@@ -907,6 +633,10 @@ class ActionConfirmOrder(Action):
             else:
                 dispatcher.utter_message(text="⚠️ Your cart is empty! Please select a product first.")
                 return []
+
+        # Tạo order pending trong DB
+        _db.create_order(cart)
+
         total = cart_total(cart)
         msg = (
             f"✅ **ORDER CONFIRMATION**\n\n"
@@ -918,7 +648,10 @@ class ActionConfirmOrder(Action):
             f"👉 Please choose your payment method!"
         )
         dispatcher.utter_message(text=msg)
-        return [SlotSet("cart", json.dumps(cart, ensure_ascii=False))]
+        return [
+            SlotSet("cart", json.dumps(cart, ensure_ascii=False)),
+            SlotSet("total_price", str(total)),
+        ]
 
 
 class ActionProcessPayment(Action):
@@ -928,11 +661,14 @@ class ActionProcessPayment(Action):
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         last_msg = tracker.latest_message.get("text", "")
         payment_slot = tracker.get_slot("payment_method") or ""
+
         method = detect_payment_method(last_msg)
         if not method:
             method = detect_payment_method(payment_slot)
+
         cart = get_cart(tracker)
         total_price = cart_total(cart) if cart else int(tracker.get_slot("total_price") or 0)
+
         if method == "qr":
             qr = BANK_QR_INFO
             msg = (
@@ -978,8 +714,24 @@ class ActionProcessPayment(Action):
                 )
             )
             return []
+
         dispatcher.utter_message(text=msg)
-        dispatcher.utter_message(text="\n🎉 **Payment successful!**\n🥤 Your drink is being dispensed...\nThank you for using our service! 😊")
+
+        # Complete order trong DB: trừ tồn kho + tạo transaction
+        if cart:
+            order_id = _get_latest_pending_order_id()
+            if order_id:
+                _db.complete_order(order_id, method, cart)
+            else:
+                # Fallback: tạo order mới nếu không tìm thấy pending
+                new_id = _db.create_order(cart)
+                if new_id:
+                    _db.complete_order(new_id, method, cart)
+
+        dispatcher.utter_message(
+            text="\n🎉 **Payment successful!**\n🥤 Your drink is being dispensed...\nThank you for using our service! 😊"
+        )
+
         return [
             SlotSet("cart", None), SlotSet("drink", None), SlotSet("size", None),
             SlotSet("quantity", "1"), SlotSet("payment_method", None),
@@ -992,6 +744,10 @@ class ActionResetOrder(Action):
         return "action_reset_order"
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        order_id = _get_latest_pending_order_id()
+        if order_id:
+            _db.cancel_order(order_id)
+
         dispatcher.utter_message(
             text=(
                 "❌ Order cancelled.\n\n"
@@ -1006,6 +762,10 @@ class ActionResetOrder(Action):
             SlotSet("price_per_unit", None), SlotSet("total_price", None),
         ]
 
+
+# ============================================================
+# BACKWARDS-COMPATIBLE ACTIONS
+# ============================================================
 
 class ActionCalculatePrice(Action):
     def name(self) -> Text:
@@ -1075,25 +835,34 @@ class ActionRecommendDrink(Action):
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         last_norm = normalize_text(tracker.latest_message.get("text", ""))
-        if any(w in last_norm for w in ["best selling", "most sold", "buy most", "sold most"]):
-            top3 = sorted(DRINKS_DB.items(), key=lambda x: x[1]["sales"], reverse=True)[:3]
+
+        best_selling_keywords = [
+            "best selling", "most sold", "buy most", "sold most",
+            "sell the best", "sell most", "best sales", "top sales",
+            "highest sales", "highest selling", "most sales",
+            "sells the most", "sells most",
+        ]
+        if any(w in last_norm for w in best_selling_keywords):
+            top3 = _db.get_top_by_sales(limit=3)
             lines = ["🏆 **TOP 3 BEST SELLERS**\n" + "─" * 32]
-            for i, (key, d) in enumerate(top3, 1):
-                lines.append(f"  {i}. {d['image']} {d['name']} — Sold: {d['sales']:,} units")
+            for i, d in enumerate(top3, 1):
+                lines.append(f"  {i}. {d['image']} {d['name']} — Sold: {d.get('sales', 0):,} units")
             lines.append("\n💬 Which one would you like?")
             dispatcher.utter_message(text="\n".join(lines))
             return []
+
         if any(w in last_norm for w in ["popular", "famous", "well known", "trending", "most popular"]):
-            top3 = sorted(DRINKS_DB.items(), key=lambda x: x[1]["popularity"], reverse=True)[:3]
+            top3 = _db.get_recommendations(limit=3)
             lines = ["🌟 **TOP 3 MOST POPULAR**\n" + "─" * 32]
-            for i, (key, d) in enumerate(top3, 1):
+            for i, d in enumerate(top3, 1):
                 lines.append(f"  {i}. {d['image']} {d['name']} — Popularity: {d['popularity']}/10")
             lines.append("\n💬 Which one would you like?")
             dispatcher.utter_message(text="\n".join(lines))
             return []
-        top5 = sorted(DRINKS_DB.items(), key=lambda x: x[1]["popularity"], reverse=True)[:5]
+
+        top5 = _db.get_recommendations(limit=5)
         lines = ["🌟 **TODAY'S DRINK RECOMMENDATIONS**\n" + "─" * 35]
-        for i, (key, d) in enumerate(top5, 1):
+        for i, d in enumerate(top5, 1):
             default_vol = d["default_volume"]
             price = d["price"][default_vol]
             lines.append(f"  {i}. {d['image']} {d['name']} - {price:,} VND\n     👉 {d['flavor']}")

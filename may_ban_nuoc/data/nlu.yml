@@ -98,6 +98,16 @@ nlu:
     - [soy milk vita](drink) one
     - [vinamilk](drink) please
     - [khong do](drink) one bottle
+    - give me [2](quantity) [coca](drink) and [1](quantity) [pepsi](drink)
+    - I want [2](quantity) [coca](drink) and [1](quantity) [pepsi](drink)
+    - get me [1](quantity) [sprite](drink) and [2](quantity) [redbull](drink)
+    - order [2](quantity) [sting](drink) and [1](quantity) [monster](drink)
+    - give me [1](quantity) [redbull](drink) and [1](quantity) [sting](drink)
+    - give me [3](quantity) [coca](drink) and [2](quantity) [fanta](drink)
+    - [2](quantity) [coca](drink) and [1](quantity) [pepsi](drink) please
+    - buy [2](quantity) [lavie](drink) and [3](quantity) [aquafina](drink)
+    - I ll take [1](quantity) [pepsi](drink) and [2](quantity) [sprite](drink)
+    - get [2](quantity) [monster](drink) and [1](quantity) [sting](drink)
 
 # ==================== ASK PRICE ====================
 - intent: ask_price
@@ -221,6 +231,25 @@ nlu:
     - info about [aloe vera](drink)
     - what brand is [vita milk](drink)
     - what brand is [soy milk](drink)
+    - what brand is [lavie](drink)
+    - what brand is [aquafina](drink)
+    - what brand is [coca](drink)
+    - what brand is [redbull](drink)
+    - which company owns [lavie](drink)
+    - which company owns [coca](drink)
+    - which company makes [pepsi](drink)
+    - which company produces [redbull](drink)
+    - who makes [sting](drink)
+    - who manufactures [mirinda](drink)
+    - who owns [sprite](drink)
+    - who produces [aquafina](drink)
+    - what company is behind [monster](drink)
+    - which brand makes [yakult](drink)
+    - manufacturer of [nescafe](drink)
+    - who is the maker of [birdy](drink)
+    - [lavie](drink) belongs to which company
+    - [coca](drink) is made by which company
+    - what company is [pepsi](drink) from
     - describe [wake up 247](drink)
     - what's in [th true milk](drink)
     - info on [dutch lady](drink)
@@ -559,6 +588,22 @@ nlu:
     - what's trending
     - what should I drink today
     - what's the best one
+    - which drinks sell the best
+    - which drink sells the most
+    - which drinks have the best sales
+    - what are the best selling drinks
+    - top selling drinks
+    - most sold drinks
+    - what drinks have the highest sales
+    - which best sales
+    - best sales drink
+    - top sales
+    - highest selling drink
+    - most popular drink by sales
+    - what's selling best
+    - best seller drinks
+    - drinks with most sales
+    - rank drinks by sales
 
 # ==================== ASK INGREDIENTS ====================
 - intent: ask_ingredients

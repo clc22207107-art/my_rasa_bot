@@ -126,8 +126,9 @@ class DatabaseManager:
                 "popularity": product["popularity"],
                 "expiry_months": product["expiry_months"],
                 "aliases": aliases,
-                "stock": total_stock,               # tổng tồn kho tất cả size
-                "stock_by_volume": stock_by_volume, # tồn kho theo từng size
+                "stock": total_stock,
+                "stock_by_volume": stock_by_volume,
+                "sales": product["sales"],
             }
         finally:
             conn.close()
@@ -216,26 +217,14 @@ class DatabaseManager:
             conn.close()
 
     def get_top_by_sales(self, limit: int = 3) -> list[dict]:
-        """Lấy top sản phẩm bán chạy nhất từ order_items."""
+        """Lấy top sản phẩm bán chạy nhất theo products.sales (tích lũy qua các phiên)."""
         conn = self._get_conn()
         try:
-            rows = conn.execute("""
-                SELECT oi.product_id, SUM(oi.quantity) as total_sold
-                FROM order_items oi
-                JOIN orders o ON oi.order_id = o.id
-                WHERE o.status = 'completed'
-                GROUP BY oi.product_id
-                ORDER BY total_sold DESC
-                LIMIT ?
-            """, (limit,)).fetchall()
-
-            result = []
-            for row in rows:
-                drink = self.get_drink(row["product_id"])
-                if drink:
-                    drink["total_sold"] = row["total_sold"]
-                    result.append(drink)
-            return result
+            rows = conn.execute(
+                "SELECT id FROM products ORDER BY sales DESC LIMIT ?",
+                (limit,)
+            ).fetchall()
+            return [self.get_drink(row["id"]) for row in rows]
         finally:
             conn.close()
 
@@ -425,12 +414,13 @@ class DatabaseManager:
 
             conn.commit()
 
-            # Trừ tồn kho (gọi sau commit để transaction record đã được lưu)
+            # Trừ tồn kho và tăng sales (gọi sau commit để transaction record đã được lưu)
             for item in cart:
                 success = self.update_stock(item["key"], item["volume"], -item["qty"])
                 if not success:
-                    # Log cảnh báo nhưng không rollback order đã completed
                     print(f"[DB] ⚠️ Cảnh báo: Không cập nhật được stock cho {item['key']} {item['volume']}")
+                # Cộng dồn vào products.sales (tổng tích lũy qua các phiên)
+                self.update_sales(item["key"], item["qty"])
 
             print(f"[DB] Order #{order_id} hoàn thành | Payment: {payment_method}")
             return True
@@ -533,6 +523,23 @@ class DatabaseManager:
     # ============================================================
     # ADMIN — thêm/sửa sản phẩm (dùng cho dashboard Phase 5)
     # ============================================================
+
+    def update_sales(self, product_id: str, qty: int) -> bool:
+        """Cộng dồn sales vào products.sales (gọi sau mỗi giao dịch thành công)."""
+        conn = self._get_conn()
+        try:
+            conn.execute(
+                "UPDATE products SET sales = sales + ? WHERE id = ?",
+                (qty, product_id)
+            )
+            conn.commit()
+            return True
+        except Exception as e:
+            conn.rollback()
+            print(f"[DB] Lỗi update_sales: {e}")
+            return False
+        finally:
+            conn.close()
 
     def add_stock(self, product_id: str, volume: str, quantity: int) -> bool:
         """Nhập thêm hàng (tăng tồn kho)."""
