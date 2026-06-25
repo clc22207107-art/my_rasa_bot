@@ -433,6 +433,9 @@ class ActionShowIngredients(Action):
         if any(w in last_norm for w in ["price", "cost", "how much", "expensive", "cheap"]):
             price_lines = [f"  • {vol}: {price:,} VND" for vol, price in drink_data["price"].items()]
             info_parts.append("💰 Price:\n" + "\n".join(price_lines))
+        if any(w in last_norm for w in ["size", "volume", "ml", "liter", "can or bottle"]):
+            vols_str = ", ".join(f"{v}: {drink_data['price'][v]:,} VND" for v in drink_data["volumes"])
+            info_parts.append(f"📦 Sizes & Prices: {vols_str}")
         if any(w in last_norm for w in ["flavor", "taste", "how does it taste"]):
             info_parts.append(f"😋 Flavor: {drink_data['flavor']}")
         if any(w in last_norm for w in ["features", "description", "benefits", "about"]):
@@ -482,6 +485,8 @@ class ActionShowProductInfo(Action):
             info_parts.append(f"📦 Sizes & Prices: {vols_str}")
         if any(w in last_norm for w in ["brand", "manufacturer", "made by", "company", "who makes"]):
             info_parts.append(f"🏭 Brand: {drink_data['brand']}")
+        if any(w in last_norm for w in ["category", "type of drink", "what type", "what kind", "belong to", "classify"]):
+            info_parts.append(f"🏷️ Category: {drink_data['category']}")
         if any(w in last_norm for w in ["features", "description", "benefits", "about", "info", "properties"]):
             info_parts.append(f"✨ Features: {drink_data['features']}")
         if any(w in last_norm for w in ["expiry", "expiration", "shelf life", "best before", "how long", "expire"]):

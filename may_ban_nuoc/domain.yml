@@ -13,8 +13,6 @@ intents:
   - confirm
   - deny
   - specify_size
-  - specify_ice
-  - specify_sugar
   - specify_quantity
   - ask_help
   - specify_payment
@@ -24,8 +22,6 @@ intents:
 entities:
   - drink
   - size
-  - ice
-  - sugar
   - quantity
   - payment_method
 
@@ -44,22 +40,6 @@ slots:
       - type: from_entity
         entity: size
     initial_value: null
-
-  ice:
-    type: text
-    influence_conversation: true
-    mappings:
-      - type: from_entity
-        entity: ice
-    initial_value: "medium"
-
-  sugar:
-    type: text
-    influence_conversation: true
-    mappings:
-      - type: from_entity
-        entity: sugar
-    initial_value: "medium"
 
   quantity:
     type: text
@@ -120,12 +100,6 @@ responses:
 
   utter_ask_size:
   - text: "📦 What size would you like? (e.g. 330ml, 500ml, 1.5L)"
-
-  utter_ask_ice:
-  - text: "🧊 How much ice would you like? (less ice, medium, lots of ice)"
-
-  utter_ask_sugar:
-  - text: "🍬 How sweet would you like it? (less sugar, medium, extra sweet)"
 
   utter_ask_quantity:
   - text: "🔢 How many would you like?"

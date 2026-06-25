@@ -17,22 +17,25 @@ pipeline:
     max_ngram: 4
 
   - name: DIETClassifier
-    epochs: 150
+    epochs: 200
     constrain_similarities: true
     entity_recognition: true
+    number_of_transformer_layers: 2
+    transformer_size: 256
+    use_masked_language_model: false
 
   - name: EntitySynonymMapper
 
   - name: FallbackClassifier
-    threshold: 0.55
-    ambiguity_threshold: 0.1
+    threshold: 0.45
+    ambiguity_threshold: 0.15
 
 policies:
   - name: MemoizationPolicy
     max_history: 8
 
   - name: RulePolicy
-    core_fallback_threshold: 0.55
+    core_fallback_threshold: 0.45
     core_fallback_action_name: "action_handle_out_of_domain"
     enable_fallback_prediction: true
 

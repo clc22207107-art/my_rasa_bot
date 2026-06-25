@@ -31,10 +31,12 @@ rules:
     - action: action_show_cart
 
 # ==================== ORDER (CART-BASED FLOW) ====================
-# When customer orders → add to cart, do NOT ask for payment yet
+# When customer orders → fetch info → calculate price → add to cart
 - rule: Order drink - add to cart
   steps:
     - intent: order_drink
+    - action: action_get_drink_info
+    - action: action_calculate_price
     - action: action_add_to_cart
 
 # When quantity is already in the order message → add to cart directly

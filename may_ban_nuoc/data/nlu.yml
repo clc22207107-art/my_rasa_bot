@@ -1,6 +1,7 @@
 version: "3.1"
 
 nlu:
+
 # ==================== GREET ====================
 - intent: greet
   examples: |
@@ -22,92 +23,39 @@ nlu:
 # ==================== ORDER DRINK ====================
 - intent: order_drink
   examples: |
-    - give me [1](quantity) [coca](drink)
+    - [coca](drink) please
     - I want [pepsi](drink)
-    - [sting](drink) [1 can](quantity)
-    - get me [revive](drink) [large bottle](size)
-    - [aquafina](drink) [500ml](size)
-    - [2 bottles](quantity) of [7up](drink)
-    - give me [3 cans](quantity) of [redbull](drink)
-    - I need [zero degree green tea](drink)
-    - [1 bottle](quantity) of [c2](drink)
-    - buy [mineral water](drink)
-    - [lavie](drink) please
-    - can I get [twister orange juice](drink)
-    - [number 1](drink) [500ml](size)
-    - get me [warrior](drink)
-    - [olong tea](drink) [1 bottle](quantity)
-    - give me [birdy coffee](drink)
-    - [nescafe](drink) please
-    - [mirinda](drink) orange flavor
-    - [fanta](drink) grape
-    - [sprite](drink) [330ml can](size)
-    - buy [roasted brown rice tea](drink)
-    - give me [energy drink](drink)
-    - [warrior](drink) for me
-    - [wake up 247](drink)
-    - [dr thanh](drink) please
-    - [oolong tea](drink)
-    - get [lipton](drink)
-    - [nestea](drink) peach
-    - [c2](drink) lemon
-    - [yakult](drink) please
-    - [soy milk](drink)
-    - [dutch lady](drink)
-    - [th true milk](drink)
-    - [vinamilk chocolate](drink)
-    - [coconut water](drink)
-    - [cocoxim](drink) please
-    - [monster energy](drink)
-    - [vita milk](drink)
-    - [aloe vera](drink)
-    - [aloe vera drink](drink)
-    - order [coca](drink) [2 bottles](quantity)
-    - order [pepsi](drink)
-    - I'll take [sting](drink) [1 can](quantity)
-    - buy [redbull](drink) for me
-    - can I have [sprite](drink)
-    - [birdy](drink) one
-    - add [7up](drink)
-    - sell me [fanta](drink)
-    - give me [coca](drink)
-    - I want [pepsi](drink)
-    - get [redbull](drink)
-    - buy [sprite](drink)
-    - order [sting](drink)
-    - can I get [c2](drink)
+    - give me [redbull](drink)
+    - get me [sprite](drink)
+    - [sting](drink) for me
     - [aquafina](drink) please
-    - [lavie](drink) thanks
-    - [monster](drink) for me
-    - order [7up](drink)
-    - [number1](drink) for me
+    - buy [monster](drink)
+    - I'd like [fanta](drink)
+    - can I have [lavie](drink)
+    - I'll take [c2](drink)
+    - give me [1](quantity) [coca](drink)
+    - [2 bottles](quantity) of [pepsi](drink)
+    - [3 cans](quantity) of [redbull](drink)
+    - [1 bottle](quantity) of [sprite](drink)
+    - order [sting](drink) [2 cans](quantity)
+    - I'll take [monster](drink) [1 can](quantity)
+    - [aquafina](drink) [500ml](size)
+    - [coca](drink) [330ml can](size) please
+    - [pepsi](drink) [large bottle](size)
+    - can I get [zero degree](drink)
     - [number 1](drink) please
-    - [zero degree](drink) one bottle
-    - [dr thanh](drink) one bottle
-    - [oolong](drink) please
+    - [warrior](drink) for me
     - [nescafe](drink) one can
     - [vita milk](drink) please
-    - [cocoxim](drink) one bottle
+    - [oolong tea](drink) one bottle
+    - [dr thanh](drink) please
     - [yakult](drink) please
-    - [warrior](drink) thanks
-    - [birdy](drink) please
-    - [wake up](drink) one bottle
-    - [brown rice tea](drink) please
-    - [rice tea](drink) one bottle
-    - [wakeup247](drink) please
-    - [soy milk vita](drink) one
-    - [vinamilk](drink) please
-    - [khong do](drink) one bottle
     - give me [2](quantity) [coca](drink) and [1](quantity) [pepsi](drink)
-    - I want [2](quantity) [coca](drink) and [1](quantity) [pepsi](drink)
-    - get me [1](quantity) [sprite](drink) and [2](quantity) [redbull](drink)
+    - I want [1](quantity) [sprite](drink) and [2](quantity) [redbull](drink)
     - order [2](quantity) [sting](drink) and [1](quantity) [monster](drink)
-    - give me [1](quantity) [redbull](drink) and [1](quantity) [sting](drink)
-    - give me [3](quantity) [coca](drink) and [2](quantity) [fanta](drink)
     - [2](quantity) [coca](drink) and [1](quantity) [pepsi](drink) please
     - buy [2](quantity) [lavie](drink) and [3](quantity) [aquafina](drink)
-    - I ll take [1](quantity) [pepsi](drink) and [2](quantity) [sprite](drink)
-    - get [2](quantity) [monster](drink) and [1](quantity) [sting](drink)
+    - I'll take [1](quantity) [pepsi](drink) and [2](quantity) [sprite](drink)
 
 # ==================== ASK PRICE ====================
 - intent: ask_price
@@ -116,53 +64,19 @@ nlu:
     - [pepsi](drink) price
     - price of [sting](drink)
     - is [redbull](drink) expensive
-    - show me the price of [aquafina](drink)
-    - [7up](drink) [330ml](size) price
-    - price check for [revive](drink)
-    - how much does [c2](drink) cost
-    - how much for [sprite](drink)
-    - price of [zero degree green tea](drink)
-    - [mineral water](drink) how much
+    - how much does [aquafina](drink) cost
+    - [sprite](drink) [330ml](size) price
+    - how much for [revive](drink)
+    - [c2](drink) how much
     - what's the price of [lavie](drink)
-    - tell me the price of [fanta](drink)
-    - how much is [mirinda](drink)
-    - [nestea](drink) how much
-    - [oolong tea](drink) price
-    - [roasted brown rice tea](drink) price
-    - [brown rice tea](drink) price
-    - [energy drink](drink) how much
-    - [warrior](drink) price
-    - price of [redbull](drink)
-    - [birdy](drink) how much
+    - [fanta](drink) price
+    - [dr thanh](drink) how much
+    - [vita milk](drink) price
+    - [monster](drink) how much per can
     - show me the price list
     - menu prices please
-    - [dr thanh](drink) how much
-    - is [monster](drink) expensive
-    - [cocoxim](drink) price
-    - price of [yakult](drink)
-    - [vinamilk chocolate](drink) how much per bottle
-    - [vita milk](drink) price
-    - [soy milk](drink) price
-    - [aloe vera](drink) how much
-    - [wake up 247](drink) price
-    - [wake up](drink) price
-    - price of [th true milk](drink)
-    - [dutch lady](drink) how much
-    - [nescafe](drink) price
-    - how much is [coca](drink)
-    - [pepsi](drink) how much
-    - price of [sting](drink)
-    - [redbull](drink) price
-    - [sprite](drink) how much
-    - what does [fanta](drink) cost
-    - [c2](drink) price
-    - cost of [monster](drink)
-    - [aquafina](drink) price
-    - [number1](drink) how much
-    - [number 1](drink) price
-    - how much is [zero degree](drink)
-    - [dr thanh](drink) price
-    - [khong do](drink) how much
+    - what does [yakult](drink) cost
+    - [warrior](drink) price
 
 # ==================== ASK AVAILABLE DRINKS ====================
 - intent: ask_available_drinks
@@ -171,39 +85,30 @@ nlu:
     - what do you sell
     - your menu
     - what types do you carry
-    - what are you selling
     - what drinks are available
     - show me the list
     - what's available
     - what's in stock
-    - what drinks are for sale
-    - do you have soda
-    - do you have energy drinks
-    - do you have tea
-    - do you have coffee
-    - do you have milk
-    - do you have water
-    - do you sell coca cola
-    - do you have pepsi
-    - do you have sting
-    - do you have redbull
     - drink list
     - show me products
-    - what else do you have
-    - what more do you have
     - what beverages do you have
-    - menu
     - show menu
-    - view menu
-    - what drinks today
-    - what varieties do you have
     - list all drinks
     - any new products
-    - any new items
     - what's new
-    - any new arrivals
-    - latest products
-    - what are your newest products
+    - what's on the menu today
+    - full product list please
+    - show all items
+    - what brands do you stock
+    - what categories of drinks
+    - beverages available please
+    - what types of drinks can I choose from
+    - any coffee or tea options
+    - do you carry any juice
+    - do you have milk products
+    - show me only the new products
+    - list drinks that just arrived
+    - what products were recently added
 
 # ==================== ASK PRODUCT INFO ====================
 - intent: ask_product_info
@@ -211,139 +116,44 @@ nlu:
     - what size is [coca](drink)
     - what sizes does [pepsi](drink) come in
     - is [sting](drink) a can or bottle
-    - how many types of [redbull](drink) are there
     - how many ml is [aquafina](drink)
-    - tell me about [7up](drink)
-    - what sizes does [sprite](drink) come in
-    - volume of [revive](drink)
+    - how many sizes of [sprite](drink)
     - what flavors does [fanta](drink) have
-    - what flavors does [mirinda](drink) have
+    - what flavor is [mirinda](drink)
     - what flavor is [nestea](drink)
-    - info about [zero degree green tea](drink)
-    - is [roasted brown rice tea](drink) good
-    - is [brown rice tea](drink) good
-    - what's in [warrior](drink)
-    - what is [birdy](drink)
-    - how many flavors does [monster](drink) have
-    - benefits of [dr thanh](drink)
-    - what type of drink is [yakult](drink)
-    - what flavor is [vinamilk chocolate](drink)
-    - info about [aloe vera](drink)
-    - what brand is [vita milk](drink)
-    - what brand is [soy milk](drink)
-    - what brand is [lavie](drink)
-    - what brand is [aquafina](drink)
-    - what brand is [coca](drink)
-    - what brand is [redbull](drink)
-    - which company owns [lavie](drink)
-    - which company owns [coca](drink)
-    - which company makes [pepsi](drink)
-    - which company produces [redbull](drink)
-    - who makes [sting](drink)
-    - who manufactures [mirinda](drink)
-    - who owns [sprite](drink)
-    - who produces [aquafina](drink)
-    - what company is behind [monster](drink)
-    - which brand makes [yakult](drink)
-    - manufacturer of [nescafe](drink)
-    - who is the maker of [birdy](drink)
-    - [lavie](drink) belongs to which company
-    - [coca](drink) is made by which company
-    - what company is [pepsi](drink) from
-    - describe [wake up 247](drink)
-    - what's in [th true milk](drink)
-    - info on [dutch lady](drink)
-    - how many [coca](drink) left
-    - how many [pepsi](drink) cans are left
-    - is [sting](drink) in stock
+    - info about [zero degree](drink)
+    - tell me about [yakult](drink)
+    - describe [warrior](drink)
     - is [redbull](drink) available
-    - how many [sprite](drink) bottles left
-    - stock of [monster](drink)
     - is [aquafina](drink) sold out
-    - how many [c2](drink) remaining
-    - check stock of [lavie](drink)
-    - is [yakult](drink) available
     - do you still have [lavie](drink)
-    - do you still have [coca](drink)
     - is [pepsi](drink) in stock
-    - is [sting](drink) still available
-    - is [redbull](drink) still available
-    - is [sprite](drink) sold out
-    - is [aquafina](drink) available
-    - is [monster](drink) in stock
-    - is [c2](drink) still for sale
-    - is [zero degree](drink) available
-    - is [oolong tea](drink) in stock
-    - is [yakult](drink) sold out
-    - is [vita milk](drink) available
-    - is [soy milk](drink) available
-    - is [cocoxim](drink) available
-    - is [revive](drink) in stock
-    - is [number 1](drink) available
-    - is [warrior](drink) in stock
-    - is [birdy](drink) for sale
-    - is [nescafe](drink) available
-    - is [lipton](drink) in stock
+    - how many [c2](drink) remaining
+    - is [monster](drink) sold out
+    - what brand is [vita milk](drink)
+    - which company makes [lavie](drink)
+    - who manufactures [redbull](drink)
+    - what company is [pepsi](drink) from
     - is [vita milk](drink) a new product
     - is [aloe vera](drink) new
-    - is [brown rice tea](drink) new
-    - is [roasted brown rice tea](drink) new
-    - is [cocoxim](drink) a new product
-    - is [monster](drink) new
-    - popularity of [coca](drink)
-    - is [pepsi](drink) popular
-    - is [redbull](drink) popular
-    - how many [sting](drink) have been sold
-    - ranking of [monster](drink)
-    - is [twister](drink) popular
-    - how popular is [sprite](drink)
-    - how many [c2](drink) sold
-    - rating of [yakult](drink)
-    - is [vita milk](drink) a bestseller
-    - is [lavie](drink) available
-    - is [coca](drink) available
-    - is [pepsi](drink) in stock
-    - is [sting](drink) sold out
-    - is [redbull](drink) available
-    - how popular is [coca](drink)
-    - is [pepsi](drink) a bestseller
-    - ranking of [monster](drink)
-    - how many [c2](drink) sold
-    - volume of [dr thanh](drink)
-    - how many sizes of [sprite](drink)
-    - how many ml is [aquafina](drink)
-    - info on [redbull](drink)
-    - what brand is [monster](drink)
-    - is [number1](drink) available
-    - is [number 1](drink) in stock
-    - is [zero degree](drink) available
-    - benefits of [dr thanh](drink)
-    - is [oolong](drink) in stock
+    - describe the taste of [redbull](drink)
+    - [sprite](drink) what does it taste like
+    - what does [coca](drink) taste like
     - expiry of [monster](drink)
-    - shelf life of [redbull](drink)
-    - how long does [coca](drink) last
-    - what does [coca](drink) taste like and how much is it
-    - flavor and price of [pepsi](drink)
-    - tell me the taste and cost of [sprite](drink)
-    - what is the flavor and price of [th true milk](drink)
-    - how much is [redbull](drink) and what does it taste like
-    - [monster](drink) flavor and price please
-    - what are the ingredients and price of [c2](drink)
-    - does [sting](drink) have caffeine and how much does it cost
-    - tell me about [yakult](drink) and its price
-    - ingredients and cost of [revive](drink)
-    - [cocoxim](drink) price and flavor
-    - what flavor is [fanta](drink) and how much
-    - [aquafina](drink) price and what s in it
-    - flavor description and price of [lavie](drink)
-    - what does [birdy](drink) taste like and what s the price
-    - [nescafe](drink) ingredients and cost
-    - size and price of [dutch lady](drink)
-    - brand and flavor of [dr thanh](drink)
-    - is [aloe vera](drink) new and how much does it cost
-    - is [brown rice tea](drink) new and how much
-    - [wakeup247](drink) info
-    - [khong do](drink) info
+    - when does [sting](drink) expire
+    - [warrior](drink) shelf life
+    - what's special about [c2](drink)
+    - is [number 1](drink) available
+    - is [zero degree](drink) in stock
+    - what category is [coca](drink)
+    - what type of drink is [monster](drink)
+    - [sting](drink) which category does it belong to
+    - how popular is [redbull](drink)
+    - [pepsi](drink) popularity rating
+    - how many [monster](drink) have been sold
+    - [sprite](drink) total sales
+    - what is [coca](drink) slogan
+    - [fanta](drink) features please
 
 # ==================== CONFIRM ====================
 - intent: confirm
@@ -370,6 +180,19 @@ nlu:
     - yes please
     - absolutely
     - perfect
+    - yep do it
+    - lock it in
+    - finalize my order
+    - make it happen
+    - proceed with that
+    - all good go ahead
+    - done deal
+    - yes order it
+    - approved
+    - affirmative
+    - go for it
+    - seal the deal
+    - yes finalize
 
 # ==================== DENY ====================
 - intent: deny
@@ -382,22 +205,27 @@ nlu:
     - cancel
     - nevermind
     - don't want it
-    - don't take it
     - I changed my mind
     - not right
     - not that
-    - incorrect
     - start over
-    - choose again
     - no thanks
     - cancel order
-    - don't order anymore
-    - change item
-    - choose something else
     - discard
     - forget it
     - nah
-    - n
+    - abort
+    - stop
+    - scratch that
+    - let me reconsider
+    - remove that
+    - undo
+    - reject
+    - decline
+    - i'll pass
+    - negative
+    - drop it
+    - erase my order
 
 # ==================== SPECIFY SIZE ====================
 - intent: specify_size
@@ -415,19 +243,12 @@ nlu:
     - [can](size)
     - [bottle](size)
     - [330ml](size)
-    - [500ml](size)
-    - [600ml](size)
-    - [1.5l](size)
     - [1 liter](size)
     - [large](size)
-    - [small](size)
-    - [size S](size)
-    - [size M](size)
-    - [size L](size)
     - give me [large size](size)
     - get me [small can](size)
     - [1.5 liter](size) please
-    - give me [600ml](size)
+    - I want [big bottle](size)
 
 # ==================== SPECIFY QUANTITY ====================
 - intent: specify_quantity
@@ -443,17 +264,11 @@ nlu:
     - [1](quantity)
     - [2](quantity)
     - [3](quantity)
-    - [4](quantity)
-    - [5](quantity)
-    - [10 bottles](quantity)
     - give me [2 bottles](quantity)
     - get [3 cans](quantity)
     - buy [1 bottle](quantity)
     - [one bottle](quantity) only
-    - [two bottles](quantity) please
     - give me [5 cans](quantity)
-    - [six bottles](quantity)
-    - [ten bottles](quantity)
 
 # ==================== SPECIFY PAYMENT ====================
 - intent: specify_payment
@@ -467,30 +282,21 @@ nlu:
     - [zalopay](payment_method)
     - [vnpay](payment_method)
     - [e-wallet](payment_method)
-    - pay with [cash](payment_method)
     - pay via [QR code](payment_method)
     - scan [QR code](payment_method)
     - [credit card](payment_method)
     - [debit card](payment_method)
     - I'll pay [cash](payment_method)
-    - pay via [bank transfer](payment_method)
-    - [swipe card](payment_method)
     - [ATM card](payment_method)
     - I want to pay
     - proceed to payment
     - checkout please
     - let me pay
     - pay now
-    - check me out
     - ready to pay
-    - I want to check out
-    - take my money
     - scan QR please
-    - I'll scan the QR
     - insert card please
     - swipe card please
-    - insert money now
-    - I'm putting money in
 
 # ==================== ASK HELP ====================
 - intent: ask_help
@@ -506,9 +312,7 @@ nlu:
     - show me how
     - how to order
     - how to pay
-    - how does this work
     - instructions please
-    - support
     - how to buy
     - how do I purchase
     - ordering guide
@@ -546,7 +350,6 @@ nlu:
     - any offers
     - do you have vouchers
     - any coupon codes
-    - how much is the discount
     - cheaper if I buy more
     - any sale
     - any promotion today
@@ -555,7 +358,16 @@ nlu:
     - buy 2 get a discount
     - what are the deals
     - any special offers
-    - any promotions today
+    - running any deals right now
+    - is there a sale on
+    - got any discount codes
+    - any happy hour pricing
+    - bundle deals available
+    - buy more save more offer
+    - any flash sale today
+    - promotional pricing available
+    - cashback offers available
+    - discount for buying in bulk
 
 # ==================== ASK RECOMMENDATION ====================
 - intent: ask_recommendation
@@ -565,19 +377,13 @@ nlu:
     - what's the best drink
     - recommend something for me
     - hot day what should I drink
-    - good morning drink
-    - I'm tired what should I drink
     - what should I choose
     - what's good
     - what's the best seller
     - what's popular
-    - what's a hit
     - what's refreshing
     - what keeps me awake
-    - what's cooling
-    - what's healthy
     - suggest something
-    - recommend something
     - any suggestions
     - what's tasty
     - tell me what's good
@@ -587,23 +393,18 @@ nlu:
     - top drinks
     - what's trending
     - what should I drink today
-    - what's the best one
-    - which drinks sell the best
-    - which drink sells the most
-    - which drinks have the best sales
-    - what are the best selling drinks
-    - top selling drinks
-    - most sold drinks
-    - what drinks have the highest sales
-    - which best sales
-    - best sales drink
-    - top sales
-    - highest selling drink
-    - most popular drink by sales
-    - what's selling best
-    - best seller drinks
-    - drinks with most sales
-    - rank drinks by sales
+    - what would you personally recommend
+    - what's your number one drink
+    - hit me with your best suggestion
+    - what's flying off the shelf today
+    - what's the crowd favourite here
+    - what do you suggest for energy
+    - which drink is the most refreshing
+    - what do regulars order most
+    - what's your bestseller this week
+    - top 3 best selling drinks
+    - which 3 drinks sold the most
+    - show me the top sellers by sales
 
 # ==================== ASK INGREDIENTS ====================
 - intent: ask_ingredients
@@ -613,92 +414,29 @@ nlu:
     - what is [sting](drink) made of
     - what does [redbull](drink) contain
     - ingredients of [sprite](drink)
-    - does [aquafina](drink) have additives
-    - what's in [zero degree green tea](drink)
-    - what's in [zero degree](drink)
-    - ingredients of [lavie](drink)
-    - what's in [birdy](drink)
-    - what is [aloe vera](drink) made of
-    - what's in [vita milk](drink)
-    - what's in [soy milk](drink)
-    - ingredients of [cocoxim](drink)
-    - what herbs are in [dr thanh](drink)
-    - ingredients of [warrior](drink)
-    - what's in [number 1](drink)
-    - what is [roasted brown rice tea](drink) made of
-    - what is [brown rice tea](drink) made of
+    - what's inside [aquafina](drink)
+    - what is the composition of [c2](drink)
+    - list all ingredients in [monster](drink)
+    - what goes into [dr thanh](drink)
+    - what chemicals are in [redbull](drink)
+    - does [redbull](drink) have caffeine
+    - does [monster](drink) have caffeine
+    - caffeine in [nescafe](drink)
+    - does [sting](drink) have caffeine
     - does [c2](drink) have sugar
-    - does [oolong tea](drink) have sugar
-    - does [vinamilk chocolate](drink) have sugar
     - does [yakult](drink) have probiotics
     - does [fanta](drink) have gas
     - is [sprite](drink) carbonated
     - is [7up](drink) fizzy
-    - does [monster](drink) have caffeine
-    - does [redbull](drink) have caffeine
-    - does [c2](drink) have caffeine
-    - caffeine in [nescafe](drink)
-    - does [sting](drink) have caffeine
     - does [cocoxim](drink) have sugar
     - does [revive](drink) have salt
-    - does [c2](drink) have sugar
-    - does [pepsi](drink) have caffeine
-    - is [coca](drink) carbonated
-    - is [sprite](drink) sparkling
-    - does [redbull](drink) have caffeine
-    - does [monster](drink) have caffeine
-    - does [sting](drink) have sugar
-    - does [revive](drink) have salt
-    - ingredients of [coca](drink)
-    - what is [c2](drink) made of
-    - does [oolong](drink) have sugar
-    - does [number1](drink) have caffeine
-    - does [number 1](drink) have sugar
-    - does [zero degree](drink) have sugar
-    - is [cocoxim](drink) carbonated
-    - does [aquafina](drink) have sugar
-    - does [lavie](drink) have sugar
-    - does [yakult](drink) have probiotics
-    - what's in [vita milk](drink)
-    - does [dr thanh](drink) have caffeine
-    - does [wake up 247](drink) have caffeine
-    - does [wakeup247](drink) have caffeine
-
-# ==================== SPECIFY ICE ====================
-- intent: specify_ice
-  examples: |
-    - [less ice](ice)
-    - [lots of ice](ice)
-    - [medium ice](ice)
-    - [no ice](ice)
-    - [full ice](ice)
-    - just [a little ice](ice)
-    - [extra ice](ice) please
-    - [normal ice](ice)
-    - no [ice](ice) needed
-    - [light ice](ice)
-    - [skip the ice](ice)
-    - [add ice](ice)
-    - [no ice](ice)
-    - [light ice](ice)
-
-# ==================== SPECIFY SUGAR ====================
-- intent: specify_sugar
-  examples: |
-    - [less sugar](sugar)
-    - [extra sugar](sugar)
-    - [normal sugar](sugar)
-    - [no sugar](sugar)
-    - [less sweet](sugar)
-    - [medium sweetness](sugar)
-    - [very sweet](sugar)
-    - [light sugar](sugar)
-    - [no sugar](sugar) please
-    - [low sugar](sugar)
-    - [50 percent sugar](sugar)
-    - [full sugar](sugar)
-    - [zero sugar](sugar)
-    - [sugar free](sugar)
+    - does [aquafina](drink) have additives
+    - what additives does [fanta](drink) have
+    - what preservatives are in [mirinda](drink)
+    - what herbs are in [warrior](drink)
+    - what natural ingredients does [cocoxim](drink) have
+    - what artificial ingredients does [vita milk](drink) have
+    - what is the nutritional composition of [lavie](drink)
 
 # ==================== OUT OF SCOPE ====================
 - intent: out_of_scope
@@ -712,26 +450,33 @@ nlu:
     - who made this machine
     - is there wifi
     - where is the restroom
-    - where is my phone
     - how to cook pho
     - travel advice
     - where to buy clothes
     - football schedule
     - dollar exchange rate
     - who are you
-    - who created you
     - are you smart
     - tell me a joke
     - sing a song
     - do you have feelings
-    - do you have a girlfriend
-    - what do you do in free time
     - solve this math problem
     - translate to english
-    - give me a phone number
-    - where is this store
     - what time do you close
     - how long is delivery
+    - what's the temperature outside
+    - book me a flight
+    - what time is it now
+    - what's bitcoin price today
+    - how tall is mount everest
+    - who is the president of USA
+    - find me a restaurant nearby
+    - what movies are showing
+    - do you deliver to my house
+    - can I return a drink
+    - where is your head office
+    - do you accept foreign currency
+    - do you have a mobile app
 
 # ==================== VIEW CART ====================
 - intent: show_cart
@@ -748,3 +493,118 @@ nlu:
     - review my order
     - what is my order
     - how much have I ordered
+
+# ==================== SYNONYM MAPPING ====================
+- synonym: coca
+  examples: |
+    - coca cola
+    - coke
+    - coca-cola
+    - cocacola
+
+- synonym: pepsi
+  examples: |
+    - pepsi cola
+    - pepsi-cola
+
+- synonym: redbull
+  examples: |
+    - red bull
+    - red-bull
+    - redbull energy
+    - red bull energy
+
+- synonym: 7up
+  examples: |
+    - 7 up
+    - seven up
+    - sevenup
+
+- synonym: sprite
+  examples: |
+    - sprite soda
+    - lemon sprite
+
+- synonym: monster
+  examples: |
+    - monster energy
+    - monster drink
+
+- synonym: number1
+  examples: |
+    - number 1
+    - number one
+    - no1
+    - no 1
+
+- synonym: wakeup247
+  examples: |
+    - wake up 247
+    - wake up
+    - wakeup 247
+
+- synonym: cocoxim
+  examples: |
+    - coco xim
+    - coconut water cocoxim
+
+- synonym: vitamilk
+  examples: |
+    - vita milk
+    - vita-milk
+    - soy milk vita
+
+- synonym: drthanh
+  examples: |
+    - dr thanh
+    - doctor thanh
+    - dr. thanh
+
+- synonym: zerodegree
+  examples: |
+    - zero degree
+    - zero degree green tea
+    - 0 degree
+
+- synonym: oolong
+  examples: |
+    - oolong tea
+    - olong tea
+    - olong
+
+- synonym: browntea
+  examples: |
+    - roasted brown rice tea
+    - brown rice tea
+    - rice tea
+
+- synonym: cash
+  examples: |
+    - cash money
+    - physical cash
+    - paper money
+
+- synonym: card
+  examples: |
+    - credit card
+    - debit card
+    - atm card
+    - swipe card
+    - bank card
+
+- synonym: momo
+  examples: |
+    - momo wallet
+    - momo app
+    - momo payment
+
+- synonym: zalopay
+  examples: |
+    - zalo pay
+    - zalo payment
+
+- synonym: bank transfer
+  examples: |
+    - banking transfer
+    - digital bank transfer
+    - internet banking

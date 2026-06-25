@@ -1,0 +1,343 @@
+version: "3.1"
+
+# ================================================================
+# TEST SET — NLU Evaluation (DB-aligned)
+# Coverage: mọi field trong DB đều có test case tương ứng
+# ================================================================
+
+nlu:
+
+# ==================== GREET ====================
+- intent: greet
+  examples: |
+    - hello there
+    - hi machine
+    - hey you
+    - morning there
+    - afternoon there
+    - evening there
+    - hi bot
+    - greetings machine
+    - howdy there
+    - hi vending machine
+    - hello bot
+
+# ==================== GOODBYE ====================
+- intent: goodbye
+  examples: |
+    - bye now
+    - goodbye machine
+    - thanks for everything, bye
+    - great, thanks bye
+    - see ya later
+    - finished shopping, bye
+    - I'm done for now
+    - farewell machine
+    - thanks for helping me
+    - cheers, heading out
+    - see you later alligator
+    - that's all for me
+
+# ==================== ORDER DRINK ====================
+- intent: order_drink
+  examples: |
+    - I'd like a [coca](drink)
+    - let me have [pepsi](drink) please
+    - one [redbull](drink) for me
+    - grab me a [sprite](drink)
+    - [sting](drink) one can please
+    - give me a [monster](drink)
+    - I want [aquafina](drink)
+    - [fanta](drink) orange please
+    - [7up](drink) one can
+    - get me [revive](drink)
+    - I'll take [c2](drink)
+    - I want [lipton](drink)
+    - [nestea](drink) one bottle please
+    - [mirinda](drink) grape please
+    - a [cocoxim](drink) please
+    - one [yakult](drink) for me
+    - give me [vita milk](drink) [2](quantity)
+    - put [warrior](drink) in my order
+    - I'll have [number 1](drink)
+    - [wakeup247](drink) one can please
+    - one [oolong](drink) bottle please
+    - [birdy](drink) coffee one can
+    - [nescafe](drink) one please
+    - give me [4](quantity) [sprite](drink)
+    - [3](quantity) [sting](drink) please
+    - [2](quantity) [monster](drink) and [1](quantity) [redbull](drink)
+    - I want [1](quantity) [pepsi](drink) and [3](quantity) [fanta](drink)
+    - [2](quantity) [aquafina](drink) and [1](quantity) [lavie](drink) please
+    - [coca](drink) [500ml](size) please
+    - [pepsi](drink) in [can](size)
+
+# ==================== ASK PRICE ====================
+# Covers: price field (all volumes)
+- intent: ask_price
+  examples: |
+    - [coca](drink) how much
+    - what's the price of [pepsi](drink)
+    - how pricey is [sting](drink)
+    - [redbull](drink) how much does it cost
+    - price for [sprite](drink)
+    - [aquafina](drink) how much
+    - [7up](drink) how much
+    - [monster](drink) price please
+    - [revive](drink) how much
+    - [c2](drink) price check
+    - [yakult](drink) price per bottle
+    - [oolong tea](drink) how much
+    - [vita milk](drink) what's the price
+    - how much is [warrior](drink)
+    - [nescafe](drink) price per can
+
+# ==================== ASK AVAILABLE DRINKS ====================
+# Covers: show full menu + list new products (is_new)
+- intent: ask_available_drinks
+  examples: |
+    - what drinks have you got
+    - show me your menu
+    - what's available here
+    - list all your drinks
+    - full menu please
+    - what can I buy here
+    - what beverages do you carry
+    - show me everything you have
+    - what drink options do you have
+    - what's on the menu
+    - drink list please
+    - what types of drinks do you carry
+    - what products can I get
+    - any coffee or tea options here
+    - give me the full drink list
+    - list the new arrivals
+    - what products were recently added
+
+# ==================== ASK PRODUCT INFO ====================
+# Covers: name, brand, size/volume, stock, flavor, features/slogan,
+#         category, is_new, popularity, sales, expiry, image
+- intent: ask_product_info
+  examples: |
+    - how big is [coca](drink)
+    - [pepsi](drink) available in what sizes
+    - is [sting](drink) in a can or bottle
+    - tell me about [monster](drink)
+    - how many liters does [aquafina](drink) come in
+    - I'm looking for [sprite](drink), is it in stock
+    - any [revive](drink) remaining
+    - do you still carry [c2](drink)
+    - has [yakult](drink) sold out completely
+    - when was [vita milk](drink) added to the menu
+    - how many [cocoxim](drink) do you have left
+    - I want [warrior](drink) - is it available
+    - which company produces [monster](drink)
+    - what brand is [aquafina](drink)
+    - who's the manufacturer of [sting](drink)
+    - was [oolong tea](drink) recently added
+    - what is the expiry date of [coca](drink)
+    - [pepsi](drink) shelf life
+    - is [sprite](drink) a famous brand
+    - what flavor does [redbull](drink) have
+    - what category is [number 1](drink)
+    - what type of drink is [zero degree](drink)
+    - how popular is [fanta](drink)
+    - [mirinda](drink) popularity rating
+    - how many [monster](drink) have been sold
+    - [sting](drink) total sales figures
+    - what is [coca](drink) slogan
+    - [redbull](drink) features please
+
+# ==================== CONFIRM ====================
+- intent: confirm
+  examples: |
+    - go ahead with that
+    - that's exactly right
+    - yep correct
+    - all confirmed
+    - yes take my order
+    - alright proceed
+    - make it official
+    - that's my final choice
+    - yes proceed now
+    - that is correct
+    - yes confirm this
+    - submit it please
+    - sounds right
+
+# ==================== DENY ====================
+- intent: deny
+  examples: |
+    - no way
+    - please cancel
+    - nope not this
+    - I want to cancel
+    - never mind that
+    - forget that
+    - abort that
+    - stop the order
+    - no thank you
+    - start over please
+    - that's not right
+    - definitely not
+
+# ==================== SPECIFY SIZE ====================
+- intent: specify_size
+  examples: |
+    - [330 ml](size)
+    - [1 liter](size) bottle
+    - [big bottle](size) please
+    - [small can](size)
+    - I'd like the [large](size) one
+    - [500ml](size) bottle please
+    - [medium size](size)
+    - [600ml](size) please
+    - I'll take [small](size)
+    - just the [large bottle](size)
+
+# ==================== SPECIFY QUANTITY ====================
+- intent: specify_quantity
+  examples: |
+    - [one](quantity) please
+    - give me [two bottles](quantity)
+    - I'll take [3](quantity)
+    - [four](quantity) bottles
+    - bring me [five cans](quantity)
+    - just [1](quantity) bottle
+    - [2](quantity) of them
+    - make that [three](quantity)
+    - [6 bottles](quantity)
+    - [10](quantity) bottles
+
+# ==================== SPECIFY PAYMENT ====================
+# Covers: all payment methods available
+- intent: specify_payment
+  examples: |
+    - I'll pay with [cash](payment_method)
+    - pay via [momo](payment_method)
+    - [zalopay](payment_method) please
+    - let me scan [QR code](payment_method)
+    - [vnpay](payment_method) please
+    - swipe my [card](payment_method)
+    - [credit card](payment_method) please
+    - [e-wallet](payment_method) payment
+    - [cash](payment_method) payment please
+    - [ATM card](payment_method) please
+    - pay by [card](payment_method)
+    - [bank transfer](payment_method) please
+    - let me pay now
+    - ready to checkout
+    - I want to pay now
+
+# ==================== ASK HELP ====================
+- intent: ask_help
+  examples: |
+    - help me please
+    - how do I order here
+    - I need some help
+    - how does this machine work
+    - what's the first step to place an order
+    - show me how to order
+    - I need step by step help
+    - what can you do for me
+    - not sure how to use this
+    - tell me how this works
+    - how to use this machine
+    - I don't know how to order
+
+# ==================== ASK PROMOTION ====================
+- intent: ask_promotion
+  examples: |
+    - any discounts today
+    - is there a promotion going on
+    - got any deals
+    - what's on sale today
+    - do you have coupon codes
+    - combo deals today
+    - buy more save more
+    - do you have special pricing today
+    - discount for bulk buying
+    - is there a happy hour right now
+    - promotional offers available
+    - got a flash sale running
+
+# ==================== ASK RECOMMENDATION ====================
+# Covers: general recommendation + top 3 by popularity + top 3 by sales
+- intent: ask_recommendation
+  examples: |
+    - what would you recommend
+    - what's the best drink here
+    - suggest something for me
+    - what's most popular here
+    - what's your top pick
+    - recommend a drink please
+    - which drink do most people order
+    - what's the bestseller here
+    - any suggestions for me
+    - what's trending here
+    - what's selling the most
+    - which drink should I get today
+    - which one is good here
+    - top 3 best selling drinks
+    - which 3 drinks sold the most
+
+# ==================== ASK INGREDIENTS ====================
+# Covers: ingredients, has_sugar, has_caffeine, carbonated, probiotic
+- intent: ask_ingredients
+  examples: |
+    - what's inside [coca](drink)
+    - what is [pepsi](drink) made with
+    - what's [sting](drink) made of
+    - what does [redbull](drink) have in it
+    - how is [sprite](drink) made
+    - break down the contents of [c2](drink)
+    - is there caffeine in [monster](drink)
+    - is there sugar in [aquafina](drink)
+    - is [yakult](drink) probiotic
+    - what herbs does [dr thanh](drink) have
+    - list the ingredients of [warrior](drink)
+    - is [fanta](drink) carbonated
+    - is [7up](drink) sparkling
+    - is there caffeine in [nescafe](drink)
+    - what goes into [vita milk](drink)
+    - does [cocoxim](drink) have added sugar
+    - is [lavie](drink) mineral water
+    - is there caffeine in [wakeup247](drink)
+
+# ==================== OUT OF SCOPE ====================
+- intent: out_of_scope
+  examples: |
+    - how's the weather today
+    - what's today's gold price
+    - can you calculate for me
+    - give me the news
+    - what's the capital of Vietnam
+    - who built this machine
+    - where's the bathroom
+    - how do I cook pho
+    - where can I buy clothes
+    - football match schedule
+    - dollar to VND rate today
+    - say a joke
+    - how tall is the Eiffel Tower
+    - do you feel emotions
+    - please translate to english
+    - when do you close
+    - what's the delivery time
+    - I need to book a flight
+    - can you tell me the time
+    - who is the current president
+
+# ==================== SHOW CART ====================
+- intent: show_cart
+  examples: |
+    - view my cart
+    - my cart items please
+    - show what's in my basket
+    - show my order please
+    - what is my current order
+    - I want to look at my cart
+    - list what I've ordered so far
+    - go over my cart
+    - cart contents please
+    - items currently in my cart
