@@ -50,6 +50,14 @@ nlu:
     - [oolong tea](drink) one bottle
     - [dr thanh](drink) please
     - [yakult](drink) please
+    - I want [lipton](drink)
+    - [lipton](drink) please
+    - put [warrior](drink) in my order
+    - add [coca](drink) to my order
+    - add [pepsi](drink) to my cart
+    - [birdy](drink) one can
+    - [birdy coffee](drink) please
+    - add [sprite](drink) to my order
     - give me [2](quantity) [coca](drink) and [1](quantity) [pepsi](drink)
     - I want [1](quantity) [sprite](drink) and [2](quantity) [redbull](drink)
     - order [2](quantity) [sting](drink) and [1](quantity) [monster](drink)
@@ -109,6 +117,8 @@ nlu:
     - show me only the new products
     - list drinks that just arrived
     - what products were recently added
+    - what can I buy here
+    - show me everything you have
 
 # ==================== ASK PRODUCT INFO ====================
 - intent: ask_product_info
@@ -154,6 +164,9 @@ nlu:
     - [sprite](drink) total sales
     - what is [coca](drink) slogan
     - [fanta](drink) features please
+    - how many [cocoxim](drink) do you have left
+    - was [oolong tea](drink) recently added
+    - is [oolong tea](drink) a new product
 
 # ==================== CONFIRM ====================
 - intent: confirm
@@ -243,12 +256,16 @@ nlu:
     - [can](size)
     - [bottle](size)
     - [330ml](size)
+    - [330 ml](size)
     - [1 liter](size)
     - [large](size)
     - give me [large size](size)
     - get me [small can](size)
     - [1.5 liter](size) please
     - I want [big bottle](size)
+    - I'd like the [large one](size)
+    - the [small one](size) please
+    - give me the [large size](size)
 
 # ==================== SPECIFY QUANTITY ====================
 - intent: specify_quantity
@@ -368,6 +385,7 @@ nlu:
     - promotional pricing available
     - cashback offers available
     - discount for buying in bulk
+    - is there a happy hour right now
 
 # ==================== ASK RECOMMENDATION ====================
 - intent: ask_recommendation
@@ -437,6 +455,7 @@ nlu:
     - what natural ingredients does [cocoxim](drink) have
     - what artificial ingredients does [vita milk](drink) have
     - what is the nutritional composition of [lavie](drink)
+    - is [lavie](drink) mineral water
 
 # ==================== OUT OF SCOPE ====================
 - intent: out_of_scope
@@ -477,6 +496,7 @@ nlu:
     - where is your head office
     - do you accept foreign currency
     - do you have a mobile app
+    - can you calculate for me
 
 # ==================== VIEW CART ====================
 - intent: show_cart
@@ -602,6 +622,17 @@ nlu:
   examples: |
     - zalo pay
     - zalo payment
+
+- synonym: lipton
+  examples: |
+    - lipton tea
+    - lipton ice tea
+    - lipton green tea
+
+- synonym: birdy
+  examples: |
+    - birdy coffee
+    - birdy canned coffee
 
 - synonym: bank transfer
   examples: |

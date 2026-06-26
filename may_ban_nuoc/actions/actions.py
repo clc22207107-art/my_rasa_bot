@@ -213,7 +213,7 @@ def parse_quantity(qty_str: str) -> int:
 
 def resolve_volume(drink_data: dict, size_slot: str) -> str:
     if not size_slot:
-        return drink_data["default_volume"]
+        return drink_data["volumes"][0]   # smallest size by default
     size_lower = size_slot.lower()
     for vol in drink_data["volumes"]:
         if vol.lower() in size_lower or size_lower in vol.lower():
@@ -223,7 +223,7 @@ def resolve_volume(drink_data: dict, size_slot: str) -> str:
         return drink_data["volumes"][-1]
     if any(w in size_norm for w in ["small", "sm", "s"]):
         return drink_data["volumes"][0]
-    return drink_data["default_volume"]
+    return drink_data["volumes"][0]       # fallback: smallest size
 
 
 def get_cart(tracker) -> list:

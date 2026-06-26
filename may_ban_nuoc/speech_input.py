@@ -1,11 +1,21 @@
 """
 speech_input.py — Automatic Drink Vending Machine
 ==================================================
-STT: faster-whisper model "medium" (offline, local)
-TTS: Piper TTS v1.4.2 (offline, local)
+STT  : faster-whisper "medium" (offline, local)
+TTS  : Piper TTS v1.4.2 (offline, local)
+Wake : openWakeWord — nhiều wake word song song, 100% offline
+VAD  : webrtcvad (phát hiện kết thúc câu, offline)
 
 Pipeline:
-    Mic → faster-whisper → text → Rasa REST API → response → Piper TTS → Loa
+    [idle]   Mic → openWakeWord → nghe thấy BẤT KỲ wake word nào
+    [beep]   Phát tiếng bíp xác nhận
+    [record] Mic → webrtcvad → im lặng ~390ms → dừng ghi
+    [stt]    Audio → faster-whisper → text
+    [bot]    text → Rasa REST → response → Piper TTS → loa
+    → quay lại [idle]
+
+Train wake word tùy chỉnh (Google Colab, miễn phí):
+    Xem hướng dẫn trong WAKE_WORD_MODELS bên dưới.
 
 Cách chạy (3 terminal):
     Terminal 1:  rasa run actions
@@ -34,8 +44,6 @@ RASA_URL  = "http://localhost:5005/webhooks/rest/webhook"
 SENDER_ID = "voice_user"
 
 # ── STT: faster-whisper ──────────────────────────────────────
-# Laptop : "medium" (~1.5GB, chính xác nhất trên CPU)
-# Pi 5   : đổi thành "small" hoặc "base" cho nhẹ hơn
 WHISPER_MODEL_SIZE = "medium"
 WHISPER_DEVICE     = "cpu"
 WHISPER_COMPUTE    = "int8"
@@ -44,16 +52,49 @@ WHISPER_COMPUTE    = "int8"
 PIPER_MODEL_PATH  = os.path.expanduser("~/piper_models/en_US-lessac-medium.onnx")
 PIPER_CONFIG_PATH = os.path.expanduser("~/piper_models/en_US-lessac-medium.onnx.json")
 
-# ── Ghi âm ───────────────────────────────────────────────────
-SAMPLE_RATE       = 16000
-SILENCE_THRESHOLD = 0.012
-SILENCE_DURATION  = 1.5
-MAX_RECORD_SEC    = 10
+# ── Wake word: openWakeWord (100% offline, nhiều phrase cùng lúc) ────────────
+#
+# Mỗi file .onnx = 1 wake word phrase.
+# Hệ thống kích hoạt khi BẤT KỲ model nào vượt ngưỡng WAKE_THRESHOLD.
+#
+# Cách train model tùy chỉnh trên Google Colab (miễn phí, ~10 phút):
+#   1. Mở Google Colab → New notebook
+#   2. Chạy:
+#        !pip install openwakeword TTS
+#        !python -m openwakeword.train --training_phrase "hey vendor" \
+#            --output_dir "/content/wake_models" --n_epochs 50
+#        !python -m openwakeword.train --training_phrase "ok vendy" \
+#            --output_dir "/content/wake_models" --n_epochs 50
+#        !python -m openwakeword.train --training_phrase "hi machine" \
+#            --output_dir "/content/wake_models" --n_epochs 50
+#   3. Download các file .onnx → chép vào thư mục wake_models/
+#
+# Trong lúc chờ train xong, dùng model built-in để test:
+WAKE_WORD_MODELS = [
+    # --- Custom models (sau khi train trên Colab) ---
+    # "wake_models/hey_vendor.onnx",
+    # "wake_models/ok_vendy.onnx",
+    # "wake_models/hi_machine.onnx",
+
+    # --- Built-in models (dùng tạm để test ngay) ---
+    "hey_jarvis",   # nói "hey jarvis"
+    "alexa",        # nói "alexa"
+]
+
+WAKE_THRESHOLD = 0.3   # hạ xuống để nhận giọng non-native (0.3–0.4 phù hợp)
+
+# ── VAD end-of-speech: webrtcvad ─────────────────────────────
+VAD_AGGRESSIVENESS = 3   # 3 = lọc nhiễu nền tốt nhất, phân biệt rõ nói/không nói
+VAD_FRAME_MS       = 30  # chỉ dùng 10 / 20 / 30
+VAD_VOICED_TRIGGER = 3   # số frame có tiếng nói để bắt đầu ghi (3×30ms = 90ms)
+VAD_SILENCE_END    = 8   # số frame im lặng để kết thúc (8×30ms = 240ms)
+MAX_RECORD_SEC     = 10
+
+SAMPLE_RATE = 16000
 
 # ── Chế độ xác nhận ─────────────────────────────────────────
-# True  = hỏi xác nhận trước khi gửi (dùng khi test)
-# False = tự động gửi luôn (dùng khi deploy)
 CONFIRM_BEFORE_SEND = False
+
 
 # ============================================================
 # KHỞI TẠO MODEL
@@ -63,62 +104,170 @@ print("=" * 55)
 print("  MÁY BÁN NƯỚC — ĐIỀU KHIỂN BẰNG GIỌNG NÓI")
 print("=" * 55)
 
-print(f"\n  [1/2] Đang tải STT (faster-whisper/{WHISPER_MODEL_SIZE})...",
+print(f"\n  [1/3] Đang tải STT (faster-whisper/{WHISPER_MODEL_SIZE})...",
       end=" ", flush=True)
 t0 = time.time()
-stt_model = WhisperModel(
-    WHISPER_MODEL_SIZE,
-    device=WHISPER_DEVICE,
-    compute_type=WHISPER_COMPUTE,
-)
+stt_model = WhisperModel(WHISPER_MODEL_SIZE, device=WHISPER_DEVICE,
+                         compute_type=WHISPER_COMPUTE)
 print(f"OK ({time.time()-t0:.1f}s)")
 
-print(f"  [2/2] Đang tải TTS (Piper lessac-medium)...",
-      end=" ", flush=True)
+print("  [2/3] Đang tải TTS (Piper lessac-medium)...", end=" ", flush=True)
 t0 = time.time()
 if not os.path.exists(PIPER_MODEL_PATH):
-    print(f"\n  Không tìm thấy Piper model: {PIPER_MODEL_PATH}")
-    print("  Download bằng lệnh:")
-    print("    mkdir -p ~/piper_models && cd ~/piper_models")
-    print("    wget https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx")
-    print("    wget https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx.json")
+    print(f"\n  Không tìm thấy: {PIPER_MODEL_PATH}")
+    print("  Download:\n    mkdir -p ~/piper_models && cd ~/piper_models")
+    print("    wget .../en_US-lessac-medium.onnx")
     sys.exit(1)
 tts_voice = PiperVoice.load(PIPER_MODEL_PATH, config_path=PIPER_CONFIG_PATH)
 print(f"OK ({time.time()-t0:.1f}s)")
 
-print("\n  Tất cả model da san sang!")
-print(f"  Rasa : {RASA_URL}")
-print(f"  Mode : {'Xac nhan truoc khi gui' if CONFIRM_BEFORE_SEND else 'Tu dong gui'}\n")
+print("  [3/3] Đang tải Wake word models...", end=" ", flush=True)
+t0 = time.time()
+try:
+    from openwakeword.model import Model as OWWModel
+    oww_model = OWWModel(wakeword_models=WAKE_WORD_MODELS,
+                         inference_framework="onnx")
+    # Tên hiển thị từ key của model
+    wake_labels = [k.replace("_", " ") for k in oww_model.models.keys()]
+    WAKE_ENABLED = True
+    print(f"OK ({time.time()-t0:.1f}s)")
+    print(f"  Wake words: {wake_labels}")
+except Exception as e:
+    print(f"SKIP\n  Lỗi: {e}")
+    WAKE_ENABLED = False
+    oww_model = None
+    wake_labels = []
+
+try:
+    import webrtcvad as _wv
+    VAD_ENABLED = True
+except ImportError:
+    VAD_ENABLED = False
+
+print(f"\n  Rasa      : {RASA_URL}")
+if WAKE_ENABLED:
+    print(f"  Wake words: {' | '.join(wake_labels)}")
+else:
+    print("  Wake word : TẮT (luôn lắng nghe)")
+print(f"  VAD       : {'webrtcvad (chính xác)' if VAD_ENABLED else 'volume threshold'}\n")
+
 
 # ============================================================
-# GHI AM
+# TIẾNG BÍP XÁC NHẬN
 # ============================================================
 
-def record_audio():
-    """
-    Ghi am tu mic den khi phat hien im lang sau tieng noi.
-    Returns numpy float32 array 1D hoac None.
-    """
-    chunk_dur   = 0.08
-    chunk_size  = int(SAMPLE_RATE * chunk_dur)
-    need_silent = int(SILENCE_DURATION / chunk_dur)
-    max_chunks  = int(MAX_RECORD_SEC / chunk_dur)
+def play_beep(freq: int = 880, duration: float = 0.12):
+    t = np.linspace(0, duration, int(SAMPLE_RATE * duration), endpoint=False)
+    sd.play((0.25 * np.sin(2 * np.pi * freq * t)).astype(np.float32),
+            samplerate=SAMPLE_RATE)
+    sd.wait()
 
-    chunks       = []
-    silent_count = 0
-    speech_found = False
 
-    with sd.InputStream(
-        samplerate=SAMPLE_RATE,
-        channels=1,
-        dtype="float32",
-        blocksize=chunk_size,
-    ) as stream:
-        while len(chunks) < max_chunks:
+# ============================================================
+# PHASE 1 — WAKE WORD (Porcupine)
+# ============================================================
+
+def wait_for_wake_word():
+    """
+    Đọc mic liên tục theo chunk 80ms và chạy tất cả wake word models.
+    Kích hoạt khi BẤT KỲ model nào vượt WAKE_THRESHOLD.
+    CPU thấp khi idle (~2-5% trên Pi 5).
+    """
+    chunk = 1280  # 80ms tại 16kHz — cố định theo openWakeWord
+    labels_str = " | ".join(f'"{w}"' for w in wake_labels)
+    print(f"  Chờ wake word — nói {labels_str}...", flush=True)
+
+    with sd.InputStream(samplerate=SAMPLE_RATE, channels=1,
+                        dtype="int16", blocksize=chunk) as stream:
+        while True:
+            pcm, _ = stream.read(chunk)
+            scores = oww_model.predict(pcm.flatten())
+            best_key   = max(scores, key=scores.get)
+            best_score = scores[best_key]
+
+            # Hiển thị thanh mức độ nhận diện của model tốt nhất
+            bars = min(int(best_score * 30), 30)
+            print(f"\r  [{('█' * bars):<30}] {best_key}: {best_score:.2f} ",
+                  end="", flush=True)
+
+            if best_score >= WAKE_THRESHOLD:
+                print(f"\r  ✓ Wake word nhận ra: \"{best_key.replace('_', ' ')}\" "
+                      f"(score={best_score:.2f}){' ' * 20}")
+                return
+
+
+# ============================================================
+# PHASE 2A — GHI ÂM VỚI VAD (webrtcvad)
+# ============================================================
+
+def record_with_vad() -> np.ndarray | None:
+    """
+    Ghi âm sau wake word.
+    Dùng webrtcvad để phát hiện chính xác khi người dùng nói xong.
+    Dừng sau ~390ms im lặng liên tiếp.
+    """
+    import webrtcvad
+    vad = webrtcvad.Vad(VAD_AGGRESSIVENESS)
+    frame_samples = int(SAMPLE_RATE * VAD_FRAME_MS / 1000)   # 480 samples
+    max_frames    = int(MAX_RECORD_SEC * 1000 / VAD_FRAME_MS)
+
+    all_frames    = []
+    voiced_count  = 0
+    silence_count = 0
+    speech_started = False
+
+    wait_frames = 0
+    max_wait = int(SESSION_IDLE_TIMEOUT * 1000 / VAD_FRAME_MS)
+    print("  Đang chờ...", flush=True)
+
+    with sd.InputStream(samplerate=SAMPLE_RATE, channels=1,
+                        dtype="int16", blocksize=frame_samples) as stream:
+        for _ in range(max_frames):
+            data, _ = stream.read(frame_samples)
+            all_frames.append(data.copy())
+            is_speech = vad.is_speech(data.tobytes(), SAMPLE_RATE)
+
+            if is_speech:
+                voiced_count  += 1
+                silence_count  = 0
+                wait_frames    = 0
+                if not speech_started and voiced_count >= VAD_VOICED_TRIGGER:
+                    speech_started = True
+                    print("  [Đang ghi...]", flush=True)
+            elif speech_started:
+                silence_count += 1
+                if silence_count >= VAD_SILENCE_END:
+                    break  # kết thúc câu
+            else:
+                voiced_count = 0
+                wait_frames += 1
+                if not speech_started and wait_frames >= max_wait:
+                    break  # timeout — không ai nói trong 12s
+
+    if not speech_started:
+        return None
+
+    return np.concatenate(all_frames).flatten().astype(np.float32) / 32768.0
+
+
+# ============================================================
+# PHASE 2B — GHI ÂM VOLUME THRESHOLD (fallback)
+# ============================================================
+
+def record_with_threshold() -> np.ndarray | None:
+    SILENCE_THRESHOLD = 0.012
+    SILENCE_DURATION  = 1.5
+    chunk_size  = int(SAMPLE_RATE * 0.08)
+    need_silent = int(SILENCE_DURATION / 0.08)
+    chunks, silent_count, speech_found = [], 0, False
+
+    print("  Đang lắng nghe...", flush=True)
+    with sd.InputStream(samplerate=SAMPLE_RATE, channels=1,
+                        dtype="float32", blocksize=chunk_size) as stream:
+        while len(chunks) < int(MAX_RECORD_SEC / 0.08):
             data, _ = stream.read(chunk_size)
             chunks.append(data.copy())
             vol = float(np.abs(data).mean())
-
             if vol > SILENCE_THRESHOLD:
                 speech_found = True
                 silent_count = 0
@@ -126,29 +275,21 @@ def record_audio():
                 silent_count += 1
                 if silent_count >= need_silent:
                     break
+    return np.concatenate(chunks).flatten() if speech_found else None
 
-            bars  = min(int(vol * 800), 25)
-            label = "Dang nghe..." if speech_found else "Cho tieng noi..."
-            print(f"\r  [{'|' * bars:<25}] {label}   ", end="", flush=True)
 
-    print("\r" + " " * 60 + "\r", end="")
-
-    if not speech_found:
-        return None
-
-    return np.concatenate(chunks, axis=0).flatten()
+def record_audio() -> np.ndarray | None:
+    return record_with_vad() if VAD_ENABLED else record_with_threshold()
 
 
 # ============================================================
 # SPEECH TO TEXT — faster-whisper
 # ============================================================
 
-def stt(audio):
-    """Nhan dang giong noi tieng Anh bang faster-whisper."""
-    print("  Dang nhan dang...", end=" ", flush=True)
+def stt(audio: np.ndarray) -> str | None:
+    print("  Nhận dạng...", end=" ", flush=True)
     t0 = time.time()
-
-    segments, info = stt_model.transcribe(
+    segments, _ = stt_model.transcribe(
         audio,
         language                   = "en",
         beam_size                  = 5,
@@ -166,57 +307,33 @@ def stt(audio):
             "Lipton, Nestea, Birdy, Nescafe, Cocoxim, Twister."
         ),
     )
-
-    text = " ".join(seg.text.strip() for seg in segments).strip()
-    text = text.strip(".,!? ")
-
-    elapsed = time.time() - t0
-    print(f"({elapsed:.1f}s)")
-
+    text = " ".join(s.text.strip() for s in segments).strip().strip(".,!? ")
+    print(f"({time.time()-t0:.1f}s)")
     return text if len(text) >= 2 else None
 
 
 # ============================================================
-# TEXT TO SPEECH — Piper TTS v1.4.2
+# TEXT TO SPEECH — Piper
 # ============================================================
 
-def clean_text_for_tts(text: str) -> str:
-    """Lam sach text truoc khi doc — bo emoji, markdown."""
-    # Bo emoji (dung \U 8-digit de tranh parse nham range ASCII)
-    text = re.sub(
-        r'[\U00010000-\U0010FFFF\u2600-\u26FF\u2700-\u27BF'
-        r'\U0001F300-\U0001F9FF\u2300-\u23FF\u2B50]',
-        '', text, flags=re.UNICODE
-    )
-    # Bo markdown bold/italic
-    text = re.sub(r'\*+', '', text)
-    text = re.sub(r'_+', '', text)
-    # Bo duong ke ngang
+def clean_for_tts(text: str) -> str:
+    text = re.sub(r'[\U00010000-\U0010FFFF☀-➿\U0001F300-\U0001F9FF]',
+                  '', text, flags=re.UNICODE)
+    text = re.sub(r'\*+|_+', '', text)
     text = re.sub(r'[─═]+', '.', text)
-    # Normalize khoang trang
-    text = re.sub(r'\s+', ' ', text).strip()
-    return text
+    return re.sub(r'\s+', ' ', text).strip()
 
 
 def tts(text: str):
-    """Doc text thanh giong noi bang Piper va phat ra loa qua sounddevice."""
-    if not text or not text.strip():
-        return
-
-    clean = clean_text_for_tts(text)
+    clean = clean_for_tts(text)
     if not clean:
         return
-
     try:
-        # synthesize() tra ve cac AudioChunk voi audio_float_array la float32 [-1, 1]
-        audio_parts = [chunk.audio_float_array for chunk in tts_voice.synthesize(clean)]
-        if not audio_parts:
-            return
-
-        audio = np.concatenate(audio_parts)
-        sd.play(audio, samplerate=tts_voice.config.sample_rate)
-        sd.wait()
-
+        parts = [c.audio_float_array for c in tts_voice.synthesize(clean)]
+        if parts:
+            sd.play(np.concatenate(parts), samplerate=tts_voice.config.sample_rate)
+            sd.wait()
+            time.sleep(0.4)  # chờ âm thanh tan trong phòng
     except Exception as e:
         print(f"  TTS error: {e}")
 
@@ -226,31 +343,24 @@ def tts(text: str):
 # ============================================================
 
 def chat(message: str) -> list:
-    """Gui message den Rasa REST API."""
     try:
-        r = requests.post(
-            RASA_URL,
-            json    = {"sender": SENDER_ID, "message": message},
-            timeout = 10,
-        )
+        r = requests.post(RASA_URL,
+                          json={"sender": SENDER_ID, "message": message},
+                          timeout=10)
         r.raise_for_status()
         return r.json()
     except requests.exceptions.ConnectionError:
-        print("\n  Khong ket noi duoc Rasa!")
-        print("  -> Terminal 1: rasa run actions")
-        print("  -> Terminal 2: rasa run --enable-api --cors \"*\"")
+        print("  Không kết nối Rasa! Chạy Terminal 1+2 trước.")
         return []
     except Exception as e:
-        print(f"\n  Loi Rasa: {e}")
+        print(f"  Lỗi Rasa: {e}")
         return []
 
 
 def handle_responses(responses: list):
-    """In response ra man hinh va doc to bang TTS."""
     if not responses:
-        print("  Bot: (khong co phan hoi)")
+        print("  Bot: (không có phản hồi)")
         return
-
     print()
     for resp in responses:
         text = resp.get("text", "")
@@ -260,76 +370,83 @@ def handle_responses(responses: list):
 
 
 # ============================================================
-# VONG LAP CHINH
+# VÒNG LẶP CHÍNH
 # ============================================================
 
+SESSION_IDLE_TIMEOUT = 17  # giây không nói → đóng phiên tự động
+
+def run_session():
+    """
+    Chạy 1 phiên hội thoại sau khi wake word được kích hoạt.
+    Người dùng hỏi liên tiếp không cần nói lại wake word.
+    Phiên kết thúc khi:
+      - Người dùng nói "goodbye / bye"
+      - Không có tiếng nói trong SESSION_IDLE_TIMEOUT giây (người rời đi)
+    Trả về True nếu kết thúc bình thường, False nếu timeout (tự rời đi).
+    """
+    print(f"\n{'─'*45}")
+    print("  Phiên mới bắt đầu. Hỏi ngay đi!")
+    print(f"  (Tự đóng sau {SESSION_IDLE_TIMEOUT}s nếu không nói gì)")
+    print(f"{'─'*45}\n")
+
+    while True:
+        audio = record_audio()
+
+        if audio is None:
+            # Hết SESSION_IDLE_TIMEOUT giây không nói — người đã rời đi
+            print("  Không có hoạt động — đóng phiên.\n")
+            return False
+
+        text = stt(audio)
+        if not text:
+            # Nhận dạng thất bại — tiếp tục chờ trong phiên, không đóng
+            print("  Không nghe rõ, thử lại...\n")
+            continue
+
+        print(f"\n  Bạn: \"{text}\"")
+        print("  Xử lý...")
+        handle_responses(chat(text))
+
+        # Kết thúc phiên chủ động khi người dùng tạm biệt
+        if any(w in text.lower() for w in ["goodbye", "bye", "exit", "quit", "done"]):
+            print("  Phiên kết thúc. Hẹn gặp lại!\n")
+            return True
+
+        print()
+
+
 def main():
-    # Kiem tra ket noi Rasa
-    print("  Kiem tra ket noi Rasa...", end=" ", flush=True)
+    print("  Kiểm tra Rasa...", end=" ", flush=True)
     responses = chat("hello")
     if responses:
         print("OK\n")
         handle_responses(responses)
     else:
-        print("Chua ket noi\n")
-        print("  -> Chay Rasa truoc:")
-        print("    Terminal 1: rasa run actions")
-        print("    Terminal 2: rasa run --enable-api --cors \"*\"\n")
+        print("Chưa kết nối\n")
 
     print("-" * 55)
-    print("  Huong dan:")
-    print("  - Noi vao mic -> bot tu nhan dang va tra loi")
-    print("  - Go thu cong neu mic khong nhan")
-    print("  - Ctrl+C hoac noi 'goodbye' de thoat")
+    if WAKE_ENABLED:
+        labels = " / ".join(f'"{w}"' for w in wake_labels)
+        print(f"  Nói {labels} để bắt đầu phiên mới")
+    else:
+        print("  Tự động lắng nghe (không có wake word)")
+    print("  Ctrl+C để thoát")
     print("-" * 55 + "\n")
 
     while True:
-        print("Bat dau noi...")
+        # ── Chờ wake word để mở phiên ──────────────────────
+        if WAKE_ENABLED:
+            wait_for_wake_word()
+            play_beep()
 
-        # 1. Ghi am
-        audio = record_audio()
+        # ── Chạy phiên hội thoại ────────────────────────────
+        run_session()
 
-        if audio is None:
-            print("  Khong nghe thay. Go thu cong (Enter de thu lai):")
-            manual = input("  > ").strip()
-            if not manual:
-                continue
-            text = manual
-        else:
-            # 2. STT
-            text = stt(audio)
-            if not text:
-                print("  Khong nhan ra. Go thu cong (Enter de thu lai):")
-                manual = input("  > ").strip()
-                if not manual:
-                    continue
-                text = manual
-
-        # 3. Hien thi text nhan dang
-        print(f"\n  Ban: \"{text}\"")
-
-        # 4. Xac nhan (tat bang CONFIRM_BEFORE_SEND = False)
-        if CONFIRM_BEFORE_SEND:
-            choice = input("  [Enter]=gui  [s]=sua  [q]=thoat: ").strip().lower()
-            if choice == "q":
-                tts("Goodbye! Thank you for using our service!")
-                print("\n  Tam biet!\n")
-                break
-            elif choice == "s":
-                text = input("  Nhap lai: ").strip()
-                if not text:
-                    continue
-
-        # 5. Gui den Rasa
-        print("  Dang xu ly...")
-        responses = chat(text)
-        handle_responses(responses)
-
-        # 6. Thoat neu goodbye
-        if text.lower() in ["goodbye", "bye", "exit", "quit"]:
-            break
-
-        print()
+        # Chờ âm thanh TTS tan hết trong phòng trước khi nghe lại
+        # (tránh TTS trigger nhầm wake word)
+        time.sleep(1.5)
+        if WAKE_ENABLED:
+            oww_model.reset()  # xóa buffer nội bộ của model
 
 
 # ============================================================
@@ -338,5 +455,5 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("\n\n  Dung boi Ctrl+C\n")
+        print("\n\n  Dừng bởi Ctrl+C\n")
         sys.exit(0)

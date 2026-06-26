@@ -1,0 +1,16 @@
+intent_expected,clean,stt_output,word_overlap,stt_ok,predicted_intent,confidence,intent_ok,status,t_tts_ms,t_stt_ms,t_nlu_ms,t_total_ms,cpu_avg_tts,cpu_avg_stt,cpu_avg_nlu,cpu_peak_total,ram_peak_mb,temp_avg_tts,temp_avg_stt,temp_avg_nlu,temp_peak_total
+ask_price,coca how much,Coca-Cola Much,0.33,FAIL,ask_price,0.997,PASS,FAIL,84.8,4665.3,10.7,4760.9,40.6,34.5,0.0,100.0,1895.9,27.8,27.8,27.8,27.8
+ask_price,what's the price of pepsi,What's the price of Pepsi,1.00,PASS,ask_price,1.000,PASS,PASS,100.8,4813.2,14.2,4928.2,39.9,34.6,0.0,100.0,2167.2,27.8,27.8,27.8,27.8
+ask_price,how pricey is sting,How pricey is Sting,1.00,PASS,ask_price,0.998,PASS,PASS,95.0,4434.8,9.9,4539.8,40.2,36.1,0.0,100.0,2410.6,27.8,27.8,27.8,27.8
+ask_price,redbull how much does it cost,Rentable How much does it cost,0.83,PASS,ask_price,1.000,PASS,PASS,112.4,5241.0,14.6,5367.9,52.2,41.9,0.0,100.0,2413.7,27.8,27.8,27.8,27.8
+ask_price,price for sprite,Price for Sprite,1.00,PASS,ask_price,1.000,PASS,PASS,77.1,4631.6,12.6,4721.3,40.0,38.5,0.0,97.5,2413.7,27.8,27.8,27.8,27.8
+ask_price,aquafina how much,"Aquafina, how much",1.00,PASS,ask_price,1.000,PASS,PASS,93.1,4684.1,14.4,4791.6,94.0,40.3,0.0,100.0,2413.7,27.8,27.8,27.8,27.8
+ask_price,7up how much,7UP how much,1.00,PASS,ask_price,0.997,PASS,PASS,90.6,5020.7,18.7,5130.0,43.3,41.1,0.0,100.0,2413.7,27.8,27.8,27.8,27.8
+ask_price,monster price please,Monster price please,1.00,PASS,ask_price,1.000,PASS,PASS,121.7,4707.6,13.0,4842.3,59.6,37.5,0.0,100.0,2413.7,27.8,27.8,27.8,27.8
+ask_price,revive how much,Revive how much,1.00,PASS,ask_price,1.000,PASS,PASS,74.1,3679.8,10.2,3764.1,89.0,35.0,0.0,100.0,2413.7,27.8,27.8,27.8,27.8
+ask_price,c2 price check,C2 price check,1.00,PASS,ask_price,1.000,PASS,PASS,89.2,3830.1,10.4,3929.6,38.9,34.6,0.0,100.0,2413.7,27.8,27.8,27.8,27.8
+ask_price,yakult price per bottle,Yakult price per bottle,1.00,PASS,ask_price,1.000,PASS,PASS,85.4,3884.8,11.4,3981.6,41.2,33.1,0.0,100.0,2413.7,27.8,27.8,27.8,27.8
+ask_price,oolong tea how much,Oolong tea how much,1.00,PASS,ask_price,0.999,PASS,PASS,82.1,3857.1,11.6,3950.8,44.5,33.0,0.0,100.0,2413.7,27.8,27.8,27.8,27.8
+ask_price,vita milk what's the price,Vita Milk. What's the price,1.00,PASS,ask_price,1.000,PASS,PASS,101.2,3984.9,12.5,4098.5,38.2,33.9,0.0,100.0,2413.7,27.8,27.8,27.8,27.8
+ask_price,how much is warrior,How much is Warrior,1.00,PASS,ask_price,1.000,PASS,PASS,79.4,3842.2,11.1,3932.8,39.5,33.4,0.0,100.0,2413.7,27.8,27.8,27.8,27.8
+ask_price,nescafe price per can,Nescafe price per can,1.00,PASS,ask_price,1.000,PASS,PASS,94.8,4249.6,10.5,4354.9,39.4,34.8,0.0,100.0,2413.7,27.8,27.8,27.8,27.8

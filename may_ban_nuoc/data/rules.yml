@@ -46,6 +46,12 @@ rules:
     - action: action_calculate_price
     - action: action_add_to_cart
 
+# When size is specified standalone (e.g. after asking info about a drink)
+- rule: Specify size for current drink
+  steps:
+    - intent: specify_size
+    - action: action_add_to_cart
+
 # Confirm order → show summary + ask for payment
 - rule: Confirm order - ask for payment
   steps:

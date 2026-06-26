@@ -23,6 +23,9 @@ pipeline:
     number_of_transformer_layers: 2
     transformer_size: 256
     use_masked_language_model: false
+    random_seed: 42
+    drop_rate: 0.15
+    BILOU_flag: true
 
   - name: EntitySynonymMapper
 
