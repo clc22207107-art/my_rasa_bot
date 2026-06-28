@@ -185,8 +185,8 @@ def stage_tts(tts_voice: PiperVoice, text: str, wav_path: str) -> bool:
 def stage_stt(stt_model: WhisperModel, wav_path: str) -> str:
     segs, _ = stt_model.transcribe(
         wav_path, language="en",
-        beam_size=5, best_of=5, temperature=[0.0, 0.2, 0.4],
-        vad_filter=True, vad_parameters={"min_silence_duration_ms": 300},
+        beam_size=2, best_of=2, temperature=0.0,
+        vad_filter=False,
         no_speech_threshold=0.4, condition_on_previous_text=False,
         initial_prompt="Customer ordering drinks at a vending machine. "
                        "Products: Coca-Cola, Pepsi, Sprite, Red Bull, Sting, Monster, "
@@ -206,6 +206,20 @@ def stage_nlu(text: str) -> tuple[str, float]:
         sys.exit(1)
     except Exception:
         return "error", 0.0
+
+
+def stage_tts_response(tts_voice: PiperVoice, response_text: str) -> bool:
+    """TTS giai đoạn cuối — đọc response của Rasa (không phát ra loa, chỉ đo thời gian)."""
+    clean = re.sub(r'[𐀀-􏿿☀-⛿✀-➿🌀-🧿]', '', response_text)
+    clean = re.sub(r'\*+|_+|[─═]+', ' ', clean).strip()
+    if not clean:
+        return False
+    # Chỉ consume generator, không lưu vào RAM
+    count = 0
+    for chunk in tts_voice.synthesize(clean):
+        count += 1
+        del chunk  # giải phóng ngay
+    return count > 0
 
 
 def word_overlap(ref: str, hyp: str) -> float:
@@ -265,13 +279,13 @@ def main():
 
     print(f"\n  {total} câu test | output → {args.output}\n")
     print(f"{'─'*65}")
-    print(f"  {'#':>4}  {'Intent':<22}  {'TTS':>6}  {'STT':>6}  {'NLU':>6}  {'Total':>6}  "
+    print(f"  {'#':>4}  {'Intent':<22}  {'TTS':>6}  {'STT':>6}  {'NLU':>6}  {'TTS_out':>7}  {'Total':>6}  "
           f"{'CPU%':>5}  {'RAM':>6}  {'Temp':>5}  {'OK'}")
-    print(f"  {'─'*4}  {'─'*22}  {'─'*6}  {'─'*6}  {'─'*6}  {'─'*6}  "
+    print(f"  {'─'*4}  {'─'*22}  {'─'*6}  {'─'*6}  {'─'*6}  {'─'*7}  {'─'*6}  "
           f"{'─'*5}  {'─'*6}  {'─'*5}  {'─'*2}")
 
     results  = []
-    samplers = {k: MetricsSampler() for k in ("tts", "stt", "nlu")}
+    samplers = {k: MetricsSampler() for k in ("tts", "stt", "nlu", "tts_out")}
     intent_ok_count = 0
 
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -307,16 +321,33 @@ def main():
             n_ok = predicted == expected
             if n_ok: intent_ok_count += 1
 
-            t_total  = t_tts + t_stt + t_nlu
+            # ── TTS output ───────────────────────────────────
+            try:
+                r = requests.post(f"{RASA_URL}/webhooks/rest/webhook",
+                                  json={"sender": "benchmark", "message": stt_text},
+                                  timeout=10)
+                response_texts = " ".join(m.get("text","") for m in r.json() if m.get("text"))
+            except Exception:
+                response_texts = ""
+
+            _, t_tts_out = measure(
+                lambda: stage_tts_response(tts, response_texts),
+                samplers["tts_out"]
+            )
+
+            t_total  = t_tts + t_stt + t_nlu + t_tts_out
             avg_cpu  = np.mean([samplers["tts"].avg_cpu,
                                 samplers["stt"].avg_cpu,
-                                samplers["nlu"].avg_cpu])
+                                samplers["nlu"].avg_cpu,
+                                samplers["tts_out"].avg_cpu])
             peak_ram = max(samplers["tts"].peak_ram,
                            samplers["stt"].peak_ram,
-                           samplers["nlu"].peak_ram)
+                           samplers["nlu"].peak_ram,
+                           samplers["tts_out"].peak_ram)
             avg_temp = np.mean([v for v in [samplers["tts"].avg_temp,
                                             samplers["stt"].avg_temp,
-                                            samplers["nlu"].avg_temp] if v >= 0])
+                                            samplers["nlu"].avg_temp,
+                                            samplers["tts_out"].avg_temp] if v >= 0])
 
             status = (f"{GREEN}✓{RESET}" if (stt_ok and n_ok)
                       else f"{YELLOW}~{RESET}" if (stt_ok or n_ok)
@@ -324,6 +355,7 @@ def main():
 
             print(f"  {i:4d}  {CYAN}{expected:<22}{RESET}"
                   f"  {t_tts:5.0f}ms  {t_stt:5.0f}ms  {t_nlu:4.0f}ms"
+                  f"  {t_tts_out:5.0f}ms"
                   f"  {t_total:5.0f}ms"
                   f"  {avg_cpu:4.0f}%"
                   f"  {peak_ram:5.0f}MB"
@@ -345,6 +377,7 @@ def main():
                 "t_tts_ms":          f"{t_tts:.1f}",
                 "t_stt_ms":          f"{t_stt:.1f}",
                 "t_nlu_ms":          f"{t_nlu:.1f}",
+                "t_tts_out_ms":      f"{t_tts_out:.1f}",
                 "t_total_ms":        f"{t_total:.1f}",
                 # CPU (%)
                 "cpu_avg_tts":       f"{samplers['tts'].avg_cpu:.1f}",
@@ -394,6 +427,7 @@ def main():
         ("TTS latency (ms)",   "t_tts_ms"),
         ("STT latency (ms)",   "t_stt_ms"),
         ("NLU latency (ms)",   "t_nlu_ms"),
+        ("TTS_out latency (ms)","t_tts_out_ms"),
         ("Total latency (ms)", "t_total_ms"),
         ("CPU avg TTS (%)",    "cpu_avg_tts"),
         ("CPU avg STT (%)",    "cpu_avg_stt"),
