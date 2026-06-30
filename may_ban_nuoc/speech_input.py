@@ -1,7 +1,7 @@
 """
 speech_input.py — Automatic Drink Vending Machine
 ==================================================
-STT  : faster-whisper "medium" (offline, local)
+STT  : faster-whisper "base" int8 greedy (offline, ~2-3s trên Pi 5)
 TTS  : Piper TTS v1.4.2 (offline, local)
 Wake : openWakeWord — nhiều wake word song song, 100% offline
 VAD  : webrtcvad (phát hiện kết thúc câu, offline)
@@ -44,9 +44,10 @@ RASA_URL  = "http://localhost:5005/webhooks/rest/webhook"
 SENDER_ID = "voice_user"
 
 # ── STT: faster-whisper ──────────────────────────────────────
-WHISPER_MODEL_SIZE = "medium"
+WHISPER_MODEL_SIZE = "base"   # medium=15s → base=~2-3s trên Pi 5
 WHISPER_DEVICE     = "cpu"
-WHISPER_COMPUTE    = "int8"
+WHISPER_COMPUTE    = "int8"   # bắt buộc trên Pi (giảm RAM + tăng tốc)
+WHISPER_CPU_THREADS = 3       # giới hạn thread để tránh scheduler overhead
 
 # ── TTS: Piper ───────────────────────────────────────────────
 PIPER_MODEL_PATH  = os.path.expanduser("~/piper_models/en_US-lessac-medium.onnx")
@@ -108,7 +109,9 @@ print(f"\n  [1/3] Đang tải STT (faster-whisper/{WHISPER_MODEL_SIZE})...",
       end=" ", flush=True)
 t0 = time.time()
 stt_model = WhisperModel(WHISPER_MODEL_SIZE, device=WHISPER_DEVICE,
-                         compute_type=WHISPER_COMPUTE)
+                         compute_type=WHISPER_COMPUTE,
+                         cpu_threads=WHISPER_CPU_THREADS,
+                         num_workers=1)
 print(f"OK ({time.time()-t0:.1f}s)")
 
 print("  [2/3] Đang tải TTS (Piper lessac-medium)...", end=" ", flush=True)
@@ -292,9 +295,9 @@ def stt(audio: np.ndarray) -> str | None:
     segments, _ = stt_model.transcribe(
         audio,
         language                   = "en",
-        beam_size                  = 5,
-        best_of                    = 5,
-        temperature                = [0.0, 0.2, 0.4],
+        beam_size                  = 1,      # greedy decode, nhanh gấp ~3-5x so với beam_size=5
+        best_of                    = 1,      # không sample nhiều lần
+        temperature                = 0.0,   # 1 lần duy nhất, không fallback
         vad_filter                 = True,
         vad_parameters             = {"min_silence_duration_ms": 300},
         condition_on_previous_text = False,
