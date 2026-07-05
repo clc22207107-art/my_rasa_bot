@@ -44,7 +44,7 @@ RASA_URL  = "http://localhost:5005/webhooks/rest/webhook"
 SENDER_ID = "voice_user"
 
 # ── STT: faster-whisper ──────────────────────────────────────
-WHISPER_MODEL_SIZE = "base"   # medium=15s → base=~2-3s trên Pi 5
+WHISPER_MODEL_SIZE = "small"   # medium=15s → base=~2-3s trên Pi 5
 WHISPER_DEVICE     = "cpu"
 WHISPER_COMPUTE    = "int8"   # bắt buộc trên Pi (giảm RAM + tăng tốc)
 WHISPER_CPU_THREADS = 3       # giới hạn thread để tránh scheduler overhead
@@ -85,10 +85,12 @@ WAKE_WORD_MODELS = [
 WAKE_THRESHOLD = 0.3   # hạ xuống để nhận giọng non-native (0.3–0.4 phù hợp)
 
 # ── VAD end-of-speech: webrtcvad ─────────────────────────────
-VAD_AGGRESSIVENESS = 3   # 3 = lọc nhiễu nền tốt nhất, phân biệt rõ nói/không nói
+VAD_AGGRESSIVENESS = 2   # 2 = balanced (3 quá nhạy, phân loại sai speech thành silence)
 VAD_FRAME_MS       = 30  # chỉ dùng 10 / 20 / 30
-VAD_VOICED_TRIGGER = 3   # số frame có tiếng nói để bắt đầu ghi (3×30ms = 90ms)
-VAD_SILENCE_END    = 8   # số frame im lặng để kết thúc (8×30ms = 240ms)
+VAD_VOICED_TRIGGER = 5   # 5×30ms = 150ms speech liên tiếp → bắt đầu ghi
+VAD_SILENCE_END    = 13  # 13×30ms = 390ms im lặng → kết thúc (đủ cho khoảng ngừng tự nhiên)
+MIN_VOICED_FRAMES  = 15  # tổng tối thiểu 15×30ms = 450ms speech trước khi được phép dừng
+VAD_FLUSH_FRAMES   = 8   # 8×30ms = 240ms bỏ qua đầu để xóa đuôi wake word khỏi buffer
 MAX_RECORD_SEC     = 10
 
 SAMPLE_RATE = 16000
@@ -206,25 +208,28 @@ def wait_for_wake_word():
 def record_with_vad() -> np.ndarray | None:
     """
     Ghi âm sau wake word.
-    Dùng webrtcvad để phát hiện chính xác khi người dùng nói xong.
-    Dừng sau ~390ms im lặng liên tiếp.
+    Dừng sau 390ms im lặng liên tiếp VÀ đã có đủ tối thiểu 450ms speech.
     """
     import webrtcvad
     vad = webrtcvad.Vad(VAD_AGGRESSIVENESS)
-    frame_samples = int(SAMPLE_RATE * VAD_FRAME_MS / 1000)   # 480 samples
+    frame_samples = int(SAMPLE_RATE * VAD_FRAME_MS / 1000)
     max_frames    = int(MAX_RECORD_SEC * 1000 / VAD_FRAME_MS)
 
-    all_frames    = []
-    voiced_count  = 0
-    silence_count = 0
+    all_frames     = []
+    voiced_count   = 0
+    silence_count  = 0
     speech_started = False
+    wait_frames    = 0
+    max_wait       = int(SESSION_IDLE_TIMEOUT * 1000 / VAD_FRAME_MS)
 
-    wait_frames = 0
-    max_wait = int(SESSION_IDLE_TIMEOUT * 1000 / VAD_FRAME_MS)
     print("  Đang chờ...", flush=True)
 
     with sd.InputStream(samplerate=SAMPLE_RATE, channels=1,
                         dtype="int16", blocksize=frame_samples) as stream:
+        # Bỏ qua frame đầu để xóa đuôi âm thanh wake word khỏi mic buffer
+        for _ in range(VAD_FLUSH_FRAMES):
+            stream.read(frame_samples)
+
         for _ in range(max_frames):
             data, _ = stream.read(frame_samples)
             all_frames.append(data.copy())
@@ -236,16 +241,23 @@ def record_with_vad() -> np.ndarray | None:
                 wait_frames    = 0
                 if not speech_started and voiced_count >= VAD_VOICED_TRIGGER:
                     speech_started = True
-                    print("  [Đang ghi...]", flush=True)
+                    print("  [Đang ghi...] ", end="\r", flush=True)
             elif speech_started:
                 silence_count += 1
-                if silence_count >= VAD_SILENCE_END:
-                    break  # kết thúc câu
+                # Chỉ dừng khi đã có đủ tổng speech (tránh cắt ngay sau trigger)
+                if (silence_count >= VAD_SILENCE_END and
+                        voiced_count >= MIN_VOICED_FRAMES):
+                    print("  [Nhận dạng...]", end="\r", flush=True)
+                    break
+                # Hard limit: im lặng quá 3× ngưỡng thì dừng bất kể
+                if silence_count >= VAD_SILENCE_END * 3:
+                    print("  [Nhận dạng...]", end="\r", flush=True)
+                    break
             else:
                 voiced_count = 0
                 wait_frames += 1
                 if not speech_started and wait_frames >= max_wait:
-                    break  # timeout — không ai nói trong 12s
+                    break
 
     if not speech_started:
         return None
