@@ -2,7 +2,7 @@ version: "3.1"
 
 # ================================================================
 # TEST SET — NLU Evaluation (DB-aligned)
-# Coverage: mọi field trong DB đều có test case tương ứng
+# 260 examples across 17 intents
 # ================================================================
 
 nlu:
@@ -41,7 +41,7 @@ nlu:
 # ==================== ORDER DRINK ====================
 - intent: order_drink
   examples: |
-    - I'd like a [coca](drink)
+    - I like a [coca](drink)
     - let me have [pepsi](drink) please
     - one [redbull](drink) for me
     - grab me a [sprite](drink)
@@ -55,12 +55,12 @@ nlu:
     - I want [lipton](drink)
     - [nestea](drink) one bottle please
     - [mirinda](drink) grape please
-    - a [cocoxim](drink) please
+    - one [cocoxim](drink) please
     - one [yakult](drink) for me
     - give me [vita milk](drink) [2](quantity)
     - put [warrior](drink) in my order
-    - I'll have [number 1](drink)
-    - [wakeup247](drink) one can please
+    - I will have [number 1](drink)
+    - [wakeup](drink) one can please
     - one [oolong](drink) bottle please
     - [birdy](drink) coffee one can
     - [nescafe](drink) one please
@@ -73,7 +73,6 @@ nlu:
     - [pepsi](drink) in [can](size)
 
 # ==================== ASK PRICE ====================
-# Covers: price field (all volumes)
 - intent: ask_price
   examples: |
     - [coca](drink) how much
@@ -93,7 +92,6 @@ nlu:
     - [nescafe](drink) price per can
 
 # ==================== ASK AVAILABLE DRINKS ====================
-# Covers: show full menu + list new products (is_new)
 - intent: ask_available_drinks
   examples: |
     - what drinks have you got
@@ -115,11 +113,9 @@ nlu:
     - what products were recently added
 
 # ==================== ASK PRODUCT INFO ====================
-# Covers: name, brand, size/volume, stock, flavor, features/slogan,
-#         category, is_new, popularity, sales, expiry, image
 - intent: ask_product_info
   examples: |
-    - how big is [coca](drink)
+    - how big is [coco](drink)
     - [pepsi](drink) available in what sizes
     - is [sting](drink) in a can or bottle
     - tell me about [monster](drink)
@@ -135,7 +131,7 @@ nlu:
     - what brand is [aquafina](drink)
     - who's the manufacturer of [sting](drink)
     - was [oolong tea](drink) recently added
-    - what is the expiry date of [coca](drink)
+    - what is the expiry date of [coca-cola](drink)
     - [pepsi](drink) shelf life
     - is [sprite](drink) a famous brand
     - what flavor does [redbull](drink) have
@@ -187,13 +183,13 @@ nlu:
     - [330 ml](size)
     - [1 liter](size) bottle
     - [big bottle](size) please
-    - [small can](size)
-    - I'd like the [large](size) one
+    - [mini can](size)
+    - I like the [big](size) one
     - [500ml](size) bottle please
     - [medium size](size)
     - [600ml](size) please
-    - I'll take [small](size)
-    - just the [large bottle](size)
+    - I will take [mini](size)
+    - just the [big bottle](size)
 
 # ==================== SPECIFY QUANTITY ====================
 - intent: specify_quantity
@@ -210,13 +206,12 @@ nlu:
     - [10](quantity) bottles
 
 # ==================== SPECIFY PAYMENT ====================
-# Covers: all payment methods available
 - intent: specify_payment
   examples: |
     - I'll pay with [cash](payment_method)
     - pay via [momo](payment_method)
     - [zalopay](payment_method) please
-    - let me scan [QR code](payment_method)
+    - let me scan [QR ](payment_method)
     - [vnpay](payment_method) please
     - swipe my [card](payment_method)
     - [credit card](payment_method) please
@@ -262,7 +257,6 @@ nlu:
     - got a flash sale running
 
 # ==================== ASK RECOMMENDATION ====================
-# Covers: general recommendation + top 3 by popularity + top 3 by sales
 - intent: ask_recommendation
   examples: |
     - what would you recommend
@@ -282,7 +276,6 @@ nlu:
     - which 3 drinks sold the most
 
 # ==================== ASK INGREDIENTS ====================
-# Covers: ingredients, has_sugar, has_caffeine, carbonated, probiotic
 - intent: ask_ingredients
   examples: |
     - what's inside [coca](drink)
@@ -298,28 +291,28 @@ nlu:
     - list the ingredients of [warrior](drink)
     - is [fanta](drink) carbonated
     - is [7up](drink) sparkling
-    - is there caffeine in [nescafe](drink)
+    - tell me what is in [redbull](drink)
     - what goes into [vita milk](drink)
     - does [cocoxim](drink) have added sugar
     - is [lavie](drink) mineral water
-    - is there caffeine in [wakeup247](drink)
+    - list ingredients of [sprite](drink)
 
 # ==================== OUT OF SCOPE ====================
 - intent: out_of_scope
   examples: |
     - how's the weather today
-    - what's today's gold price
+    - what is the stock market today
     - can you calculate for me
     - give me the news
     - what's the capital of Vietnam
-    - who built this machine
+    - who is responsible for building this system
     - where's the bathroom
     - how do I cook pho
     - where can I buy clothes
     - football match schedule
-    - dollar to VND rate today
-    - say a joke
-    - how tall is the Eiffel Tower
+    - how far is the airport
+    - tell me a fun fact
+    - how big is the moon
     - do you feel emotions
     - please translate to english
     - when do you close
@@ -332,12 +325,12 @@ nlu:
 - intent: show_cart
   examples: |
     - view my cart
-    - my cart items please
+    - what have I ordered
     - show what's in my basket
     - show my order please
     - what is my current order
-    - I want to look at my cart
-    - list what I've ordered so far
-    - go over my cart
-    - cart contents please
-    - items currently in my cart
+    - show me what I picked
+    - what is in my basket
+    - review my order
+    - show my basket please
+    - what did I order so far
