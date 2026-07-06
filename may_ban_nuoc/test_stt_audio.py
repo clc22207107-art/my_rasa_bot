@@ -23,7 +23,7 @@ import numpy as np
 from faster_whisper import WhisperModel
 
 # ── Cấu hình ────────────────────────────────────────────────
-AUDIO_DIR      = "audiopart2"
+AUDIO_DIR      = "audiokltn260"
 TEST_FILE      = "tests/test_nlu.yml"
 FILE_OFFSET    = 0          # file N → câu N trong test set
 SAMPLE_RATE    = 16000
@@ -31,7 +31,7 @@ SAMPLE_RATE    = 16000
 WHISPER_MODEL  = "small"
 WHISPER_DEVICE = "cpu"
 WHISPER_COMPUTE = "int8"
-WHISPER_THREADS = 3
+WHISPER_THREADS = 1   # =1 để kết quả deterministic (không đổi giữa các lần chạy)
 
 # ── ANSI ────────────────────────────────────────────────────
 GREEN  = "\033[92m"
@@ -134,22 +134,51 @@ def stt(model: WhisperModel, audio: np.ndarray) -> str:
 
 
 # ============================================================
-# 4. So sánh kết quả (normalize để tránh diff về hoa/thường, dấu câu)
+# 4. So sánh kết quả — linh hoạt về hoa/thường, dấu câu, số/chữ, khoảng trắng
 # ============================================================
+
+# Số → chữ (cả 2 chiều đều được chuẩn hoá thành chữ)
+_NUM2WORD = {
+    '0':'zero','1':'one','2':'two','3':'three','4':'four',
+    '5':'five','6':'six','7':'seven','8':'eight','9':'nine','10':'ten',
+}
 
 def normalize(text: str) -> str:
     text = text.lower()
-    text = re.sub(r"[^\w\s]", "", text)   # bỏ dấu câu
+    text = re.sub(r"[^\w\s]", " ", text)        # dấu câu → space
+    # số → chữ (10 trước 1 để tránh thay nhầm)
+    for num, word in sorted(_NUM2WORD.items(), key=lambda x: -len(x[0])):
+        text = re.sub(rf'\b{num}\b', word, text)
     text = re.sub(r"\s+", " ", text).strip()
     return text
 
 def word_accuracy(expected: str, got: str) -> float:
-    """Tỷ lệ word match đơn giản (không dùng WER thư viện)"""
-    e_words = normalize(expected).split()
-    g_words = normalize(got).split()
+    e_norm = normalize(expected)
+    g_norm = normalize(got)
+
+    # So sánh toàn bộ chuỗi (nhanh nhất)
+    if e_norm == g_norm:
+        return 1.0
+
+    # So sánh bỏ khoảng trắng — "red bull" vs "redbull"
+    if e_norm.replace(" ", "") == g_norm.replace(" ", ""):
+        return 1.0
+
+    # Word-level: mỗi từ expected có xuất hiện trong got không
+    e_words = e_norm.split()
+    g_words = g_norm.split()
+    g_flat  = g_norm.replace(" ", "")   # dùng để check compound word
+
     if not e_words:
         return 1.0
-    matches = sum(1 for w in e_words if w in g_words)
+
+    matches = 0
+    for w in e_words:
+        if w in g_words:
+            matches += 1
+        elif w.replace(" ", "") in g_flat:
+            # "redbull" found inside "givemeredbull"
+            matches += 1
     return matches / len(e_words)
 
 
@@ -173,7 +202,8 @@ def run(filter_intent=None, show_all=False):
 
     # Lấy danh sách file audio
     files = sorted(
-        [f for f in os.listdir(AUDIO_DIR) if f.endswith(".m4a")],
+        [f for f in os.listdir(AUDIO_DIR)
+         if f.endswith(".m4a") and f.split(".")[0].isdigit()],
         key=lambda x: int(x.split(".")[0])
     )
 
@@ -216,7 +246,7 @@ def run(filter_intent=None, show_all=False):
 
         # So sánh
         acc = word_accuracy(expected, got)
-        ok  = acc >= 0.7   # >=70% word match = đúng
+        ok  = acc >= 1.0   # 100% word match = đúng
 
         if ok:
             total_ok += 1
@@ -226,19 +256,13 @@ def run(filter_intent=None, show_all=False):
             results_by_intent[intent] = []
         results_by_intent[intent].append((sent_num, expected, got, ok, elapsed))
 
-        # In dòng kết quả
-        if show_all or not ok:
-            color  = GREEN if ok else RED
-            status = "✓" if ok else "✗"
-            print(f"{fname:<8} ({sent_num:<4}) {intent:<22} {color}{status}{RESET} "
-                  f"({elapsed:.1f}s)")
-            print(f"         Expect: {DIM}{expected}{RESET}")
-            print(f"         Got   : {(GREEN if ok else RED)}{got}{RESET}")
-            print()
-        else:
-            # Chỉ in 1 dòng nếu đúng
-            print(f"{fname:<8} ({sent_num:<4}) {intent:<22} {GREEN}✓{RESET} "
-                  f"{DIM}({elapsed:.1f}s) {got[:50]}{RESET}")
+        # In dòng kết quả — luôn hiện expect và got
+        color  = GREEN if ok else RED
+        status = "✓" if ok else "✗"
+        print(f"{fname:<8} ({sent_num:<4}) {intent:<22} {color}{status}{RESET} ({elapsed:.1f}s)")
+        print(f"         Expect: {DIM}{expected}{RESET}")
+        print(f"         Got   : {color}{got}{RESET}")
+        print()
 
     # ── Tổng kết ──
     print("\n" + "═" * 90)
