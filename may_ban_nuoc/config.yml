@@ -3,11 +3,22 @@ assistant_id: drink-vending-machine-v2
 language: en
 
 pipeline:
+  # DrinkEntityMasker MUST be first — it replaces drink tokens with "DRINK"
+  # before WhitespaceTokenizer, so DIET never sees brand names during intent
+  # classification training.  Drink entities are extracted here via alias
+  # lookup; non-drink entities (size, quantity, payment…) are still extracted
+  # by DIET's entity recognition on the masked text.
+  - name: components.drink_entity_masker.DrinkEntityMasker
+
   - name: WhitespaceTokenizer
 
   - name: RegexFeaturizer
 
   - name: LexicalSyntacticFeaturizer
+
+  - name: LanguageModelFeaturizer
+    model_name: "distilbert"
+    model_weights: "distilbert-base-uncased"
 
   - name: CountVectorsFeaturizer
 
@@ -17,7 +28,7 @@ pipeline:
     max_ngram: 4
 
   - name: DIETClassifier
-    epochs: 200
+    epochs: 100
     constrain_similarities: true
     entity_recognition: true
     number_of_transformer_layers: 2

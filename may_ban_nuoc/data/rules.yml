@@ -71,24 +71,23 @@ rules:
     - intent: specify_payment
     - action: action_process_payment
 
-# ==================== PRODUCT INFO (STANDALONE) ====================
-- rule: Ask price standalone
+# ==================== PRODUCT INFO ====================
+- rule: Ask product info - single aspect
   steps:
-    - intent: ask_price
+    - or:
+      - intent: ask_price
+      - intent: ask_ingredients
+      - intent: ask_brand
+      - intent: ask_flavor
+      - intent: ask_stock
+      - intent: ask_features
+      - intent: ask_expiry
+      - intent: ask_category
+      - intent: ask_size
+      - intent: ask_popularity
+      - intent: ask_product_info
     - action: action_get_drink_info
-    - action: action_show_price
-
-- rule: Ask ingredients standalone
-  steps:
-    - intent: ask_ingredients
-    - action: action_get_drink_info
-    - action: action_show_ingredients
-
-- rule: Ask product info standalone
-  steps:
-    - intent: ask_product_info
-    - action: action_get_drink_info
-    - action: action_show_product_info
+    - action: action_answer_product_query
 
 # ==================== RECOMMENDATION ====================
 - rule: Recommend drink

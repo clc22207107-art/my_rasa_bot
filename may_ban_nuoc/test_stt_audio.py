@@ -186,7 +186,7 @@ def word_accuracy(expected: str, got: str) -> float:
 # 5. Main
 # ============================================================
 
-def run(filter_intent=None, show_all=False):
+def run(filter_intent=None, show_all=False, from_file=None, to_file=None):
     # Load model
     print(f"\nĐang tải faster-whisper/{WHISPER_MODEL} ({WHISPER_COMPUTE})...",
           end=" ", flush=True)
@@ -228,6 +228,10 @@ def run(filter_intent=None, show_all=False):
 
         # Lọc theo intent nếu có
         if filter_intent and intent != filter_intent:
+            continue
+        if from_file and file_num < from_file:
+            continue
+        if to_file and file_num > to_file:
             continue
 
         # Load audio
@@ -290,5 +294,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--intent",   type=str, help="Chỉ test 1 intent")
     parser.add_argument("--show-all", action="store_true", help="In cả câu đúng")
+    parser.add_argument("--from",     type=int, dest="from_file", help="File number bắt đầu")
+    parser.add_argument("--to",       type=int, dest="to_file",   help="File number kết thúc")
     args = parser.parse_args()
-    run(filter_intent=args.intent, show_all=args.show_all)
+    run(filter_intent=args.intent, show_all=args.show_all,
+        from_file=args.from_file, to_file=args.to_file)

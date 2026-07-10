@@ -24,68 +24,35 @@ nlu:
 - intent: order_drink
   examples: |
     - [coca](drink) please
-    - I want [pepsi](drink)
     - give me [redbull](drink)
-    - get me [sprite](drink)
-    - [sting](drink) for me
-    - [aquafina](drink) please
     - buy [monster](drink)
-    - I'd like [fanta](drink)
-    - can I have [lavie](drink)
-    - I'll take [c2](drink)
-    - give me [1](quantity) [coca](drink)
-    - [2 bottles](quantity) of [pepsi](drink)
-    - [3 cans](quantity) of [redbull](drink)
-    - [1 bottle](quantity) of [sprite](drink)
-    - order [sting](drink) [2 cans](quantity)
-    - I'll take [monster](drink) [1 can](quantity)
-    - [aquafina](drink) [500ml](size)
-    - [coca](drink) [330ml can](size) please
-    - [pepsi](drink) [large bottle](size)
+    - I'd like [lavie](drink)
     - can I get [zero degree](drink)
-    - [number 1](drink) please
-    - [warrior](drink) for me
-    - [nescafe](drink) one can
-    - [vita milk](drink) please
-    - [oolong tea](drink) one bottle
-    - [dr thanh](drink) please
-    - [yakult](drink) please
-    - I want [lipton](drink)
-    - [lipton](drink) please
-    - put [warrior](drink) in my order
-    - add [coca](drink) to my order
-    - add [pepsi](drink) to my cart
-    - [birdy](drink) one can
-    - [birdy coffee](drink) please
     - add [sprite](drink) to my order
+    - [1](quantity) [pepsi](drink) for me
+    - [2 bottles](quantity) of [sting](drink)
+    - [3 cans](quantity) of [aquafina](drink)
+    - order [monster](drink) [2 cans](quantity)
+    - [coca](drink) [500ml](size)
+    - [pepsi](drink) [large bottle](size)
+    - [7up](drink) [1](quantity) can
+    - [sprite](drink) [2](quantity) cans
+    - [redbull](drink) [1](quantity) bottle
     - give me [2](quantity) [coca](drink) and [1](quantity) [pepsi](drink)
-    - I want [1](quantity) [sprite](drink) and [2](quantity) [redbull](drink)
-    - order [2](quantity) [sting](drink) and [1](quantity) [monster](drink)
-    - [2](quantity) [coca](drink) and [1](quantity) [pepsi](drink) please
+    - order [1](quantity) [sprite](drink) with [2](quantity) [redbull](drink)
     - buy [2](quantity) [lavie](drink) and [3](quantity) [aquafina](drink)
-    - I'll take [1](quantity) [pepsi](drink) and [2](quantity) [sprite](drink)
+    - purchase [fanta](drink)
+    - I'll order [mirinda](drink)
+    - fetch [revive](drink)
+    - hand me [c2](drink)
+    - pick up [lipton](drink)
+    - [nestea](drink) checkout
+    - bring [birdy](drink)
+    - a [yakult](drink) please
+    - [cocoxim](drink) add to cart
+    - [wakeup](drink) for me
 
 # ==================== ASK PRICE ====================
-- intent: ask_price
-  examples: |
-    - how much is [coca](drink)
-    - [pepsi](drink) price
-    - price of [sting](drink)
-    - is [redbull](drink) expensive
-    - how much does [aquafina](drink) cost
-    - [sprite](drink) [330ml](size) price
-    - how much for [revive](drink)
-    - [c2](drink) how much
-    - what's the price of [lavie](drink)
-    - [fanta](drink) price
-    - [dr thanh](drink) how much
-    - [vita milk](drink) price
-    - [monster](drink) how much per can
-    - show me the price list
-    - menu prices please
-    - what does [yakult](drink) cost
-    - [warrior](drink) price
-
 # ==================== ASK AVAILABLE DRINKS ====================
 - intent: ask_available_drinks
   examples: |
@@ -102,8 +69,8 @@ nlu:
     - what beverages do you have
     - show menu
     - list all drinks
-    - any new products
-    - what's new
+    - any [new](info_type) products
+    - what's [new](info_type)
     - what's on the menu today
     - full product list please
     - show all items
@@ -114,59 +81,230 @@ nlu:
     - any coffee or tea options
     - do you carry any juice
     - do you have milk products
-    - show me only the new products
-    - list drinks that just arrived
+    - show me only the [new](info_type) products
+    - list drinks that just [arrived](info_type)
     - what products were recently added
-    - what can I buy here
-    - show me everything you have
+    - show me everything in stock
+    - what is available to buy here
 
 # ==================== ASK PRODUCT INFO ====================
+# ==================== PRICE ====================
+- intent: ask_price
+  examples: |
+    - cost of [fanta](drink)
+    - how expensive is [sprite](drink)
+    - what does [lavie](drink) retail for
+    - [c2](drink) price range
+    - what do I pay for [monster](drink)
+    - rate for [redbull](drink)
+    - [sting](drink) going rate
+    - what's the selling price of [yakult](drink)
+    - [birdy](drink) ticket price
+    - I need to know the price on [cocoxim](drink)
+    - [nescafe](drink) how many dong
+    - [revive](drink) price tag
+    - how much should I budget for [zero degree](drink)
+    - do you know the cost of [vita milk](drink)
+    - what price is [mirinda](drink) going for
+    - can you tell me [lipton](drink) price
+    - [warrior](drink) what's the cost
+    - is [wakeup](drink) cheap or expensive
+    - [sprite](drink) how much is it
+    - [pepsi](drink) how much would that be
+    - tell me how much is [c2](drink)
+    - can you tell me how much [fanta](drink) costs
+    - the price for [aquafina](drink) please
+    - quick price check on [sting](drink)
+    - [mirinda](drink) price per bottle please
+    - how much does [monster](drink) cost
+    - [lavie](drink) and the price please
+
+# ==================== SIZE ====================
+- intent: ask_size
+  examples: |
+    - what volumes does [sprite](drink) come in
+    - bottle sizes for [redbull](drink)
+    - [sting](drink) packaging options
+    - size options for [c2](drink)
+    - what ml does [fanta](drink) come in
+    - [lavie](drink) in liter or smaller
+    - [monster](drink) volume range
+    - which capacity does [mirinda](drink) come in
+    - [nestea](drink) bottle capacity range
+    - [lipton](drink) large or small format
+    - how big exactly is [fanta](drink)
+    - is [redbull](drink) available in what sizes
+    - [c2](drink) what sizes does it come in
+
+# ==================== FLAVOR ====================
+- intent: ask_flavor
+  examples: |
+    - how does [fanta](drink) taste
+    - [mirinda](drink) taste notes
+    - sweet or sour [sprite](drink)
+    - [monster](drink) flavor profile
+    - [c2](drink) taste description
+    - [sting](drink) what it tastes like
+    - describe the taste of [nestea](drink)
+    - [vita milk](drink) is it sweet or bland
+    - [lipton](drink) taste profile
+    - what kind of flavor does [sprite](drink) have
+    - [pepsi](drink) so what does it taste like
+
+# ==================== STOCK ====================
+- intent: ask_stock
+  examples: |
+    - [redbull](drink) still available
+    - can I still get [lavie](drink)
+    - [vita milk](drink) inventory status
+    - check availability of [nescafe](drink)
+    - got any [birdy](drink)
+    - [cocoxim](drink) units left
+    - is [sting](drink) restocked
+    - quantity available for [zero degree](drink)
+    - [wakeup](drink) running low
+    - [c2](drink) units sold
+    - [yakult](drink) currently stocked
+    - do you keep [warrior](drink) here
+    - ran out of [nestea](drink) yet
+    - trying to find [oolong tea](drink) today
+    - [mirinda](drink) still on the shelves
+    - is there [lipton](drink) to buy right now
+    - I'm looking for [birdy](drink) is it available right now
+    - any [fanta](drink) left in stock
+    - has [pepsi](drink) sold out already
+    - how many [mirinda](drink) do you have in stock
+    - I need [sprite](drink) tell me if it is available
+    - how many [nescafe](drink) have been sold so far
+
+# ==================== BRAND ====================
+- intent: ask_brand
+  examples: |
+    - who makes [vita milk](drink)
+    - parent company of [sprite](drink)
+    - [c2](drink) manufacturing label
+    - [sting](drink) is made by which brand
+    - [lavie](drink) company name
+    - [cocoxim](drink) produced by whom
+    - [mirinda](drink) trademark holder
+    - [nestea](drink) who owns it
+    - tell me what brand is [coca](drink)
+    - which company exactly produces [fanta](drink)
+    - who is the manufacturer of [c2](drink)
+
+# ==================== EXPIRY ====================
+- intent: ask_expiry
+  examples: |
+    - best before on [monster](drink)
+    - [sting](drink) use by date
+    - freshness duration of [fanta](drink)
+    - when should I consume [lavie](drink) by
+    - [redbull](drink) expiration
+    - how long until [sprite](drink) expires
+
+# ==================== CATEGORY ====================
+- intent: ask_category
+  examples: |
+    - is [redbull](drink) an energy drink
+    - what kind of drink is [lavie](drink)
+    - [sprite](drink) product line
+    - [pepsi](drink) belongs to which segment
+    - [c2](drink) drink classification
+    - is [yakult](drink) a dairy product
+    - [mirinda](drink) where does it fit in the lineup
+    - [wakeup](drink) classified as what
+    - [nestea](drink) drink segment
+    - [birdy](drink) falls under which category
+    - what category exactly is [fanta](drink)
+    - [redbull](drink) is what type of drink exactly
+
+# ==================== POPULARITY ====================
+- intent: ask_popularity
+  examples: |
+    - is [redbull](drink) a top seller
+    - [sprite](drink) consumer demand
+    - do people like [pepsi](drink)
+    - [fanta](drink) market performance
+    - how well does [sting](drink) do
+    - [cocoxim](drink) fan base
+    - is [monster](drink) well-known
+    - [lipton](drink) sales rank
+    - [nescafe](drink) revenue numbers
+    - [vita milk](drink) buyer demand
+    - [wakeup](drink) selling well
+    - [mirinda](drink) crowd favourite
+    - just how popular is [c2](drink)
+    - [sting](drink) overall popularity score
+    - [redbull](drink) cumulative sales numbers
+
+# ==================== FEATURES / SLOGAN ====================
+- intent: ask_features
+  examples: |
+    - what makes [zero degree](drink) special
+    - [c2](drink) highlights
+    - unique qualities of [fanta](drink)
+    - key benefits of [redbull](drink)
+    - [lavie](drink) main selling point
+    - describe [sprite](drink) for me
+    - [monster](drink) brand tagline
+    - [sting](drink) unique traits
+    - what's [cocoxim](drink) known for
+    - brief me on [wakeup](drink)
+    - [nestea](drink) notable properties
+    - [nescafe](drink) catchphrase
+    - [mirinda](drink) selling proposition
+    - tell me all about [sprite](drink)
+    - could you list the features of [nescafe](drink)
+    - [pepsi](drink) what's its official slogan
+
+# ==================== INGREDIENTS ====================
+- intent: ask_ingredients
+  examples: |
+    - [pepsi](drink) chemical composition
+    - does [sting](drink) have additives
+    - components of [sprite](drink)
+    - any preservatives in [fanta](drink)
+    - [monster](drink) nutritional content
+    - [lavie](drink) natural elements
+    - is [redbull](drink) organic
+    - [c2](drink) formula
+    - artificial ingredients in [cocoxim](drink)
+    - does [yakult](drink) contain probiotics
+    - [vita milk](drink) ingredient list
+    - does [dr thanh](drink) use herbs
+    - [aquafina](drink) water source
+    - is [zero degree](drink) sugar free
+    - [oolong tea](drink) tea content
+    - does [sprite](drink) have artificial color
+    - [wakeup](drink) caffeine level
+    - [monster](drink) ingredient breakdown
+    - [nescafe](drink) bean origin
+    - [mirinda](drink) substance breakdown
+    - [nestea](drink) production inputs
+    - [lipton](drink) composition details
+    - [birdy](drink) preparation method
+    - [vita milk](drink) contents rundown
+    - full ingredient profile of [browntea](drink)
+    - any artificial stuff in [twister](drink)
+    - I want to know what's inside [redbull](drink)
+    - does [mirinda](drink) have caffeine in it
+    - [fanta](drink) full ingredient list please
+    - [oolong tea](drink) what exactly goes into it
+    - is [sprite](drink) carbonated
+    - [lavie](drink) what does it contain
+
+# ==================== MULTI-INFO (COMBINED QUERY) ====================
 - intent: ask_product_info
   examples: |
-    - what size is [coca](drink)
-    - what sizes does [pepsi](drink) come in
-    - is [sting](drink) a can or bottle
-    - how many ml is [aquafina](drink)
-    - how many sizes of [sprite](drink)
-    - what flavors does [fanta](drink) have
-    - what flavor is [mirinda](drink)
-    - what flavor is [nestea](drink)
-    - info about [zero degree](drink)
-    - tell me about [yakult](drink)
-    - describe [warrior](drink)
-    - is [redbull](drink) available
-    - is [aquafina](drink) sold out
-    - do you still have [lavie](drink)
-    - is [pepsi](drink) in stock
-    - how many [c2](drink) remaining
-    - is [monster](drink) sold out
-    - what brand is [vita milk](drink)
-    - which company makes [lavie](drink)
-    - who manufactures [redbull](drink)
-    - what company is [pepsi](drink) from
-    - is [vita milk](drink) a new product
-    - is [aloe vera](drink) new
-    - describe the taste of [redbull](drink)
-    - [sprite](drink) what does it taste like
-    - what does [coca](drink) taste like
-    - expiry of [monster](drink)
-    - when does [sting](drink) expire
-    - [warrior](drink) shelf life
-    - what's special about [c2](drink)
-    - is [number 1](drink) available
-    - is [zero degree](drink) in stock
-    - what category is [coca](drink)
-    - what type of drink is [monster](drink)
-    - [sting](drink) which category does it belong to
-    - how popular is [redbull](drink)
-    - [pepsi](drink) popularity rating
-    - how many [monster](drink) have been sold
-    - [sprite](drink) total sales
-    - what is [coca](drink) slogan
-    - [fanta](drink) features please
-    - how many [cocoxim](drink) do you have left
-    - was [oolong tea](drink) recently added
-    - is [oolong tea](drink) a new product
+    - tell me [price](info_type) and [brand](info_type) of [coca](drink)
+    - what's the [flavor](info_type) and [size](info_type) of [sprite](drink)
+    - give me [stock](info_type) and [category](info_type) for [monster](drink)
+    - [aquafina](drink) [brand](info_type) and [expiry](info_type) please
+    - show [features](info_type) and [ingredients](info_type) of [redbull](drink)
+    - I need [price](info_type) and [stock](info_type) info on [pepsi](drink)
+    - [sting](drink) [flavor](info_type) and [brand](info_type)
+    - [lavie](drink) [ingredients](info_type) and [size](info_type) info
+    - [c2](drink) [category](info_type) and [price](info_type)
 
 # ==================== CONFIRM ====================
 - intent: confirm
@@ -206,6 +344,12 @@ nlu:
     - go for it
     - seal the deal
     - yes finalize
+    - yes go ahead and take my order
+    - that is my final choice
+    - please submit my order
+    - make this official please
+    - yes all confirmed
+    - yes that sounds right
 
 # ==================== DENY ====================
 - intent: deny
@@ -243,54 +387,49 @@ nlu:
 # ==================== SPECIFY SIZE ====================
 - intent: specify_size
   examples: |
-    - [500ml](size)
+    - [330ml](size)
+    - [1.5 liter](size)
     - [large bottle](size)
-    - [small bottle](size)
-    - [330ml can](size)
-    - [1.5 liter bottle](size)
-    - [600ml](size)
-    - [250ml can](size)
+    - [small can](size)
     - [big](size)
-    - [small](size)
-    - [medium](size)
     - [can](size)
     - [bottle](size)
-    - [330ml](size)
-    - [330 ml](size)
-    - [1 liter](size)
-    - [large](size)
+    - [mini](size)
+    - [medium](size)
     - give me [large size](size)
-    - get me [small can](size)
-    - [1.5 liter](size) please
     - I want [big bottle](size)
-    - I'd like the [large one](size)
-    - the [small one](size) please
-    - give me the [large size](size)
+    - just [small](size) please
+    - the [1 liter](size) one
+    - [medium size](size) please
+    - [small size](size)
+    - I need [600ml](size)
+    - I'll take the [mini](size)
+    - give me [500ml](size) bottle
+    - I'll take the [big bottle](size)
 
 # ==================== SPECIFY QUANTITY ====================
 - intent: specify_quantity
   examples: |
-    - [1 bottle](quantity)
-    - [2 bottles](quantity)
-    - [3 cans](quantity)
-    - [one bottle](quantity)
-    - [two bottles](quantity)
-    - [three cans](quantity)
-    - [four bottles](quantity)
-    - [five cans](quantity)
-    - [1](quantity)
     - [2](quantity)
-    - [3](quantity)
-    - give me [2 bottles](quantity)
-    - get [3 cans](quantity)
-    - buy [1 bottle](quantity)
-    - [one bottle](quantity) only
-    - give me [5 cans](quantity)
+    - [one](quantity)
+    - [2 bottles](quantity)
+    - [4 cans](quantity)
+    - [three bottles](quantity)
+    - I need [5](quantity)
+    - just [1](quantity) please
+    - bring me [four](quantity)
+    - make it [3 cans](quantity)
+    - grab [two bottles](quantity)
+    - I'll take [6](quantity)
+    - give me [ten](quantity)
+    - I'll have [three](quantity)
+    - [four](quantity) cans please
+    - make that [seven](quantity) cans
 
 # ==================== SPECIFY PAYMENT ====================
 - intent: specify_payment
   examples: |
-    - pay by [cash](payment_method)
+    - using [cash](payment_method)
     - pay with [card](payment_method)
     - [cash](payment_method)
     - [card](payment_method)
@@ -299,7 +438,6 @@ nlu:
     - [zalopay](payment_method)
     - [vnpay](payment_method)
     - [e-wallet](payment_method)
-    - pay via [QR code](payment_method)
     - scan [QR code](payment_method)
     - [credit card](payment_method)
     - [debit card](payment_method)
@@ -314,6 +452,10 @@ nlu:
     - scan QR please
     - insert card please
     - swipe card please
+    - I'm ready to checkout
+    - I prefer to use [zalopay](payment_method)
+    - I'm ready to pay now
+    - I'd like to pay right now
 
 # ==================== ASK HELP ====================
 - intent: ask_help
@@ -385,7 +527,7 @@ nlu:
     - promotional pricing available
     - cashback offers available
     - discount for buying in bulk
-    - is there a happy hour right now
+    - is happy hour available now
 
 # ==================== ASK RECOMMENDATION ====================
 - intent: ask_recommendation
@@ -420,42 +562,11 @@ nlu:
     - which drink is the most refreshing
     - what do regulars order most
     - what's your bestseller this week
-    - top 3 best selling drinks
-    - which 3 drinks sold the most
+    - what are the top 3 best-selling drinks
+    - which 3 drinks have sold the most this week
     - show me the top sellers by sales
 
 # ==================== ASK INGREDIENTS ====================
-- intent: ask_ingredients
-  examples: |
-    - what's in [coca](drink)
-    - [pepsi](drink) ingredients
-    - what is [sting](drink) made of
-    - what does [redbull](drink) contain
-    - ingredients of [sprite](drink)
-    - what's inside [aquafina](drink)
-    - what is the composition of [c2](drink)
-    - list all ingredients in [monster](drink)
-    - what goes into [dr thanh](drink)
-    - what chemicals are in [redbull](drink)
-    - does [redbull](drink) have caffeine
-    - does [monster](drink) have caffeine
-    - caffeine in [nescafe](drink)
-    - does [sting](drink) have caffeine
-    - does [c2](drink) have sugar
-    - does [yakult](drink) have probiotics
-    - does [fanta](drink) have gas
-    - is [sprite](drink) carbonated
-    - is [7up](drink) fizzy
-    - does [cocoxim](drink) have sugar
-    - does [revive](drink) have salt
-    - does [aquafina](drink) have additives
-    - what additives does [fanta](drink) have
-    - what preservatives are in [mirinda](drink)
-    - what herbs are in [warrior](drink)
-    - what natural ingredients does [cocoxim](drink) have
-    - what artificial ingredients does [vita milk](drink) have
-    - what is the nutritional composition of [lavie](drink)
-    - is [lavie](drink) mineral water
 
 # ==================== OUT OF SCOPE ====================
 - intent: out_of_scope
@@ -496,23 +607,23 @@ nlu:
     - where is your head office
     - do you accept foreign currency
     - do you have a mobile app
-    - can you calculate for me
+
 
 # ==================== VIEW CART ====================
 - intent: show_cart
   examples: |
     - show my cart
     - my cart
-    - what have I ordered
     - show my order
     - current order
     - what's in my cart
     - check my cart
     - show cart
     - my cart please
-    - review my order
+    - review order
     - what is my order
     - how much have I ordered
+    - what items did I pick
 
 # ==================== SYNONYM MAPPING ====================
 - synonym: coca
@@ -591,6 +702,8 @@ nlu:
     - oolong tea
     - olong tea
     - olong
+    - o long
+    - o long tea
 
 - synonym: browntea
   examples: |
@@ -611,6 +724,10 @@ nlu:
     - atm card
     - swipe card
     - bank card
+    - atm
+    - visa
+    - mastercard
+    - insert card
 
 - synonym: momo
   examples: |
@@ -639,3 +756,200 @@ nlu:
     - banking transfer
     - digital bank transfer
     - internet banking
+    - qr code
+    - qr
+    - scan qr
+    - wire transfer
+
+- synonym: e-wallet
+  examples: |
+    - ewallet
+    - e wallet
+
+# ==================== INFO_TYPE SYNONYMS ====================
+- synonym: price
+  examples: |
+    - cost
+    - how much
+    - pricey
+    - expensive
+    - cheap
+    - cheaply
+    - costly
+
+- synonym: ingredients
+  examples: |
+    - recipe
+    - composition
+    - contents
+    - inside
+    - probiotics
+    - probiotic
+    - additives
+    - preservatives
+    - herbs
+    - chemicals
+    - salt
+    - mineral water
+
+- synonym: popularity
+  examples: |
+    - sales
+    - sold
+    - popular
+    - trending
+    - bestselling
+    - best selling
+    - best seller
+
+- synonym: brand
+  examples: |
+    - manufacturer
+    - company
+    - manufactures
+    - produces
+    - producer
+    - produced
+
+- synonym: stock
+  examples: |
+    - available
+    - remaining
+    - left
+    - sold out
+    - in stock
+    - carry
+    - have
+
+- synonym: flavor
+  examples: |
+    - taste
+    - tastes
+
+- synonym: size
+  examples: |
+    - volume
+    - big
+    - small
+    - large
+    - sizes
+    - liters
+    - milliliters
+    - ml
+    - litre
+    - litres
+
+- synonym: carbonated
+  examples: |
+    - fizzy
+    - sparkling
+    - gas
+    - bubbly
+
+- synonym: features
+  examples: |
+    - description
+    - benefits
+    - slogan
+    - special
+
+- synonym: expiry
+  examples: |
+    - expire
+    - shelf life
+    - expiry date
+    - expiration
+
+- synonym: is_new
+  examples: |
+    - new
+    - arrived
+    - recently added
+    - latest
+    - just added
+
+- synonym: category
+  examples: |
+    - type
+    - kind
+
+# ==================== INFO_TYPE LOOKUP ====================
+- lookup: info_type
+  examples: |
+    - price
+    - cost
+    - ingredients
+    - recipe
+    - brand
+    - manufacturer
+    - company
+    - stock
+    - available
+    - remaining
+    - flavor
+    - taste
+    - size
+    - volume
+    - category
+    - type
+    - features
+    - description
+    - benefits
+    - expiry
+    - caffeine
+    - sugar
+    - carbonated
+    - sparkling
+    - fizzy
+    - popularity
+    - sales
+    - sold
+    - cost
+    - composition
+    - slogan
+    - shelf life
+    - expire
+    - new
+    - arrived
+    - manufactures
+    - probiotics
+    - probiotic
+    - additives
+    - preservatives
+    - herbs
+    - chemicals
+    - salt
+    - gas
+    - recipe
+    - pricey
+    - expensive
+    - cheap
+    - costly
+    - popular
+    - trending
+    - bestselling
+    - big
+    - small
+    - large
+    - sizes
+    - liters
+    - litres
+    - litre
+    - ml
+    - left
+    - sold out
+    - carry
+    - contents
+    - inside
+    - mineral water
+    - bubbly
+    - special
+    - expiry date
+    - expiration
+    - recently added
+    - latest
+    - kind
+    - produces
+    - producer
+    - produced
+    - how much

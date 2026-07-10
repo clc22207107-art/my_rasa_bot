@@ -156,11 +156,11 @@ stories:
     - action: action_add_to_cart
     - intent: deny
     - action: action_reset_order
-    - intent: ask_price
+    - intent: ask_product_info
       entities:
         - drink: "redbull"
     - action: action_get_drink_info
-    - action: action_show_price
+    - action: action_answer_product_query
     - intent: order_drink
       entities:
         - drink: "redbull"
@@ -193,11 +193,11 @@ stories:
 
 - story: Check price then order
   steps:
-    - intent: ask_price
+    - intent: ask_product_info
       entities:
         - drink: "monster"
     - action: action_get_drink_info
-    - action: action_show_price
+    - action: action_answer_product_query
     - intent: order_drink
       entities:
         - drink: "monster"
@@ -214,11 +214,11 @@ stories:
 
 - story: Check ingredients then order
   steps:
-    - intent: ask_ingredients
+    - intent: ask_product_info
       entities:
         - drink: "yakult"
     - action: action_get_drink_info
-    - action: action_show_ingredients
+    - action: action_answer_product_query
     - intent: order_drink
       entities:
         - drink: "yakult"
@@ -235,7 +235,7 @@ stories:
       entities:
         - drink: "sting"
     - action: action_get_drink_info
-    - action: action_show_product_info
+    - action: action_answer_product_query
     - intent: order_drink
       entities:
         - drink: "sting"
@@ -438,11 +438,11 @@ stories:
     - action: utter_greet
     - intent: ask_available_drinks
     - action: action_show_menu
-    - intent: ask_price
+    - intent: ask_product_info
       entities:
         - drink: "cocoxim"
     - action: action_get_drink_info
-    - action: action_show_price
+    - action: action_answer_product_query
     - intent: order_drink
       entities:
         - drink: "cocoxim"

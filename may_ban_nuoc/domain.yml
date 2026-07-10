@@ -4,11 +4,19 @@ intents:
   - greet
   - goodbye
   - order_drink
-  - ask_price
-  - ask_ingredients
   - ask_recommendation
   - ask_available_drinks
   - ask_product_info
+  - ask_price
+  - ask_ingredients
+  - ask_brand
+  - ask_flavor
+  - ask_stock
+  - ask_features
+  - ask_expiry
+  - ask_category
+  - ask_size
+  - ask_popularity
   - ask_promotion
   - confirm
   - deny
@@ -24,6 +32,7 @@ entities:
   - size
   - quantity
   - payment_method
+  - info_type
 
 slots:
   drink:
@@ -84,16 +93,7 @@ slots:
 
 responses:
   utter_greet:
-  - text: |
-      🥤 Hello! Welcome to the Automatic Drink Vending Machine!
-
-      I can help you:
-      🍹 Browse menu & order drinks
-      💰 Check product prices
-      📋 View ingredients / product info
-      🎁 Check promotions
-
-      Type "menu" to see the full list, or just tell me what you'd like to drink! 😊
+  - text: "Hello! Welcome to the vending machine. Say menu to see drinks, or tell me what you want!"
 
   utter_ask_drink:
   - text: "🥤 What would you like to drink? Type 'menu' to see all available products!"
@@ -105,12 +105,7 @@ responses:
   - text: "🔢 How many would you like?"
 
   utter_ask_payment:
-  - text: |
-      💳 How would you like to pay?
-
-      1️⃣ Bank Transfer (scan QR code)
-      2️⃣ Cash (insert money into machine)
-      3️⃣ Card (swipe/insert card)
+  - text: "How would you like to pay? Cash, card, or bank transfer?"
 
   utter_order_confirmed:
   - text: "✅ Order confirmed! Your drink is being dispensed... 🎉"
@@ -122,20 +117,7 @@ responses:
   - text: "💚 Payment successful! Your drink is being dispensed... ⏳"
 
   utter_help:
-  - text: |
-      🤖 I am an Automatic Drink Vending Machine!
-
-      I support:
-      1. 🍹 Order drinks — "Give me 2 cans of Coca-Cola"
-      2. 📋 View menu — Type "menu" or "what drinks do you have"
-      3. 💰 Check price — "How much is Coca-Cola?"
-      4. 🧪 Ingredients — "What's in Red Bull?"
-      5. ⭐ Recommendations — "What's good today?"
-      6. 🎁 Promotions — "Any discounts?"
-      7. 🛒 View cart — "Show my cart"
-
-      When ordering: I will add items to your cart first.
-      Type "confirm" when you are ready to pay! 😊
+  - text: "You can order drinks, check prices, ask about ingredients, or view the menu. Say confirm when ready to pay."
 
   utter_goodbye:
   - text: "👋 Goodbye! Thank you for using our service. See you again! 😊"
@@ -144,21 +126,13 @@ responses:
   - text: "😅 That question is outside my scope! I only support drink orders. Type 'help' for guidance."
 
   utter_fallback:
-  - text: |
-      🤔 Sorry, I didn't understand that.
-      You can try:
-      • Type "menu" to see the product list
-      • Say the name of the drink you want
-      • Type "help" for instructions
+  - text: "Sorry, I didn't understand. Try saying menu or the name of a drink."
 
 actions:
   - action_get_drink_info
   - action_calculate_price
   - action_show_order_summary
   - action_confirm_order
-  - action_show_price
-  - action_show_ingredients
-  - action_show_product_info
   - action_show_menu
   - action_recommend_drink
   - action_process_payment
@@ -168,6 +142,7 @@ actions:
   - action_handle_out_of_domain
   - action_add_to_cart
   - action_show_cart
+  - action_answer_product_query
 
 session_config:
   session_expiration_time: 60
