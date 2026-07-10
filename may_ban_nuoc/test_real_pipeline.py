@@ -334,7 +334,11 @@ def main():
         snap = sys_snapshot()
 
         stt_ok    = word_accuracy(expected_text, got_text) >= 1.0
-        intent_ok = predicted_intent == intent_expected
+        # out_of_scope: chấp nhận cả nlu_fallback vì cả hai đều → từ chối đúng
+        if intent_expected == "out_of_scope":
+            intent_ok = predicted_intent in ("out_of_scope", "nlu_fallback")
+        else:
+            intent_ok = predicted_intent == intent_expected
         # Full pipeline: NLU đúng là đủ (STT sai nhưng NLU đúng vẫn tính pass)
         pipeline_ok = intent_ok
 

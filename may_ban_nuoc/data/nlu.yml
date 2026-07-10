@@ -569,44 +569,6 @@ nlu:
 # ==================== ASK INGREDIENTS ====================
 
 # ==================== OUT OF SCOPE ====================
-- intent: out_of_scope
-  examples: |
-    - what's the weather today
-    - what's the gold price
-    - can you do math
-    - show me the news
-    - capital of Vietnam
-    - what's your name
-    - who made this machine
-    - is there wifi
-    - where is the restroom
-    - how to cook pho
-    - travel advice
-    - where to buy clothes
-    - football schedule
-    - dollar exchange rate
-    - who are you
-    - are you smart
-    - tell me a joke
-    - sing a song
-    - do you have feelings
-    - solve this math problem
-    - translate to english
-    - what time do you close
-    - how long is delivery
-    - what's the temperature outside
-    - book me a flight
-    - what time is it now
-    - what's bitcoin price today
-    - how tall is mount everest
-    - who is the president of USA
-    - find me a restaurant nearby
-    - what movies are showing
-    - do you deliver to my house
-    - can I return a drink
-    - where is your head office
-    - do you accept foreign currency
-    - do you have a mobile app
 
 
 # ==================== VIEW CART ====================

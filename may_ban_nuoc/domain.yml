@@ -24,7 +24,6 @@ intents:
   - specify_quantity
   - ask_help
   - specify_payment
-  - out_of_scope
   - show_cart
 
 entities:
