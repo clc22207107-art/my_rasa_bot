@@ -126,13 +126,21 @@ def m4a_to_numpy(path):
 # STT
 # ============================================================
 
+_WORD_TO_DIGIT = {
+    "one": "1", "two": "2", "three": "3", "four": "4", "five": "5",
+    "six": "6", "seven": "7", "eight": "8", "nine": "9", "ten": "10",
+}
+
 def normalize_stt(text: str) -> str:
     """Clean punctuation artifacts from STT output before sending to NLU."""
     text = text.strip(".,!? ")
     text = re.sub(r',\s*', ' ', text)
     text = re.sub(r'(\d+)-([A-Za-z])', r'\1\2', text)
     text = re.sub(r'\s+-\s+', ' ', text)
-    return re.sub(r'\s+', ' ', text).strip()
+    text = re.sub(r'\s+', ' ', text).strip()
+    words = text.split()
+    words = [_WORD_TO_DIGIT.get(w.lower(), w) for w in words]
+    return " ".join(words)
 
 def stt(model, audio):
     segments, _ = model.transcribe(

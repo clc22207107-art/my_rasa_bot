@@ -30,25 +30,17 @@ nlu:
     - can I get [zero degree](drink)
     - add [sprite](drink) to my order
     - [1](quantity) [pepsi](drink) for me
-    - [one](quantity) [pepsi](drink) for me
     - [2 bottles](quantity) of [sting](drink)
-    - [two bottles](quantity) of [sting](drink)
     - [3 cans](quantity) of [aquafina](drink)
-    - [three cans](quantity) of [aquafina](drink)
     - order [monster](drink) [2 cans](quantity)
-    - order [monster](drink) [two cans](quantity)
     - [coca](drink) [500ml](size)
     - [pepsi](drink) [large bottle](size)
     - [7up](drink) [1](quantity) can
     - [sprite](drink) [2](quantity) cans
-    - [sprite](drink) [two](quantity) cans
     - [redbull](drink) [1](quantity) bottle
     - give me [2](quantity) [coca](drink) and [1](quantity) [pepsi](drink)
-    - give me [three](quantity) [coca](drink) and [two](quantity) [pepsi](drink)
     - order [1](quantity) [sprite](drink) with [2](quantity) [redbull](drink)
-    - order [four](quantity) [sprite](drink) with [three](quantity) [redbull](drink)
     - buy [2](quantity) [lavie](drink) and [3](quantity) [aquafina](drink)
-    - buy [five](quantity) [lavie](drink) and [two](quantity) [aquafina](drink)
     - purchase [fanta](drink)
     - I'll order [mirinda](drink)
     - fetch [revive](drink)
@@ -420,7 +412,7 @@ nlu:
   examples: |
     - [2](quantity)
     - [one](quantity)
-    - make it [2 bottles](quantity)
+    - [2 bottles](quantity)
     - [4 cans](quantity)
     - [three bottles](quantity)
     - I need [5](quantity)
@@ -428,7 +420,7 @@ nlu:
     - bring me [four](quantity)
     - make it [3 cans](quantity)
     - grab [two bottles](quantity)
-    - I'll take [6](quantity) of those
+    - I'll take [6](quantity)
     - give me [ten](quantity)
     - I'll have [three](quantity)
     - [four](quantity) cans please
