@@ -126,24 +126,13 @@ def m4a_to_numpy(path):
 # STT
 # ============================================================
 
-_HYPHEN_NAMES = re.compile(r'\b(7|coca|zero|red|dr|number)\s*-\s*', re.IGNORECASE)
-
-_WORD_TO_DIGIT = {
-    "one": "1", "two": "2", "three": "3", "four": "4", "five": "5",
-    "six": "6", "seven": "7", "eight": "8", "nine": "9", "ten": "10",
-}
-
 def normalize_stt(text: str) -> str:
     """Clean punctuation artifacts from STT output before sending to NLU."""
     text = text.strip(".,!? ")
     text = re.sub(r',\s*', ' ', text)
     text = re.sub(r'(\d+)-([A-Za-z])', r'\1\2', text)
     text = re.sub(r'\s+-\s+', ' ', text)
-    text = re.sub(r'\s+', ' ', text).strip()
-    # Convert spoken numbers to digits (e.g. "Three Sting" → "3 Sting")
-    words = text.split()
-    words = [_WORD_TO_DIGIT.get(w.lower(), w) for w in words]
-    return " ".join(words)
+    return re.sub(r'\s+', ' ', text).strip()
 
 def stt(model, audio):
     segments, _ = model.transcribe(
@@ -172,16 +161,12 @@ def stt(model, audio):
 # So sánh STT (giống test_stt_audio.py)
 # ============================================================
 
-_NUM2WORD = {
-    '0':'zero','1':'one','2':'two','3':'three','4':'four',
-    '5':'five','6':'six','7':'seven','8':'eight','9':'nine','10':'ten',
-}
+from num2words import num2words
 
 def normalize(text):
     text = text.lower()
+    text = re.sub(r'\b(\d+)\b', lambda m: num2words(int(m.group())), text)
     text = re.sub(r"[^\w\s]", " ", text)
-    for num, word in sorted(_NUM2WORD.items(), key=lambda x: -len(x[0])):
-        text = re.sub(rf'\b{num}\b', word, text)
     return re.sub(r"\s+", " ", text).strip()
 
 def word_accuracy(expected, got):
