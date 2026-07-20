@@ -82,7 +82,6 @@ nlu:
     - what's on the menu today
     - full product list please
     - show all items
-    - what brands do you stock
     - what categories of drinks
     - beverages available please
     - what types of drinks can I choose from
@@ -723,6 +722,16 @@ nlu:
     - unselect [cocoxim](drink)
     - discard the [nescafe](drink) from cart
     - knock [birdy](drink) off my order
+    - remove [1](quantity) [coca](drink) from my cart
+    - take out [2](quantity) [pepsi](drink) from cart
+    - delete [1](quantity) [sprite](drink) from my order
+    - remove [3](quantity) [monster](drink)
+    - take [1](quantity) [fanta](drink) off my list
+    - drop [2](quantity) [redbull](drink) from cart
+    - remove [1](quantity) [small](size) [aquafina](drink)
+    - take out [2](quantity) [large](size) [coca](drink) from cart
+    - delete [1](quantity) [500ml](size) [pepsi](drink)
+    - remove [2](quantity) [sting](drink) please
 
 # ==================== CLEAR CART ====================
 - intent: clear_cart
@@ -771,7 +780,7 @@ nlu:
     - how can I pay here
     - what are my payment options
     - do you take credit card
-    - can I use momo here
+    - what wallets do you support
     - do you accept QR code payment
     - can I pay with e-wallet
     - what ways can I pay
@@ -869,27 +878,6 @@ nlu:
     - what do you have with no sugar please
 
 # ==================== COMPARE DRINKS ====================
-- intent: compare_drinks
-  examples: |
-    - which is better [coca](drink) or [pepsi](drink)
-    - [sprite](drink) vs [7up](drink) which do you recommend
-    - compare [monster](drink) and [redbull](drink) for me
-    - is [sting](drink) stronger than [monster](drink)
-    - [lavie](drink) vs [aquafina](drink) which is purer
-    - which has more caffeine [monster](drink) or [redbull](drink)
-    - [coca](drink) and [pepsi](drink) which tastes better
-    - [c2](drink) or [lipton](drink) which is healthier
-    - between [fanta](drink) and [mirinda](drink) which should I get
-    - [yakult](drink) vs [vita milk](drink) which is better for health
-    - tell me the difference between [sprite](drink) and [7up](drink)
-    - [sting](drink) and [redbull](drink) which gives more energy
-    - is [pepsi](drink) sweeter than [coca](drink)
-    - which is cheaper [aquafina](drink) or [lavie](drink)
-    - [sprite](drink) versus [7up](drink) taste comparison
-    - [monster](drink) or [sting](drink) which is more popular
-    - [redbull](drink) or [sting](drink) better energy drink
-    - [coca](drink) and [pepsi](drink) difference
-
 # ==================== APPLY COUPON ====================
 - intent: apply_coupon
   examples: |
@@ -996,7 +984,7 @@ nlu:
     - are you voice controlled
     - are you AI powered
     - what type of vending machine is this
-    - what can you do
+    - what features do you have
     - tell me about yourself
     - are you a robot
     - introduce yourself
@@ -1438,7 +1426,7 @@ nlu:
 # ==================== ASK SUGAR CONTENT ====================
 - intent: ask_sugar_content
   examples: |
-    - does [coca](drink) have sugar
+    - is [coca](drink) high in sugar
     - [pepsi](drink) sugar level please
     - how much sugar in [monster](drink)
     - is [sprite](drink) sugar free

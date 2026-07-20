@@ -38,7 +38,7 @@ DRINKS_DB = {
         "flavor": "Classic sweet taste, carbonated, light caramel aroma",
         "features": "Classic carbonated soft drink, great refreshment",
         "category": "Carbonated Soft Drinks", "is_new": False, "popularity": 9.5,
-        "sales": 1500, "stock": 120, "expiry_months": 9,
+        "sales": 1500, "stock_by_volume": {"330ml": 40, "500ml": 40, "1.5L": 40}, "expiry_months": 9,
         "has_sugar": True, "has_caffeine": True, "image": "🥤",
     },
     "pepsi": {
@@ -50,7 +50,7 @@ DRINKS_DB = {
         "flavor": "Slightly lighter than Coca-Cola, carbonated, hint of vanilla",
         "features": "Globally popular carbonated soft drink",
         "category": "Carbonated Soft Drinks", "is_new": False, "popularity": 9.0,
-        "sales": 1300, "stock": 100, "expiry_months": 9,
+        "sales": 1300, "stock_by_volume": {"330ml": 34, "500ml": 33, "1.5L": 33}, "expiry_months": 9,
         "has_sugar": True, "has_caffeine": True, "image": "🥤",
     },
     "sting": {
@@ -86,7 +86,7 @@ DRINKS_DB = {
         "flavor": "Sweet-sour taste, fresh lemon aroma, carbonated",
         "features": "Colorless carbonated soft drink, refreshing in summer",
         "category": "Carbonated Soft Drinks", "is_new": False, "popularity": 8.5,
-        "sales": 1000, "stock": 90, "expiry_months": 9,
+        "sales": 1000, "stock_by_volume": {"330ml": 45, "500ml": 45}, "expiry_months": 9,
         "has_sugar": True, "has_caffeine": False, "image": "🍋",
     },
     "7up": {
@@ -98,7 +98,7 @@ DRINKS_DB = {
         "flavor": "Mildly sweet-sour, lemon-lime aroma, carbonated",
         "features": "Clear carbonated soft drink, refreshing",
         "category": "Carbonated Soft Drinks", "is_new": False, "popularity": 8.0,
-        "sales": 800, "stock": 70, "expiry_months": 9,
+        "sales": 800, "stock_by_volume": {"330ml": 35, "500ml": 35}, "expiry_months": 9,
         "has_sugar": True, "has_caffeine": False, "image": "🍋",
     },
     "fanta": {
@@ -110,7 +110,7 @@ DRINKS_DB = {
         "flavor": "Rich sweet taste, fruity flavor (orange or grape), carbonated",
         "features": "Fruit-flavored carbonated soft drink, variety of flavors",
         "category": "Carbonated Soft Drinks", "is_new": False, "popularity": 8.2,
-        "sales": 850, "stock": 85, "expiry_months": 9,
+        "sales": 850, "stock_by_volume": {"330ml": 42, "500ml": 43}, "expiry_months": 9,
         "has_sugar": True, "has_caffeine": False, "image": "🍊",
     },
     "mirinda": {
@@ -134,7 +134,7 @@ DRINKS_DB = {
         "flavor": "Pure, odorless, tasteless",
         "features": "Purified bottled water, 7-step RO filtered",
         "category": "Purified Water", "is_new": False, "popularity": 8.8,
-        "sales": 1100, "stock": 200, "expiry_months": 24,
+        "sales": 1100, "stock_by_volume": {"500ml": 100, "1.5L": 100}, "expiry_months": 24,
         "has_sugar": False, "has_caffeine": False, "image": "💧",
     },
     "lavie": {
@@ -146,7 +146,7 @@ DRINKS_DB = {
         "flavor": "Clean light taste, contains natural minerals",
         "features": "Natural mineral water, replenishes body minerals",
         "category": "Mineral Water", "is_new": False, "popularity": 8.5,
-        "sales": 950, "stock": 180, "expiry_months": 24,
+        "sales": 950, "stock_by_volume": {"500ml": 90, "1.5L": 90}, "expiry_months": 24,
         "has_sugar": False, "has_caffeine": False, "image": "💧",
     },
     "revive": {
@@ -170,7 +170,7 @@ DRINKS_DB = {
         "flavor": "Mildly sweet, green tea and fresh lemon flavor",
         "features": "Popular bottled green tea, rich in antioxidants",
         "category": "Bottled Tea", "is_new": False, "popularity": 8.7,
-        "sales": 1050, "stock": 110, "expiry_months": 12,
+        "sales": 1050, "stock_by_volume": {"360ml": 55, "455ml": 55}, "expiry_months": 12,
         "has_sugar": True, "has_caffeine": True, "image": "🍵",
     },
     "zero_degree_green_tea": {
@@ -182,7 +182,7 @@ DRINKS_DB = {
         "flavor": "Light tea taste, subtle jasmine floral notes, less sweet",
         "features": "Vietnamese green tea, low calorie, naturally refreshing",
         "category": "Bottled Tea", "is_new": False, "popularity": 8.6,
-        "sales": 980, "stock": 100, "expiry_months": 12,
+        "sales": 980, "stock_by_volume": {"350ml": 50, "500ml": 50}, "expiry_months": 12,
         "has_sugar": True, "has_caffeine": True, "image": "🍵",
     },
     "oolong_tea": {
@@ -218,7 +218,7 @@ DRINKS_DB = {
         "flavor": "Strong sweet taste, carbonated, mixed fruit flavor",
         "features": "Premium imported energy drink, high caffeine, popular with gym-goers and gamers",
         "category": "Energy Drinks", "is_new": False, "popularity": 8.9,
-        "sales": 560, "stock": 60, "expiry_months": 24,
+        "sales": 560, "stock_by_volume": {"355ml": 30, "500ml": 30}, "expiry_months": 24,
         "has_sugar": True, "has_caffeine": True, "image": "👾",
     },
     "number1": {
@@ -266,7 +266,7 @@ DRINKS_DB = {
         "flavor": "Sweet, creamy, rich chocolate aroma",
         "features": "Chocolate-flavored UHT milk, rich in calcium and protein",
         "category": "Milk", "is_new": False, "popularity": 8.0,
-        "sales": 650, "stock": 85, "expiry_months": 6,
+        "sales": 650, "stock_by_volume": {"180ml": 43, "250ml": 42}, "expiry_months": 6,
         "has_sugar": True, "has_caffeine": False, "image": "🍫",
     },
     "th_true_milk": {
@@ -278,7 +278,7 @@ DRINKS_DB = {
         "flavor": "Clean sweet taste, lightly creamy, natural milk aroma",
         "features": "100% pure fresh milk, no preservatives, from clean farms",
         "category": "Milk", "is_new": False, "popularity": 8.7,
-        "sales": 750, "stock": 80, "expiry_months": 1,
+        "sales": 750, "stock_by_volume": {"180ml": 28, "500ml": 26, "1L": 26}, "expiry_months": 1,
         "has_sugar": True, "has_caffeine": False, "image": "🥛",
     },
     "dutch_lady": {
@@ -290,7 +290,7 @@ DRINKS_DB = {
         "flavor": "Moderately sweet, aromatic, lightly creamy",
         "features": "UHT milk rich in nutrients, vitamins and minerals",
         "category": "Milk", "is_new": False, "popularity": 8.1,
-        "sales": 600, "stock": 70, "expiry_months": 6,
+        "sales": 600, "stock_by_volume": {"180ml": 35, "1L": 35}, "expiry_months": 6,
         "has_sugar": True, "has_caffeine": False, "image": "🥛",
     },
     "nescafe": {
@@ -326,7 +326,7 @@ DRINKS_DB = {
         "flavor": "Mildly sweet, fresh peach aroma",
         "features": "Bottled peach tea, refreshing, fewer calories than soda",
         "category": "Bottled Tea", "is_new": False, "popularity": 7.9,
-        "sales": 680, "stock": 80, "expiry_months": 12,
+        "sales": 680, "stock_by_volume": {"330ml": 40, "455ml": 40}, "expiry_months": 12,
         "has_sugar": True, "has_caffeine": True, "image": "🍑",
     },
     "nestea": {
@@ -350,7 +350,7 @@ DRINKS_DB = {
         "flavor": "Naturally mildly sweet, refreshing coconut flavor",
         "features": "Pure coconut water, rich in natural electrolytes, no added sugar",
         "category": "Coconut Water / Fruit Juice", "is_new": False, "popularity": 8.3,
-        "sales": 620, "stock": 70, "expiry_months": 12,
+        "sales": 620, "stock_by_volume": {"330ml": 35, "1L": 35}, "expiry_months": 12,
         "has_sugar": False, "has_caffeine": False, "image": "🥥",
     },
     "twister": {
@@ -485,20 +485,28 @@ def seed_products(conn: sqlite3.Connection):
                 VALUES (?, ?)
             """, (product_id, alias.lower().strip()))
 
-        # 4. Bảng inventory — tồn kho ban đầu từ DRINKS_DB
-        #    Phân bổ stock đều cho các size
-        volumes = data["volumes"]
-        total_stock = data["stock"]
-        stock_per_volume = total_stock // len(volumes)
-        remainder = total_stock % len(volumes)
-
-        for i, volume in enumerate(volumes):
-            # Size đầu tiên nhận phần dư nếu không chia đều
-            qty = stock_per_volume + (remainder if i == 0 else 0)
-            conn.execute("""
-                INSERT INTO inventory (product_id, volume, quantity, updated_at)
-                VALUES (?, ?, ?, ?)
-            """, (product_id, volume, qty, now))
+        # 4. Bảng inventory — tồn kho ban đầu, chia theo từng size
+        #    Nếu có "stock_by_volume" → dùng trực tiếp (tồn kho riêng từng size)
+        #    Nếu chỉ có "stock" → phân bổ đều cho tất cả size
+        if "stock_by_volume" in data:
+            stock_by_volume = data["stock_by_volume"]
+            total_stock = sum(stock_by_volume.values())
+            for volume, qty in stock_by_volume.items():
+                conn.execute("""
+                    INSERT INTO inventory (product_id, volume, quantity, updated_at)
+                    VALUES (?, ?, ?, ?)
+                """, (product_id, volume, qty, now))
+        else:
+            volumes = data["volumes"]
+            total_stock = data["stock"]
+            stock_per_volume = total_stock // len(volumes)
+            remainder = total_stock % len(volumes)
+            for i, volume in enumerate(volumes):
+                qty = stock_per_volume + (remainder if i == 0 else 0)
+                conn.execute("""
+                    INSERT INTO inventory (product_id, volume, quantity, updated_at)
+                    VALUES (?, ?, ?, ?)
+                """, (product_id, volume, qty, now))
 
         print(f"    ✅ {product_id:<25} | {data['name']:<30} | stock: {total_stock}")
 

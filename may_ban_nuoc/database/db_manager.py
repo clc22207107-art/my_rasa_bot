@@ -188,42 +188,40 @@ class DatabaseManager:
         return categories
 
     def get_recommendations(self, limit: int = 5) -> list[dict]:
-        """
-        Lấy top sản phẩm theo popularity.
-        Tương đương: get_recommendations() trong drink_database.py
-        """
+        """Lấy top sản phẩm theo popularity, chỉ lấy sản phẩm còn hàng."""
         conn = self._get_conn()
         try:
-            rows = conn.execute(
-                "SELECT id FROM products ORDER BY popularity DESC LIMIT ?",
-                (limit,)
-            ).fetchall()
+            rows = conn.execute("""
+                SELECT p.id FROM products p
+                WHERE (SELECT COALESCE(SUM(i.quantity), 0) FROM inventory i WHERE i.product_id = p.id) > 0
+                ORDER BY p.popularity DESC LIMIT ?
+            """, (limit,)).fetchall()
             return [self.get_drink(row["id"]) for row in rows]
         finally:
             conn.close()
 
     def get_new_products(self) -> list[dict]:
-        """
-        Lấy sản phẩm mới.
-        Tương đương: get_new_products() trong drink_database.py
-        """
+        """Lấy sản phẩm mới còn hàng."""
         conn = self._get_conn()
         try:
-            rows = conn.execute(
-                "SELECT id FROM products WHERE is_new = 1"
-            ).fetchall()
+            rows = conn.execute("""
+                SELECT p.id FROM products p
+                WHERE p.is_new = 1
+                AND (SELECT COALESCE(SUM(i.quantity), 0) FROM inventory i WHERE i.product_id = p.id) > 0
+            """).fetchall()
             return [self.get_drink(row["id"]) for row in rows]
         finally:
             conn.close()
 
     def get_top_by_sales(self, limit: int = 3) -> list[dict]:
-        """Lấy top sản phẩm bán chạy nhất theo products.sales (tích lũy qua các phiên)."""
+        """Lấy top sản phẩm bán chạy nhất theo products.sales, chỉ lấy sản phẩm còn hàng."""
         conn = self._get_conn()
         try:
-            rows = conn.execute(
-                "SELECT id FROM products ORDER BY sales DESC LIMIT ?",
-                (limit,)
-            ).fetchall()
+            rows = conn.execute("""
+                SELECT p.id FROM products p
+                WHERE (SELECT COALESCE(SUM(i.quantity), 0) FROM inventory i WHERE i.product_id = p.id) > 0
+                ORDER BY p.sales DESC LIMIT ?
+            """, (limit,)).fetchall()
             return [self.get_drink(row["id"]) for row in rows]
         finally:
             conn.close()

@@ -395,16 +395,6 @@ nlu:
     - which drink is lightest on calories
     - do you have any unsweetened tea
 
-- intent: compare_drinks
-  examples: |
-    - [pepsi](drink) or [coca](drink) which one is sweeter
-    - which is more popular [monster](drink) or [sting](drink)
-    - [aquafina](drink) vs [lavie](drink) which is better
-    - is [redbull](drink) better than [sting](drink)
-    - [fanta](drink) or [mirinda](drink) which do you prefer
-    - what is the difference between [c2](drink) and [lipton](drink)
-    - [sprite](drink) versus [7up](drink) taste comparison
-
 - intent: apply_coupon
   examples: |
     - I have a discount code

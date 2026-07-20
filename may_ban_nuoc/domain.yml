@@ -31,7 +31,6 @@ intents:
   - ask_payment_methods
   - complain
   - ask_diet_option
-  - compare_drinks
   - apply_coupon
   - reorder_last
   - request_receipt
@@ -201,7 +200,6 @@ actions:
   - action_answer_product_query
   - action_remove_from_cart
   - action_clear_cart
-  - action_compare_drinks
   - action_cheapest_drinks
   - action_drink_by_category
   - action_new_products

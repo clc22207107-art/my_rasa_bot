@@ -142,11 +142,6 @@ rules:
     - intent: ask_diet_option
     - action: utter_diet_option
 
-- rule: Compare drinks
-  steps:
-    - intent: compare_drinks
-    - action: action_compare_drinks
-
 - rule: Apply coupon
   steps:
     - intent: apply_coupon

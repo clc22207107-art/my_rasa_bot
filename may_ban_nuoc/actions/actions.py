@@ -197,7 +197,7 @@ def _sort_volumes(volumes: list) -> list:
 def resolve_volume(drink_data: dict, size_slot: str):
     """Map size slot (relative word or ml string) → actual volume string for this drink."""
     if not size_slot:
-        return drink_data["volumes"][0]
+        return drink_data.get("default_volume") or drink_data["volumes"][0]
     size_lower = size_slot.lower().strip()
     # Direct ml/L match first
     for vol in drink_data["volumes"]:
@@ -333,11 +333,20 @@ def _info_price(d):
     return f"Price: {prices}"
 
 def _info_stock(d):
-    s = d["stock"]
-    if s == 0:    status = "❌ Out of stock"
-    elif s < 10:  status = f"⚠️ Almost out — only {s} remaining"
-    else:         status = f"✅ {s} in stock"
-    return f"📦 Stock: {status}"
+    sbv = d.get("stock_by_volume", {})
+    if len(sbv) <= 1:
+        s = d["stock"]
+        if s == 0:    status = "❌ Out of stock"
+        elif s < 10:  status = f"⚠️ Almost out — only {s} remaining"
+        else:         status = f"✅ {s} in stock"
+        return f"📦 Stock: {status}"
+    parts = []
+    for vol in _sort_volumes(list(sbv.keys())):
+        qty = sbv[vol]
+        if qty == 0:     parts.append(f"{vol}: ❌")
+        elif qty < 10:   parts.append(f"{vol}: ⚠️{qty}")
+        else:            parts.append(f"{vol}: ✅{qty}")
+    return "📦 Stock: " + " | ".join(parts)
 
 def _info_carbonated(d):
     has = d.get("category") in ["Carbonated Soft Drinks", "Energy Drinks"]
@@ -455,26 +464,27 @@ class ActionAddToCart(Action):
             if not _db.check_stock_available(key, volume, qty):
                 current_stock = _db.get_stock(key, volume)
                 if current_stock == 0:
-                    # Tìm size khác còn hàng
                     alt = next(
-                        (v for v in drink_data["volumes"] if v != volume and _db.get_stock(key, v) > 0),
+                        (v for v in _sort_volumes(drink_data["volumes"])
+                         if v != volume and _db.get_stock(key, v) > 0),
                         None
                     )
                     if alt:
                         alt_stock = _db.get_stock(key, alt)
                         dispatcher.utter_message(
                             text=f"😔 **{drink_data['name']}** ({volume}) is out of stock. "
-                                 f"But {alt} is available ({alt_stock} units). Would you like that instead?"
+                                 f"**{alt}** is available ({alt_stock} units). Would you like that instead?"
                         )
                     else:
                         dispatcher.utter_message(
                             text=f"😔 **{drink_data['name']}** is completely out of stock. Would you like to choose something else?"
                         )
+                    continue
                 else:
                     dispatcher.utter_message(
                         text=f"⚠️ Only **{current_stock}** units of {drink_data['name']} ({volume}) left. You requested {qty}."
                     )
-                continue
+                    continue
 
             unit_price = drink_data["price"].get(volume, list(drink_data["price"].values())[0])
             subtotal = unit_price * qty
@@ -575,14 +585,16 @@ class ActionProcessPayment(Action):
         if method in ("momo", "zalopay", "vnpay"):
             info = EWALLET_INFO[method]
             msg = f"Transfer {total_price:,} VND to {info['label']} number {info['number']} ({info['name']}). Your order will be dispensed after payment."
-        elif method == "e-wallet":
+        elif method in ("e-wallet", "ewallet", "wallet"):
             msg = f"Which e-wallet? MoMo, ZaloPay, or VNPay? Total: {total_price:,} VND."
-        elif method == "bank transfer":
+        elif method in ("bank transfer", "banking", "internet banking", "wire transfer",
+                        "qr", "qr code", "scan qr"):
             qr = BANK_QR_INFO
             msg = f"Bank transfer {total_price:,} VND to {qr['bank']} account {qr['account']} ({qr['name']}). Order dispensed after transfer."
-        elif method == "cash":
+        elif method in ("cash", "money", "tiền mặt", "tien mat"):
             msg = f"Please insert {total_price:,} VND into the cash slot. The machine will return change automatically."
-        elif method == "card":
+        elif method in ("card", "credit card", "visa", "mastercard", "atm", "atm card",
+                        "debit card", "bank card", "swipe card"):
             msg = f"Please insert or swipe your card. Amount: {total_price:,} VND."
         else:
             dispatcher.utter_message(text=f"Total: {total_price:,} VND. How would you like to pay? Cash, card, or bank transfer?")
@@ -708,52 +720,11 @@ class ActionCheckPromotion(Action):
         return "action_check_promotion"
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        dispatcher.utter_message(text="Current promotions: buy 2 get 1 free on Sting and Number 1. 10% off for 5+ items. New products 15% off. Say a product name to order!")
-        return []
-
-
-class ActionCompareDrinks(Action):
-    def name(self) -> Text:
-        return "action_compare_drinks"
-
-    def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        entities = tracker.latest_message.get("entities", [])
-        drink_vals = [e["value"] for e in entities if e["entity"] == "drink"]
-
-        if len(drink_vals) < 2:
-            dispatcher.utter_message(text="Please name two drinks to compare! e.g. 'Compare Coke vs Pepsi'")
-            return []
-
-        _, d1 = find_drink(drink_vals[0])
-        _, d2 = find_drink(drink_vals[1])
-
-        if not d1:
-            dispatcher.utter_message(text=f"Sorry, I couldn't find '{drink_vals[0]}' in our menu.")
-            return []
-        if not d2:
-            dispatcher.utter_message(text=f"Sorry, I couldn't find '{drink_vals[1]}' in our menu.")
-            return []
-
-        p1 = min(d1["price"].values()) if d1.get("price") else 0
-        p2 = min(d2["price"].values()) if d2.get("price") else 0
-        cheaper = d1["name"] if p1 <= p2 else d2["name"]
-
-        pop1 = d1.get("sales", 0)
-        pop2 = d2.get("sales", 0)
-        more_pop = d1["name"] if pop1 >= pop2 else d2["name"]
-
-        caff = lambda d: "☕ Yes" if d.get("has_caffeine") else "✅ No"
-        sugar = lambda d: "🍬 Yes" if d.get("has_sugar") else "✅ No"
-
-        lines = [
-            f"📊 **{d1['name']} vs {d2['name']}**",
-            f"💵 Price: from {p1:,}đ  |  from {p2:,}đ  → **{cheaper}** is cheaper",
-            f"☕ Caffeine: {caff(d1)}  |  {caff(d2)}",
-            f"🍬 Sugar: {sugar(d1)}  |  {sugar(d2)}",
-            f"🏷️ Category: {d1.get('category','N/A')}  |  {d2.get('category','N/A')}",
-            f"🏆 More popular: **{more_pop}** ({max(pop1, pop2):,} sold)",
-        ]
-        dispatcher.utter_message(text="\n".join(lines))
+        new_drinks = [d["name"] for d in _db.get_new_products()]
+        new_info = f" New products: {', '.join(new_drinks)} — 15% off!" if new_drinks else " New products get 15% off!"
+        dispatcher.utter_message(
+            text=f"Current promotions: 10% off for 5+ items.{new_info} Say a product name to order!"
+        )
         return []
 
 
@@ -770,6 +741,8 @@ class ActionRemoveFromCart(Action):
         entities = tracker.latest_message.get("entities", [])
         drink_entity = next((e["value"] for e in entities if e["entity"] == "drink"), None)
         size_entity  = next((e["value"] for e in entities if e["entity"] == "size"), None)
+        qty_entity   = next((e["value"] for e in entities if e["entity"] == "quantity"), None)
+
         if not drink_entity:
             dispatcher.utter_message(text="Which drink would you like to remove? Please specify the name.")
             return []
@@ -779,30 +752,45 @@ class ActionRemoveFromCart(Action):
             dispatcher.utter_message(text=f"I couldn't find '{drink_entity}' in your cart.")
             return []
 
-        # Size-aware removal: if size given, only remove that specific volume
-        if size_entity and drink_data:
-            target_volume = resolve_volume(drink_data, size_entity)
-            if target_volume:
-                new_cart = [item for item in cart
-                            if not (item["key"] == drink_key and item["volume"] == target_volume)]
-                if len(new_cart) == len(cart):
-                    dispatcher.utter_message(
-                        text=f"{drink_data['name']} ({target_volume}) is not in your cart.")
-                    return []
-            else:
-                new_cart = [item for item in cart if item["key"] != drink_key]
-        else:
-            new_cart = [item for item in cart if item["key"] != drink_key]
+        target_volume = resolve_volume(drink_data, size_entity) if size_entity else None
 
-        if len(new_cart) == len(cart):
-            dispatcher.utter_message(text=f"{drink_data['name']} is not in your cart.")
+        def matches(item):
+            if item["key"] != drink_key:
+                return False
+            return (not target_volume) or item["volume"] == target_volume
+
+        if not any(matches(i) for i in cart):
+            label = drink_data["name"] + (f" ({target_volume})" if target_volume else "")
+            dispatcher.utter_message(text=f"{label} is not in your cart.")
             return []
 
-        dispatcher.utter_message(text=f"✅ Removed {drink_data['name']} from your cart.")
+        if qty_entity:
+            remove_qty = parse_quantity(qty_entity)
+            new_cart = []
+            removed_parts = []
+            for item in cart:
+                if matches(item) and remove_qty > 0:
+                    take = min(remove_qty, item["qty"])
+                    removed_parts.append(f"{take}x {item['name']} ({item['volume']})")
+                    remove_qty -= take
+                    remaining = item["qty"] - take
+                    if remaining > 0:
+                        new_item = dict(item)
+                        new_item["qty"] = remaining
+                        new_item["subtotal"] = remaining * item["unit_price"]
+                        new_cart.append(new_item)
+                else:
+                    new_cart.append(item)
+            dispatcher.utter_message(text=f"✅ Removed {', '.join(removed_parts)} from your cart.")
+        else:
+            removed_qty = sum(i["qty"] for i in cart if matches(i))
+            label = drink_data["name"] + (f" ({target_volume})" if target_volume else "")
+            new_cart = [i for i in cart if not matches(i)]
+            dispatcher.utter_message(text=f"✅ Removed all {removed_qty}x {label} from your cart.")
+
         if new_cart:
             items_str = ", ".join(f"{i['qty']}x {i['name']} ({i['volume']})" for i in new_cart)
-            total = cart_total(new_cart)
-            dispatcher.utter_message(text=f"Cart: {items_str}. Total: {total:,} VND. Say confirm to order.")
+            dispatcher.utter_message(text=f"Cart: {items_str}. Total: {cart_total(new_cart):,} VND. Say confirm to order.")
         else:
             dispatcher.utter_message(text="🛒 Your cart is now empty.")
 
@@ -872,10 +860,15 @@ class ActionCheapestDrinks(Action):
         drinks = _db.get_all_drinks()
         price_list = []
         for d in drinks:
-            if d.get("price"):
-                min_price = min(d["price"].values())
-                min_vol   = _sort_volumes(d["volumes"])[0]
-                price_list.append((min_price, d["name"], d.get("image", "🥤"), min_vol))
+            if not d.get("price"):
+                continue
+            sbv = d.get("stock_by_volume", {})
+            in_stock = [(d["price"][v], v) for v in d["volumes"]
+                        if d["price"].get(v) and sbv.get(v, 0) > 0]
+            if not in_stock:
+                continue
+            min_price, min_vol = min(in_stock)
+            price_list.append((min_price, d["name"], d.get("image", "🥤"), min_vol))
         price_list.sort(key=lambda x: x[0])
         top5 = price_list[:5]
         lines = ["💰 Most affordable drinks:"]
@@ -899,11 +892,17 @@ class ActionDrinkByCategory(Action):
         if drink_val:
             drink_key, drink_data = find_drink(drink_val)
             if drink_data:
-                vols = ", ".join(drink_data.get("volumes", []))
-                min_price = min(drink_data["price"].values()) if drink_data.get("price") else 0
+                sbv = drink_data.get("stock_by_volume", {})
+                vol_labels = []
+                for v in drink_data.get("volumes", []):
+                    qty = sbv.get(v, 0)
+                    vol_labels.append(f"{v}{'❌' if qty == 0 else ''}")
+                in_stock_prices = [drink_data["price"][v] for v in drink_data.get("volumes", [])
+                                   if sbv.get(v, 0) > 0 and v in drink_data.get("price", {})]
+                min_price = min(in_stock_prices) if in_stock_prices else (min(drink_data["price"].values()) if drink_data.get("price") else 0)
                 dispatcher.utter_message(
                     text=f"✅ Yes! We have {drink_data['name']} {drink_data.get('image','🥤')}. "
-                         f"Available in: {vols}. Starting from {min_price:,} VND. Want to order?")
+                         f"Sizes: {', '.join(vol_labels)}. Starting from {min_price:,} VND. Want to order?")
             else:
                 dispatcher.utter_message(
                     text=f"❌ Sorry, we don't carry '{drink_val}' right now. "
@@ -933,7 +932,7 @@ class ActionDrinkByCategory(Action):
             return []
 
         drinks = _db.get_all_drinks()
-        matches = [d for d in drinks if d.get("category") in target_cats]
+        matches = [d for d in drinks if d.get("category") in target_cats and d.get("stock", 0) > 0]
 
         if not matches:
             dispatcher.utter_message(text=f"Sorry, no {category_val} drinks available right now.")
@@ -951,12 +950,13 @@ class ActionNewProducts(Action):
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         drinks = _db.get_all_drinks()
-        new_drinks = [d for d in drinks if d.get("is_new", False)]
+        in_stock_drinks = [d for d in drinks if d.get("stock", 0) > 0]
+        new_drinks = [d for d in in_stock_drinks if d.get("is_new", False)]
         if new_drinks:
             names = ", ".join(f"{d.get('image','🥤')} {d['name']}" for d in new_drinks)
             dispatcher.utter_message(text=f"🆕 New arrivals: {names}. Would you like to try any?")
         else:
-            top5 = sorted(drinks, key=lambda d: d.get("popularity", 0), reverse=True)[:5]
+            top5 = sorted(in_stock_drinks, key=lambda d: d.get("popularity", 0), reverse=True)[:5]
             names = ", ".join(f"{d.get('image','🥤')} {d['name']}" for d in top5)
             dispatcher.utter_message(
                 text=f"🔥 No new arrivals right now! Our current top picks: {names}. Want one?")
@@ -969,7 +969,7 @@ class ActionCaffeineFreeDrinks(Action):
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         drinks = _db.get_all_drinks()
-        cf_drinks = [d for d in drinks if not d.get("has_caffeine", True)]
+        cf_drinks = [d for d in drinks if not d.get("has_caffeine", True) and d.get("stock", 0) > 0]
         if not cf_drinks:
             dispatcher.utter_message(text="Sorry, all drinks here contain some caffeine.")
             return []
@@ -1019,10 +1019,16 @@ class ActionPriceRange(Action):
         drinks = _db.get_all_drinks()
         matches = []
         for d in drinks:
-            if d.get("price"):
-                min_p = min(d["price"].values())
-                if min_p <= limit:
-                    matches.append((min_p, d))
+            if not d.get("price"):
+                continue
+            sbv = d.get("stock_by_volume", {})
+            in_stock = [(d["price"][v], v) for v in d["volumes"]
+                        if d["price"].get(v) and sbv.get(v, 0) > 0]
+            if not in_stock:
+                continue
+            min_p, min_vol = min(in_stock)
+            if min_p <= limit:
+                matches.append((min_p, d, min_vol))
         matches.sort(key=lambda x: x[0])
 
         if not matches:
@@ -1030,8 +1036,7 @@ class ActionPriceRange(Action):
             return []
 
         lines = [f"💰 Drinks under {int(limit):,} VND:"]
-        for price, d in matches:
-            vol = _sort_volumes(d["volumes"])[0]
+        for price, d, vol in matches:
             lines.append(f"  {d.get('image','🥤')} {d['name']} ({vol}) — {price:,} VND")
         lines.append("Which one would you like?")
         dispatcher.utter_message(text="\n".join(lines))
@@ -1115,7 +1120,8 @@ class ActionMostPopular(Action):
         top_n = int(nums[0]) if nums and 1 <= int(nums[0]) <= 10 else 5
 
         drinks = _db.get_all_drinks()
-        ranked = sorted(drinks, key=lambda d: (d.get("sales", 0), d.get("popularity", 0)), reverse=True)[:top_n]
+        ranked = sorted([d for d in drinks if d.get("stock", 0) > 0],
+                        key=lambda d: (d.get("sales", 0), d.get("popularity", 0)), reverse=True)[:top_n]
 
         lines = [f"🏆 Top {top_n} most popular drinks:"]
         for i, d in enumerate(ranked, 1):
@@ -1152,7 +1158,7 @@ class ActionNoSugar(Action):
 
     def run(self, dispatcher, tracker, domain):
         drinks = _db.get_all_drinks()
-        no_sugar = [d for d in drinks if not d.get("has_sugar", True)]
+        no_sugar = [d for d in drinks if not d.get("has_sugar", True) and d.get("stock", 0) > 0]
         if not no_sugar:
             dispatcher.utter_message(text="Sorry, all our drinks currently contain some sugar.")
             return []
@@ -1187,16 +1193,18 @@ class ActionCheapestInCategory(Action):
             return []
 
         drinks  = _db.get_all_drinks()
-        matches = [d for d in drinks if d.get("category") in target_cats and d.get("price")]
+        matches = [d for d in drinks if d.get("category") in target_cats and d.get("price") and d.get("stock", 0) > 0]
         if not matches:
-            dispatcher.utter_message(text=f"No {cat_val} drinks found in our menu right now.")
+            dispatcher.utter_message(text=f"No {cat_val} drinks available right now.")
             return []
 
         ranked = sorted(matches, key=lambda d: min(d["price"].values()))[:3]
         lines  = [f"💰 Cheapest {cat_val} options:"]
         for d in ranked:
-            min_p = min(d["price"].values())
-            vol   = _sort_volumes(d["volumes"])[0]
+            sbv = d.get("stock_by_volume", {})
+            in_stock_vols = [v for v in d["volumes"] if sbv.get(v, 0) > 0]
+            min_p = min(d["price"][v] for v in in_stock_vols) if in_stock_vols else min(d["price"].values())
+            vol   = _sort_volumes(in_stock_vols)[0] if in_stock_vols else _sort_volumes(d["volumes"])[0]
             lines.append(f"  {d.get('image','🥤')} {d['name']} ({vol}) — {min_p:,} VND")
         dispatcher.utter_message(text="\n".join(lines))
         return []
@@ -1224,9 +1232,9 @@ class ActionDrinkByBrand(Action):
                 text=f"Which brand are you looking for? Available brands: {brand_list}.")
             return []
 
-        matches = [d for d in drinks if d.get("brand", "").lower() == matched_brand.lower()]
+        matches = [d for d in drinks if d.get("brand", "").lower() == matched_brand.lower() and d.get("stock", 0) > 0]
         if not matches:
-            dispatcher.utter_message(text=f"No drinks found for brand '{matched_brand}'.")
+            dispatcher.utter_message(text=f"No {matched_brand} drinks available right now.")
             return []
 
         names = ", ".join(f"{d.get('image','🥤')} {d['name']}" for d in matches)
