@@ -86,6 +86,8 @@ rules:
       - intent: ask_size
       - intent: ask_popularity
       - intent: ask_product_info
+      - intent: ask_sugar_content
+      - intent: ask_caffeine_info
     - action: action_get_drink_info
     - action: action_answer_product_query
 
@@ -106,3 +108,131 @@ rules:
   steps:
     - intent: nlu_fallback
     - action: action_handle_out_of_domain
+
+# ==================== NEW INTENTS ====================
+- rule: Remove from cart
+  steps:
+    - intent: remove_from_cart
+    - action: action_remove_from_cart
+
+- rule: Clear cart
+  steps:
+    - intent: clear_cart
+    - action: action_clear_cart
+
+- rule: Change order
+  steps:
+    - intent: change_order
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+
+- rule: Ask payment methods
+  steps:
+    - intent: ask_payment_methods
+    - action: utter_payment_methods
+
+- rule: Complain
+  steps:
+    - intent: complain
+    - action: utter_complain
+
+- rule: Ask diet option
+  steps:
+    - intent: ask_diet_option
+    - action: utter_diet_option
+
+- rule: Compare drinks
+  steps:
+    - intent: compare_drinks
+    - action: action_compare_drinks
+
+- rule: Apply coupon
+  steps:
+    - intent: apply_coupon
+    - action: utter_apply_coupon
+
+- rule: Reorder last
+  steps:
+    - intent: reorder_last
+    - action: utter_reorder_last
+
+- rule: Request receipt
+  steps:
+    - intent: request_receipt
+    - action: utter_request_receipt
+
+- rule: Ask refund
+  steps:
+    - intent: ask_refund
+    - action: utter_refund
+
+- rule: Ask order status
+  steps:
+    - intent: ask_order_status
+    - action: utter_order_status
+
+- rule: Ask machine identity
+  steps:
+    - intent: ask_machine_identity
+    - action: utter_machine_identity
+
+- rule: Ask cheapest drinks
+  steps:
+    - intent: ask_cheapest
+    - action: action_cheapest_drinks
+
+- rule: Ask drinks by category
+  steps:
+    - intent: ask_drink_by_category
+    - action: action_drink_by_category
+
+- rule: Ask caffeine free drinks
+  steps:
+    - intent: ask_caffeine_free
+    - action: action_caffeine_free_drinks
+
+- rule: Ask new products
+  steps:
+    - intent: ask_new_products
+    - action: action_new_products
+
+- rule: Ask drinks under price
+  steps:
+    - intent: ask_price_range
+    - action: action_price_range
+
+- rule: Check ingredient in drink
+  steps:
+    - intent: ask_ingredient_check
+    - action: action_ingredient_check
+
+- rule: Check payment method supported
+  steps:
+    - intent: ask_payment_check
+    - action: action_payment_check
+
+- rule: Most popular drinks
+  steps:
+    - intent: ask_most_popular
+    - action: action_most_popular
+
+- rule: Count drinks in stock
+  steps:
+    - intent: ask_drink_count
+    - action: action_drink_count
+
+- rule: Sugar-free drinks
+  steps:
+    - intent: ask_no_sugar
+    - action: action_no_sugar
+
+- rule: Cheapest drink in category
+  steps:
+    - intent: ask_cheapest_in_category
+    - action: action_cheapest_in_category
+
+- rule: Drinks by brand
+  steps:
+    - intent: ask_by_brand
+    - action: action_by_brand

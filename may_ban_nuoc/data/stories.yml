@@ -487,3 +487,605 @@ stories:
       entities:
         - payment_method: "momo"
     - action: action_process_payment
+
+# ==================== REMOVE FROM CART FLOWS ====================
+
+- story: Order item - remove it - reorder
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "coca"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: remove_from_cart
+      entities:
+        - drink: "coca"
+    - action: action_remove_from_cart
+    - intent: order_drink
+      entities:
+        - drink: "pepsi"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "cash"
+    - action: action_process_payment
+
+- story: Order multiple - remove one - confirm
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "sting"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: order_drink
+      entities:
+        - drink: "redbull"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: remove_from_cart
+      entities:
+        - drink: "redbull"
+    - action: action_remove_from_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "card"
+    - action: action_process_payment
+
+# ==================== CLEAR CART FLOWS ====================
+
+- story: Order items - clear cart - start fresh
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "fanta"
+        - quantity: "3"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: clear_cart
+    - action: action_clear_cart
+    - intent: order_drink
+      entities:
+        - drink: "sprite"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "momo"
+    - action: action_process_payment
+
+- story: Add to cart - view cart - clear - reorder
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "monster"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: show_cart
+    - action: action_show_cart
+    - intent: clear_cart
+    - action: action_clear_cart
+    - intent: order_drink
+      entities:
+        - drink: "aquafina"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+
+# ==================== CHANGE ORDER FLOWS ====================
+
+- story: Order drink - change mind - confirm different drink
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "7up"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: change_order
+      entities:
+        - drink: "sprite"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "cash"
+    - action: action_process_payment
+
+- story: Order - change to healthier option - pay
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "sting"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: change_order
+      entities:
+        - drink: "c2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "card"
+    - action: action_process_payment
+
+# ==================== ASK PAYMENT METHODS FLOWS ====================
+
+- story: Ask payment methods then pay with momo
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "coca"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: ask_payment_methods
+    - action: utter_payment_methods
+    - intent: specify_payment
+      entities:
+        - payment_method: "momo"
+    - action: action_process_payment
+
+- story: Ask payment methods then pay cash
+  steps:
+    - intent: ask_payment_methods
+    - action: utter_payment_methods
+    - intent: order_drink
+      entities:
+        - drink: "lavie"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "cash"
+    - action: action_process_payment
+
+# ==================== COMPLAIN FLOWS ====================
+
+- story: Complain after order not dispensed
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "pepsi"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "cash"
+    - action: action_process_payment
+    - intent: complain
+    - action: utter_complain
+
+- story: Complain immediately at machine
+  steps:
+    - intent: greet
+    - action: utter_greet
+    - intent: complain
+    - action: utter_complain
+
+# ==================== ASK DIET OPTION FLOWS ====================
+
+- story: Ask diet options then order healthy drink
+  steps:
+    - intent: ask_diet_option
+    - action: utter_diet_option
+    - intent: order_drink
+      entities:
+        - drink: "zero degree"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "cash"
+    - action: action_process_payment
+
+- story: Ask diet - check ingredients - order
+  steps:
+    - intent: ask_diet_option
+    - action: utter_diet_option
+    - intent: ask_ingredients
+      entities:
+        - drink: "c2"
+    - action: action_get_drink_info
+    - action: action_answer_product_query
+    - intent: order_drink
+      entities:
+        - drink: "c2"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+
+# ==================== COMPARE DRINKS FLOWS ====================
+
+- story: Compare drinks then order winner
+  steps:
+    - intent: compare_drinks
+      entities:
+        - drink: "coca"
+        - drink: "pepsi"
+    - action: action_compare_drinks
+    - intent: order_drink
+      entities:
+        - drink: "pepsi"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "cash"
+    - action: action_process_payment
+
+- story: Compare energy drinks then order
+  steps:
+    - intent: compare_drinks
+      entities:
+        - drink: "monster"
+        - drink: "redbull"
+    - action: action_compare_drinks
+    - intent: order_drink
+      entities:
+        - drink: "monster"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+
+- story: Compare waters then order
+  steps:
+    - intent: compare_drinks
+      entities:
+        - drink: "aquafina"
+        - drink: "lavie"
+    - action: action_compare_drinks
+    - intent: order_drink
+      entities:
+        - drink: "lavie"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "card"
+    - action: action_process_payment
+
+# ==================== APPLY COUPON FLOWS ====================
+
+- story: Apply coupon during checkout
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "sting"
+        - quantity: "3"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: apply_coupon
+    - action: utter_apply_coupon
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "zalopay"
+    - action: action_process_payment
+
+- story: Ask coupon before ordering
+  steps:
+    - intent: apply_coupon
+    - action: utter_apply_coupon
+    - intent: order_drink
+      entities:
+        - drink: "fanta"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "cash"
+    - action: action_process_payment
+
+# ==================== REORDER LAST FLOWS ====================
+
+- story: Reorder last then specify manually
+  steps:
+    - intent: reorder_last
+    - action: utter_reorder_last
+    - intent: order_drink
+      entities:
+        - drink: "coca"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "cash"
+    - action: action_process_payment
+
+# ==================== REQUEST RECEIPT FLOWS ====================
+
+- story: Order - pay - request receipt
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "redbull"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "card"
+    - action: action_process_payment
+    - intent: request_receipt
+    - action: utter_request_receipt
+    - intent: goodbye
+    - action: utter_goodbye
+
+- story: Pay - request receipt - goodbye
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "sprite"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "momo"
+    - action: action_process_payment
+    - intent: request_receipt
+    - action: utter_request_receipt
+
+# ==================== ASK REFUND FLOWS ====================
+
+- story: Complain then ask for refund
+  steps:
+    - intent: complain
+    - action: utter_complain
+    - intent: ask_refund
+    - action: utter_refund
+
+- story: Pay - drink stuck - ask refund
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "monster"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "cash"
+    - action: action_process_payment
+    - intent: complain
+    - action: utter_complain
+    - intent: ask_refund
+    - action: utter_refund
+
+# ==================== ASK ORDER STATUS FLOWS ====================
+
+- story: Confirm order - check status - goodbye
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "aquafina"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "cash"
+    - action: action_process_payment
+    - intent: ask_order_status
+    - action: utter_order_status
+    - intent: goodbye
+    - action: utter_goodbye
+
+- story: Pay - check order status - request receipt
+  steps:
+    - intent: order_drink
+      entities:
+        - drink: "yakult"
+        - quantity: "3"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "momo"
+    - action: action_process_payment
+    - intent: ask_order_status
+    - action: utter_order_status
+    - intent: request_receipt
+    - action: utter_request_receipt
+
+# ==================== MACHINE IDENTITY ====================
+
+- story: Ask machine identity then order
+  steps:
+    - intent: greet
+    - action: utter_greet
+    - intent: ask_machine_identity
+    - action: utter_machine_identity
+    - intent: order_drink
+      entities:
+        - drink: "coca"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+
+- story: Ask machine identity standalone
+  steps:
+    - intent: ask_machine_identity
+    - action: utter_machine_identity
+    - intent: ask_available_drinks
+    - action: action_show_menu
+
+# ==================== CHEAPEST DRINKS ====================
+
+- story: Ask cheapest then order budget drink
+  steps:
+    - intent: ask_cheapest
+    - action: action_cheapest_drinks
+    - intent: order_drink
+      entities:
+        - drink: "sting"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "cash"
+    - action: action_process_payment
+
+# ==================== DRINK BY CATEGORY ====================
+
+- story: Ask energy drinks then order
+  steps:
+    - intent: ask_drink_by_category
+      entities:
+        - category: "energy drinks"
+    - action: action_drink_by_category
+    - intent: order_drink
+      entities:
+        - drink: "monster"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+
+- story: Ask milk category then order
+  steps:
+    - intent: ask_drink_by_category
+      entities:
+        - category: "milk"
+    - action: action_drink_by_category
+    - intent: order_drink
+      entities:
+        - drink: "th true milk"
+        - quantity: "2"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "momo"
+    - action: action_process_payment
+
+# ==================== CAFFEINE FREE ====================
+
+- story: Ask caffeine free then order healthy drink
+  steps:
+    - intent: ask_caffeine_free
+    - action: action_caffeine_free_drinks
+    - intent: order_drink
+      entities:
+        - drink: "lavie"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order
+    - intent: specify_payment
+      entities:
+        - payment_method: "cash"
+    - action: action_process_payment
+
+# ==================== NEW PRODUCTS ====================
+
+- story: Ask new products then order
+  steps:
+    - intent: ask_new_products
+    - action: action_new_products
+    - intent: order_drink
+      entities:
+        - drink: "aloe_vera"
+        - quantity: "1"
+    - action: action_get_drink_info
+    - action: action_calculate_price
+    - action: action_add_to_cart
+    - intent: confirm
+    - action: action_confirm_order

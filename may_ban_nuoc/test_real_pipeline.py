@@ -257,8 +257,9 @@ def get_bot_response(text, sender_id):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--intent", type=str)
-    parser.add_argument("--max",    type=int)
+    parser.add_argument("--intent",   type=str)
+    parser.add_argument("--max",      type=int)
+    parser.add_argument("--sentence", type=int)
     args = parser.parse_args()
 
     # Kiểm tra Rasa
@@ -282,7 +283,9 @@ def main():
          if f.endswith(".m4a") and f.split(".")[0].isdigit()],
         key=lambda x: int(x.split(".")[0])
     )
-    if args.max:
+    if args.sentence:
+        files = [f for f in files if int(f.split(".")[0]) + FILE_OFFSET == args.sentence]
+    elif args.max:
         files = files[:args.max]
 
     # Warm up CPU% reading

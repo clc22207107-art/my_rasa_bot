@@ -312,28 +312,6 @@ nlu:
     - top 3 best selling drinks
     - which 3 drinks sold the most
 
-- intent: out_of_scope
-  examples: |
-    - how's the weather today
-    - what is the stock market today
-    - can you calculate for me
-    - give me the news
-    - what's the capital of Vietnam
-    - where's the bathroom
-    - how do I cook rice
-    - where can I buy books
-    - football match schedule
-    - how far is the airport
-    - tell me a fun fact
-    - how big is the moon
-    - do you feel emotions
-    - please translate to english
-    - when do you close
-    - what's the delivery time
-    - I need to book a flight
-    - can you tell me the time
-    - who is the current president
-
 - intent: show_cart
   examples: |
     - view my cart
@@ -346,3 +324,285 @@ nlu:
     - review my order
     - show my basket please
     - what did I order so far
+
+- intent: remove_from_cart
+  examples: |
+    - take [sting](drink) out of my cart
+    - remove the [mirinda](drink) from my order
+    - I want to remove [number 1](drink)
+    - don't include [birdy](drink) in my order
+    - pop [warrior](drink) off my list
+    - eliminate [revive](drink) from cart
+    - unselect [cocoxim](drink)
+    - discard the [nescafe](drink) from cart
+    - remove [lipton](drink) I don't want it
+    - take [zero degree](drink) out please
+
+- intent: clear_cart
+  examples: |
+    - clear everything out please
+    - empty my basket
+    - cancel all my drinks
+    - I want to start over with my order
+    - reset the whole cart
+    - remove every drink I picked
+    - delete all items from my cart
+    - wipe everything from my order
+
+- intent: change_order
+  examples: |
+    - actually I prefer [c2](drink)
+    - switch from [sting](drink) to [sprite](drink)
+    - replace my [aquafina](drink) with [lavie](drink)
+    - I want [number 1](drink) now instead
+    - change [mirinda](drink) to [fanta](drink)
+    - give me [wakeup](drink) instead please
+    - swap [warrior](drink) for [redbull](drink)
+    - I'd rather get [cocoxim](drink)
+
+- intent: ask_payment_methods
+  examples: |
+    - what can I use to pay here
+    - are credit cards accepted at this machine
+    - can I pay with vnpay
+    - do you have contactless payment
+    - can I use my phone to pay
+    - what payment is supported here
+    - do you take digital wallets
+    - is card payment possible
+
+- intent: complain
+  examples: |
+    - the machine swallowed my money
+    - I pressed the button but nothing came out
+    - the machine is malfunctioning right now
+    - I received a damaged can
+    - this machine stole my money
+    - the drink got stuck halfway
+    - the machine gave me the wrong item
+    - something went wrong with my order
+
+- intent: ask_diet_option
+  examples: |
+    - do you have any sugar-free drinks
+    - any zero sugar options here
+    - I want a drink with no sugar
+    - which drink has the fewest calories
+    - any diet options available
+    - do you sell low sugar drinks
+    - I am looking for something healthy
+    - no sugar please what do you have
+    - which drink is lightest on calories
+    - do you have any unsweetened tea
+
+- intent: compare_drinks
+  examples: |
+    - [pepsi](drink) or [coca](drink) which one is sweeter
+    - which is more popular [monster](drink) or [sting](drink)
+    - [aquafina](drink) vs [lavie](drink) which is better
+    - is [redbull](drink) better than [sting](drink)
+    - [fanta](drink) or [mirinda](drink) which do you prefer
+    - what is the difference between [c2](drink) and [lipton](drink)
+    - [sprite](drink) versus [7up](drink) taste comparison
+
+- intent: apply_coupon
+  examples: |
+    - I have a discount code
+    - use my promo code please
+    - apply my voucher code
+    - I want to redeem this coupon
+    - I have a promotional discount to apply
+    - can I enter a coupon here
+
+- intent: reorder_last
+  examples: |
+    - I want the same as before
+    - give me the same order as last time
+    - just repeat what I ordered
+    - my usual drinks please
+    - same order again for me
+    - order my previous selection
+    - I'll take the same as yesterday
+
+- intent: request_receipt
+  examples: |
+    - give me a receipt please
+    - I need a bill for this purchase
+    - print me a receipt
+    - I want documentation of my order
+    - can I have a tax invoice
+    - I need a receipt for expense claim
+
+- intent: ask_refund
+  examples: |
+    - please return my payment
+    - give me my cash back
+    - I want to cancel and get refunded
+    - refund my purchase please
+    - I need my money returned
+    - how do I request a refund
+    - can I get my payment reversed
+
+- intent: ask_order_status
+  examples: |
+    - status of my order please
+    - is my drink coming out
+    - how long does my order take
+    - when does my drink dispense
+    - any update on my order
+    - has my payment gone through
+    - is my transaction confirmed
+    - why is my drink not coming
+
+- intent: ask_machine_identity
+  examples: |
+    - what kind of machine are you
+    - are you an AI
+    - what is this vending machine
+    - what can this machine do
+    - are you a smart vending machine
+    - introduce yourself machine
+    - explain what you are
+    - what technology do you use
+    - are you voice controlled
+    - who made this machine
+
+- intent: ask_cheapest
+  examples: |
+    - which drink costs the least
+    - I need the most affordable drink
+    - give me a cheap drink
+    - any cheap options here
+    - what is the lowest price drink
+    - I have very little money what can I buy
+    - best budget drink
+    - what do you have for under 12000
+    - most economical drink please
+    - cheapest option available
+
+- intent: ask_drink_by_category
+  examples: |
+    - do you have any [energy drink](category)
+    - show me all [tea](category) options
+    - any [coffee](category) available
+    - what [milk](category) products do you sell
+    - I want [sparkling](category) drinks
+    - any [juice](category) here
+    - list all [water](category) options
+    - do you carry [herbal](category) drinks
+    - any [soda](category) in stock
+    - what [coconut](category) drinks do you have
+    - show me [electrolyte](category) options
+    - any [yogurt](category) drinks available
+
+- intent: ask_caffeine_free
+  examples: |
+    - any drinks with no caffeine
+    - I want to avoid caffeine
+    - caffeine free drinks please
+    - which ones have zero caffeine
+    - drinks safe for children
+    - I am avoiding stimulants
+    - no caffeine in my drink please
+    - what can I drink without caffeine
+    - do you have any decaf options
+    - non stimulant drinks here
+
+- intent: ask_new_products
+  examples: |
+    - do you have new drinks
+    - show me recently added drinks
+    - any new arrivals
+    - what's the newest drink here
+    - just launched drinks please
+    - any limited edition drinks available
+    - what was added to the menu lately
+    - new items here
+    - anything fresh and new
+    - latest menu additions please
+
+# --- ask_drink_by_category: drink name check ---
+- intent: ask_drink_by_category
+  examples: |
+    - any [oolong tea](drink) available
+    - do you have [cocoxim](drink)
+    - is [nestea](drink) on the menu
+    - got [vita milk](drink) here
+    - do you carry [number 1](drink)
+    - is [zero degree](drink) in stock
+
+- intent: ask_sugar_content
+  examples: |
+    - does [sprite](drink) contain sugar
+    - is [redbull](drink) high in sugar
+    - how sweet is [sting](drink)
+    - [c2](drink) sugar information
+    - sugar level in [monster](drink)
+
+- intent: ask_caffeine_info
+  examples: |
+    - [sprite](drink) caffeine content
+    - does [vita milk](drink) have caffeine
+    - is [revive](drink) caffeinated
+    - caffeine amount in [oolong tea](drink)
+    - does [zero degree](drink) contain caffeine
+
+- intent: ask_price_range
+  examples: |
+    - what drinks cost under [10000](price_limit)
+    - I only have [15000](price_limit) to spend
+    - beverages below [20000](price_limit)
+    - show cheap drinks under [8000](price_limit)
+    - nothing over [12000](price_limit) please
+
+- intent: ask_ingredient_check
+  examples: |
+    - is there [taurine](ingredient) in [redbull](drink)
+    - does [pepsi](drink) have [caramel color](ingredient)
+    - any [vitamin B](ingredient) in [monster](drink)
+    - does [aquafina](drink) contain [fluoride](ingredient)
+    - is [yakult](drink) made with [lactobacillus](ingredient)
+
+- intent: ask_payment_check
+  examples: |
+    - do you take [paypal](payment_method)
+    - is [wechat pay](payment_method) supported
+    - can I pay using [apple pay](payment_method)
+    - do you accept [cryptocurrency](payment_method)
+    - is [grab pay](payment_method) available here
+
+- intent: ask_most_popular
+  examples: |
+    - top 5 most ordered drinks
+    - which drink sold the most
+    - most popular products here
+    - bestselling drink please
+    - what is in highest demand
+
+- intent: ask_drink_count
+  examples: |
+    - how many products do you carry
+    - total number of drinks here
+    - how many choices do I have
+    - count your drinks please
+
+- intent: ask_no_sugar
+  examples: |
+    - sugar free drinks available
+    - which drinks have no sugar at all
+    - I need zero sugar options
+    - unsweetened drinks here
+
+- intent: ask_cheapest_in_category
+  examples: |
+    - what is the cheapest [tea](category) here
+    - lowest price [energy drink](category)
+    - most affordable [milk](category) option
+    - cheapest [coffee](category) available
+
+- intent: ask_by_brand
+  examples: |
+    - Coca-Cola products available
+    - what PepsiCo drinks do you have
+    - any Suntory brand here
+    - Red Bull company items please

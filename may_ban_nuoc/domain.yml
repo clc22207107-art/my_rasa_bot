@@ -25,6 +25,33 @@ intents:
   - ask_help
   - specify_payment
   - show_cart
+  - remove_from_cart
+  - clear_cart
+  - change_order
+  - ask_payment_methods
+  - complain
+  - ask_diet_option
+  - compare_drinks
+  - apply_coupon
+  - reorder_last
+  - request_receipt
+  - ask_refund
+  - ask_order_status
+  - ask_machine_identity
+  - ask_cheapest
+  - ask_drink_by_category
+  - ask_caffeine_free
+  - ask_new_products
+  - ask_sugar_content
+  - ask_caffeine_info
+  - ask_price_range
+  - ask_ingredient_check
+  - ask_payment_check
+  - ask_most_popular
+  - ask_drink_count
+  - ask_no_sugar
+  - ask_cheapest_in_category
+  - ask_by_brand
 
 entities:
   - drink
@@ -32,6 +59,9 @@ entities:
   - quantity
   - payment_method
   - info_type
+  - category
+  - price_limit
+  - ingredient
 
 slots:
   drink:
@@ -127,6 +157,33 @@ responses:
   utter_fallback:
   - text: "Sorry, I didn't understand. Try saying menu or the name of a drink."
 
+  utter_payment_methods:
+  - text: "We accept: 💵 Cash · 💳 Card (Visa/Mastercard/ATM) · 📱 MoMo · ZaloPay · VNPay · QR Code. Say which method you prefer!"
+
+  utter_complain:
+  - text: "Sorry to hear that! 😔 Please press the maintenance button or contact our support team. We apologize for the inconvenience."
+
+  utter_diet_option:
+  - text: "🥗 Healthy/low-sugar options: Zero Degree Green Tea, C2, Lipton, Dr Thanh, Oolong Tea. All are lightly sweetened or unsweetened. Which one would you like?"
+
+  utter_apply_coupon:
+  - text: "🎟️ Please enter your promo code at the payment screen. Discounts are applied automatically at checkout!"
+
+  utter_reorder_last:
+  - text: "🔄 Sorry, I don't have access to your order history yet. Please tell me what you'd like to order!"
+
+  utter_request_receipt:
+  - text: "🧾 A digital receipt is sent via QR code after payment. For a printed receipt, please press the receipt button on the machine panel."
+
+  utter_refund:
+  - text: "💸 For refunds, please press the refund button or contact support. Refunds are processed within 24 hours. Sorry for the trouble!"
+
+  utter_order_status:
+  - text: "⏳ Your order is being processed! The drink should dispense within a few seconds. If nothing comes out, please press the help button."
+
+  utter_machine_identity:
+  - text: "🤖 I'm an AI-powered smart vending machine! I understand voice and text commands. You can order drinks, check prices, ask about ingredients, compare products, and more. Say 'menu' to get started!"
+
 actions:
   - action_get_drink_info
   - action_calculate_price
@@ -142,6 +199,21 @@ actions:
   - action_add_to_cart
   - action_show_cart
   - action_answer_product_query
+  - action_remove_from_cart
+  - action_clear_cart
+  - action_compare_drinks
+  - action_cheapest_drinks
+  - action_drink_by_category
+  - action_new_products
+  - action_caffeine_free_drinks
+  - action_price_range
+  - action_ingredient_check
+  - action_payment_check
+  - action_most_popular
+  - action_drink_count
+  - action_no_sugar
+  - action_cheapest_in_category
+  - action_by_brand
 
 session_config:
   session_expiration_time: 60

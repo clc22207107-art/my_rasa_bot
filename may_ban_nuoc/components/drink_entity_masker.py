@@ -30,13 +30,23 @@ logger = logging.getLogger(__name__)
 
 DRINK_PLACEHOLDER = "DRINK"
 
+_WORD_NUMBERS = {
+    "ten": "10", "nine": "9", "eight": "8", "seven": "7", "six": "6",
+    "five": "5", "four": "4", "three": "3", "two": "2", "one": "1",
+}
+
+def _normalize_numbers(text: str) -> str:
+    for word, digit in _WORD_NUMBERS.items():
+        text = re.sub(rf"(?<!\w){word}(?!\w)", digit, text, flags=re.IGNORECASE)
+    return text
+
 # ---------------------------------------------------------------------------
 # Comprehensive alias table — built from vending_machine.db + nlu.yml synonyms.
 # Sort order does NOT matter here; the regex engine sorts by length at build time.
 # ---------------------------------------------------------------------------
 _DRINK_ALIASES: List[str] = [
     # coca-cola
-    "coca-cola", "coca cola", "cocacola", "coke", "coca",
+    "coca-cola", "coca cola", "cocacola", "coke", "coco", "coca",
     # pepsi
     "pepsi cola", "pepsi-cola", "pepsi",
     # red bull
@@ -69,7 +79,7 @@ _DRINK_ALIASES: List[str] = [
     # warrior
     "warrior",
     # wakeup 247
-    "wake up 247", "wakeup 247", "wake up", "wakeup247",
+    "wake up 247", "wakeup 247", "wake up", "wakeup247", "wakeup",
     # cocoxim — "coconut water cocoxim" first to avoid short alias grabbing unrelated text
     "coconut water cocoxim", "cocoxim coconut", "coco xim", "cocoxim",
     # lipton
@@ -203,6 +213,10 @@ class DrinkEntityMasker(GraphComponent):
 
         parts.append(text[prev_end:])
         masked_text = "".join(parts)
+
+        # Inference only: normalize word numbers so DIET sees digits ("3") not words ("three")
+        if not annot_drinks:
+            masked_text = _normalize_numbers(masked_text)
 
         def offset_at(char_pos: int) -> int:
             """Cumulative character offset at a given position in the original text."""
