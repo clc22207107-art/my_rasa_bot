@@ -117,8 +117,9 @@ def resolve_drink(tracker):
 
 def drinks_from_entities(tracker) -> List[tuple]:
     """
-    Build [(key, drink_data, qty)] from NLU entities in the latest message.
-    Pairs each drink entity with the nearest preceding (or following) quantity entity.
+    Build [(key, drink_data, qty, size)] from NLU entities in the latest message.
+    Qty: closest preceding entity, else closest following.
+    Size: assigned by minimum character distance to drink (each size goes to nearest drink).
     """
     entities = tracker.latest_message.get("entities", [])
     drink_ents = sorted(
@@ -129,9 +130,30 @@ def drinks_from_entities(tracker) -> List[tuple]:
         [e for e in entities if e.get("entity") == "quantity"],
         key=lambda e: e.get("start", 0),
     )
+    size_ents = sorted(
+        [e for e in entities if e.get("entity") == "size"],
+        key=lambda e: e.get("start", 0),
+    )
+
+    def _char_dist(ent, drink):
+        e0, e1 = ent.get("start", 0), ent.get("end", 0)
+        d0, d1 = drink.get("start", 0), drink.get("end", 0)
+        if e1 <= d0: return d0 - e1   # entity before drink
+        if e0 >= d1: return e0 - d1   # entity after drink
+        return 0
+
+    # Assign each size entity to its nearest drink by character distance
+    size_for_drink = {}  # drink index -> (size_value, distance)
+    for s_ent in size_ents:
+        if not drink_ents:
+            break
+        best_i = min(range(len(drink_ents)), key=lambda i: _char_dist(s_ent, drink_ents[i]))
+        dist = _char_dist(s_ent, drink_ents[best_i])
+        if best_i not in size_for_drink or dist < size_for_drink[best_i][1]:
+            size_for_drink[best_i] = (s_ent.get("value"), dist)
 
     results = []
-    for d_ent in drink_ents:
+    for i, d_ent in enumerate(drink_ents):
         key, drink_data = find_drink(d_ent.get("value", ""))
         if not drink_data:
             continue
@@ -139,18 +161,17 @@ def drinks_from_entities(tracker) -> List[tuple]:
         d_start = d_ent.get("start", 0)
         d_end = d_ent.get("end", d_start)
 
-        # Closest quantity that ends before this drink starts (preceding)
-        preceding = [q for q in qty_ents if q.get("end", 0) <= d_start]
-        # Closest quantity that starts after this drink ends (following)
-        following = [q for q in qty_ents if q.get("start", 0) >= d_end]
-
+        # Qty: closest preceding, else closest following
+        pre_qty = [q for q in qty_ents if q.get("end", 0) <= d_start]
+        fol_qty = [q for q in qty_ents if q.get("start", 0) >= d_end]
         qty = 1
-        if preceding:
-            qty = parse_quantity(preceding[-1].get("value", "1"))
-        elif following:
-            qty = parse_quantity(following[0].get("value", "1"))
+        if pre_qty:
+            qty = parse_quantity(pre_qty[-1].get("value", "1"))
+        elif fol_qty:
+            qty = parse_quantity(fol_qty[0].get("value", "1"))
 
-        results.append((key, drink_data, qty))
+        size = size_for_drink.get(i, (None,))[0]
+        results.append((key, drink_data, qty, size))
 
     return results
 
@@ -158,16 +179,8 @@ def drinks_from_entities(tracker) -> List[tuple]:
 def parse_quantity(qty_str: str) -> int:
     if not qty_str:
         return 1
-    words = {
-        "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
-        "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10, "a": 1,
-    }
     qty_lower = qty_str.lower()
-    # Strip size patterns (330ml, 500 ml, 1.5l, 1 liter...) before looking for numbers
     qty_clean = re.sub(r'\d+[\.,]?\d*\s*(?:ml|l|liter|liters|litre|litres)\b', '', qty_lower)
-    for word, num in words.items():
-        if word in qty_clean.split():
-            return num
     numbers = re.findall(r'\d+', qty_clean)
     return int(numbers[0]) if numbers else 1
 
@@ -424,9 +437,7 @@ class ActionAddToCart(Action):
         return "action_add_to_cart"
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        # Size from current message entities only (not persisted slot from previous turns)
         current_entities = tracker.latest_message.get("entities", [])
-        size_slot = next((e["value"] for e in current_entities if e["entity"] == "size"), None)
         cart = get_cart(tracker)
 
         # Primary path: drink entities extracted by DrinkEntityMasker + DIET
@@ -444,12 +455,13 @@ class ActionAddToCart(Action):
                 return []
             qty_ents = [e for e in current_entities if e.get("entity") == "quantity"]
             qty_val = qty_ents[0].get("value", "1") if qty_ents else tracker.get_slot("quantity") or "1"
-            found_items = [(key, drink_data, parse_quantity(qty_val))]
+            size_slot = next((e["value"] for e in current_entities if e["entity"] == "size"), None)
+            found_items = [(key, drink_data, parse_quantity(qty_val), size_slot)]
 
         added_lines = []
         last_key = None
 
-        for key, drink_data, qty in found_items:
+        for key, drink_data, qty, size_slot in found_items:
             volume = resolve_volume(drink_data, size_slot)
 
             if volume is None:
@@ -1000,16 +1012,22 @@ class ActionPriceRange(Action):
         entities = tracker.latest_message.get("entities", [])
         limit_val = next((e["value"] for e in entities if e["entity"] == "price_limit"), None)
         if not limit_val:
-            # fallback: scan raw text for numbers
+            # fallback: scan raw text for "X thousand" or plain digits
             raw = tracker.latest_message.get("text", "")
-            nums = re.findall(r"\d[\d,\.]*", raw)
-            if not nums:
-                dispatcher.utter_message(text="Please tell me your budget. E.g. 'drinks under 10000' or 'anything below 20k'.")
-                return []
-            limit_val = nums[-1]
+            m_thou = re.search(r"(\d[\d,\.]*)\s*thousand", raw, re.IGNORECASE)
+            if m_thou:
+                limit_val = m_thou.group(1) + "000"
+            else:
+                nums = re.findall(r"\d[\d,\.]*", raw)
+                if not nums:
+                    dispatcher.utter_message(text="Please tell me your budget. E.g. 'drinks under 10000' or 'anything below 20k'.")
+                    return []
+                limit_val = nums[-1]
 
-        # normalise: "10k" / "10,000" → float
-        limit_str = str(limit_val).lower().replace(",", "").replace(".", "").replace("k", "000").strip()
+        # normalise: "10 thousand" / "10k" / "10,000" → float
+        limit_str = str(limit_val).lower().strip()
+        limit_str = re.sub(r"(\d)\s*thousand", r"\g<1>000", limit_str)
+        limit_str = limit_str.replace(",", "").replace("k", "000")
         try:
             limit = float(re.sub(r"[^\d]", "", limit_str))
         except ValueError:

@@ -79,7 +79,6 @@ nlu:
     - what products can I get
     - any coffee or tea options here
     - give me the full drink list
-    - list the new arrivals
 
 # sentences 68-82
 - intent: ask_price
@@ -186,15 +185,9 @@ nlu:
     - what does [redbull](drink) have in it
     - how is [sprite](drink) made
     - break down the contents of [c2](drink)
-    - is there caffeine in [monster](drink)
-    - is there sugar in [aquafina](drink)
-    - is [yakult](drink) probiotic
-    - what herbs does [dr thanh](drink) have
     - list the ingredients of [warrior](drink)
-    - is [7up](drink) sparkling
     - tell me what is in [redbull](drink)
     - what goes into [vita milk](drink)
-    - is [lavie](drink) mineral water
     - list ingredients of [sprite](drink)
 
 - intent: confirm
@@ -224,7 +217,6 @@ nlu:
     - abort that
     - stop the order
     - no thank you
-    - start over please
     - that's not right
     - definitely not
 
@@ -306,11 +298,8 @@ nlu:
     - what's the bestseller here
     - any suggestions for me
     - what's trending here
-    - what is selling the most
     - which drink should I get today
     - which one is good here
-    - top 3 best selling drinks
-    - which 3 drinks sold the most
 
 - intent: show_cart
   examples: |
@@ -348,6 +337,7 @@ nlu:
     - remove every drink I picked
     - delete all items from my cart
     - wipe everything from my order
+    - start over please
 
 - intent: change_order
   examples: |
@@ -364,7 +354,6 @@ nlu:
   examples: |
     - what can I use to pay here
     - are credit cards accepted at this machine
-    - can I pay with vnpay
     - do you have contactless payment
     - can I use my phone to pay
     - what payment is supported here
@@ -385,7 +374,6 @@ nlu:
 - intent: ask_diet_option
   examples: |
     - do you have any sugar-free drinks
-    - any zero sugar options here
     - I want a drink with no sugar
     - which drink has the fewest calories
     - any diet options available
@@ -508,11 +496,11 @@ nlu:
     - any limited edition drinks available
     - what was added to the menu lately
     - new items here
+    - list the new arrivals
     - anything fresh and new
     - latest menu additions please
 
-# --- ask_drink_by_category: drink name check ---
-- intent: ask_drink_by_category
+- intent: ask_stock
   examples: |
     - any [oolong tea](drink) available
     - do you have [cocoxim](drink)
@@ -528,6 +516,7 @@ nlu:
     - how sweet is [sting](drink)
     - [c2](drink) sugar information
     - sugar level in [monster](drink)
+    - is there sugar in [aquafina](drink)
 
 - intent: ask_caffeine_info
   examples: |
@@ -536,6 +525,7 @@ nlu:
     - is [revive](drink) caffeinated
     - caffeine amount in [oolong tea](drink)
     - does [zero degree](drink) contain caffeine
+    - is there caffeine in [monster](drink)
 
 - intent: ask_price_range
   examples: |
@@ -552,6 +542,10 @@ nlu:
     - any [vitamin B](ingredient) in [monster](drink)
     - does [aquafina](drink) contain [fluoride](ingredient)
     - is [yakult](drink) made with [lactobacillus](ingredient)
+    - is [yakult](drink) probiotic
+    - what herbs does [dr thanh](drink) have
+    - is [7up](drink) sparkling
+    - is [lavie](drink) mineral water
 
 - intent: ask_payment_check
   examples: |
@@ -568,6 +562,8 @@ nlu:
     - most popular products here
     - bestselling drink please
     - what is in highest demand
+    - top 3 best selling drinks
+    - which 3 drinks sold the most
 
 - intent: ask_drink_count
   examples: |
