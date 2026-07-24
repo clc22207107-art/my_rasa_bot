@@ -31,7 +31,7 @@ SAMPLE_RATE     = 16000
 WHISPER_MODEL   = "small"
 WHISPER_DEVICE  = "cpu"
 WHISPER_COMPUTE = "int8"
-WHISPER_THREADS = 1
+WHISPER_THREADS = 3
 
 # ── ANSI ──────────────────────────────────────────────────────────────────────
 GREEN  = "\033[92m"; RED    = "\033[91m"; YELLOW = "\033[93m"
