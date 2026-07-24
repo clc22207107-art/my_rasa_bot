@@ -35,26 +35,26 @@ nlu:
   examples: |
     - I like a [coca](drink)
     - let me have [pepsi](drink) please
-    - one [redbull](drink) for me
+    - [one](quantity) [redbull](drink) for me
     - grab me a [sprite](drink)
-    - [sting](drink) one can please
+    - [sting](drink) [one](quantity) can please
     - give me a [monster](drink)
     - I want [aquafina](drink)
-    - [fanta](drink) orange please
-    - [7up](drink) one can
+    - [fanta orange](drink) please
+    - [7up](drink) [one](quantity) can
     - get me [revive](drink)
     - I'll take [c2](drink)
     - I want [lipton](drink)
-    - [nestea](drink) one bottle please
+    - [nestea](drink) [one](quantity) bottle please
     - [mirinda](drink) grape please
-    - one [cocoxim](drink) please
-    - one [yakult](drink) for me
+    - [one](quantity) [cocoxim](drink) please
+    - [one](quantity) [yakult](drink) for me
     - give me [vita milk](drink) [2](quantity)
     - put [warrior](drink) in my order
-    - [wakeup](drink) one can please
-    - one [oolong](drink) bottle please
-    - [birdy](drink) coffee one can
-    - [nescafe](drink) one please
+    - [wakeup](drink) [one](quantity) can please
+    - [one](quantity) [oolong](drink) bottle please
+    - [birdy](drink) coffee [one](quantity) can
+    - [nescafe](drink) [one](quantity) please
     - give me [4](quantity) [sprite](drink)
     - [3](quantity) [sting](drink) please
     - [2](quantity) [monster](drink) and [1](quantity) [redbull](drink)
@@ -224,25 +224,25 @@ nlu:
   examples: |
     - [330 ml](size)
     - [1 liter](size) bottle
-    - [big bottle](size) please
+    - [big](size) bottle please
     - I like the [big](size) one
     - [500ml](size) bottle please
-    - [medium size](size)
+    - [medium](size) size
     - [600ml](size) please
     - I will take [mini](size)
-    - just the [big bottle](size)
+    - just the [big](size) bottle
 
 - intent: specify_quantity
   examples: |
     - [one](quantity) please
-    - give me [two bottles](quantity)
+    - give me [two](quantity) bottles
     - I'll take [3](quantity)
     - [four](quantity) bottles
-    - bring me [five cans](quantity)
+    - bring me [five](quantity) cans
     - just [1](quantity) bottle
     - [2](quantity) of them
     - make that [seven](quantity)
-    - [6 bottles](quantity)
+    - [6](quantity) bottles
     - [10](quantity) bottles
 
 - intent: specify_payment
@@ -250,7 +250,7 @@ nlu:
     - I'll pay with [cash](payment_method)
     - [momo](payment_method) please
     - pay via [zalopay](payment_method)
-    - let me scan [QR ](payment_method)
+    - let me scan [QR](payment_method)
     - [credit card](payment_method) please
     - [e-wallet](payment_method) payment
     - [cash](payment_method) payment please
@@ -592,3 +592,21 @@ nlu:
     - what PepsiCo drinks do you have
     - any Suntory brand here
     - Red Bull company items please
+
+- intent: nlu_fallback
+  examples: |
+    - what is the capital of France
+    - how do I fix my wifi connection
+    - can you play some music for me
+    - what time is it in Tokyo
+    - translate hello to Spanish
+    - who won the World Cup in 2022
+    - how many calories are in a salad
+    - remind me to call mom tomorrow
+    - what is the square root of 144
+    - can you book a flight for me
+    - is it going to rain today
+    - I want to buy a laptop
+    - how do I reset my password
+    - tell me a joke
+    - what movies are showing tonight

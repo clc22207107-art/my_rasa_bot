@@ -33,8 +33,8 @@ nlu:
     - can I get [zero degree](drink)
     - add [sprite](drink) to my order
     - [1](quantity) [pepsi](drink) for me
-    - [2 bottles](quantity) of [sting](drink)
-    - order [monster](drink) [2 cans](quantity)
+    - [2](quantity) bottles of [sting](drink)
+    - order [monster](drink) [2](quantity) cans
     - [coca](drink) [500ml](size)
     - [7up](drink) [1](quantity) can
     - [sprite](drink) [2](quantity) cans
@@ -427,13 +427,19 @@ nlu:
   examples: |
     - [330ml](size)
     - give me [large size](size)
-    - I want [big bottle](size)
+    - I want [big](size) bottle
     - just [small](size) please
     - the [1 liter](size) one
-    - [medium size](size) please
+    - [medium](size) size please
     - I need [600ml](size)
     - I'll take the [mini](size)
     - give me [500ml](size) bottle
+    - [330 ml](size) please
+    - I want the [can](size)
+    - just a [can](size)
+    - give me a [can](size) size
+    - [330 ml](size) bottle please
+    - the [500 ml](size) one
 
 # ==================== SPECIFY QUANTITY ====================
 - intent: specify_quantity
@@ -442,13 +448,23 @@ nlu:
     - I need [5](quantity)
     - just [1](quantity) please
     - bring me [four](quantity)
-    - make it [3 cans](quantity)
-    - grab [two bottles](quantity)
+    - make it [3](quantity) cans
+    - grab [two](quantity) bottles
     - I'll take [6](quantity)
     - give me [ten](quantity)
     - I'll have [three](quantity)
     - [four](quantity) cans please
     - make that [seven](quantity) cans
+    - just [one](quantity) please
+    - [4](quantity) please
+    - I want [4](quantity)
+    - [five](quantity) cans
+    - give me [five](quantity) cans
+    - [6](quantity) bottles please
+    - I need [10](quantity)
+    - [one](quantity) is enough
+    - [4](quantity) bottles
+    - make it [five](quantity)
 
 # ==================== SPECIFY PAYMENT ====================
 - intent: specify_payment
@@ -1026,6 +1042,14 @@ nlu:
     - get me [large](size) [pepsi](drink) and [small](size) [sprite](drink)
     - [330ml](size) [pepsi](drink) and [1.5L](size) [lavie](drink) please
     - I'll have [mini](size) [sting](drink) and [jumbo](size) [sprite](drink)
+    - give me [4](quantity) [coca](drink)
+    - [4](quantity) [pepsi](drink) please
+    - [one](quantity) [sprite](drink) can
+    - a [can](size) of [fanta](drink)
+    - [330 ml](size) [coca](drink)
+    - [five](quantity) cans of [monster](drink)
+    - [6](quantity) bottles of [aquafina](drink)
+    - I want [10](quantity) [lavie](drink)
 
 # ==================== SIZE + DRINK COMBINED (remove) ====================
 - intent: remove_from_cart
@@ -1372,6 +1396,18 @@ nlu:
     - [monster](drink) [B vitamins](ingredient) in ingredients
     - is [sprite](drink) carbonated with [carbon dioxide](ingredient)
     - does [dr thanh](drink) use [herbs](ingredient)
+    - does [pepsi](drink) have [caramel color](ingredient)
+    - is there [fluoride](ingredient) in [aquafina](drink)
+    - does [yakult](drink) contain [lactobacillus](ingredient)
+    - is [monster](drink) high in [caffeine](ingredient)
+    - does [c2](drink) have [vitamin B](ingredient)
+    - any [artificial sweetener](ingredient) in [coca](drink)
+    - is [lavie](drink) free of [fluoride](ingredient)
+    - does [fanta](drink) contain [caramel color](ingredient)
+    - is [redbull](drink) loaded with [caffeine](ingredient)
+    - any [probiotics](ingredient) in [yakult](drink)
+    - does [sprite](drink) have [high fructose corn syrup](ingredient)
+    - is [vita milk](drink) made with [calcium](ingredient)
 
 # ==================== ASK PAYMENT CHECK ====================
 - intent: ask_payment_check

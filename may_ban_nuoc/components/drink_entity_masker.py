@@ -26,19 +26,52 @@ from rasa.shared.nlu.training_data.message import Message
 from rasa.shared.nlu.training_data.training_data import TrainingData
 from rasa.shared.nlu.constants import TEXT, ENTITIES
 
+try:
+    from word2number import w2n as _w2n
+    _W2N_AVAILABLE = True
+except ImportError:
+    _W2N_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 DRINK_PLACEHOLDER = "DRINK"
 
-_WORD_NUMBERS = {
-    "ten": "10", "nine": "9", "eight": "8", "seven": "7", "six": "6",
-    "five": "5", "four": "4", "three": "3", "two": "2", "one": "1",
-}
+# Regex: volume pattern with optional space between number and unit
+# e.g. "330 ml" → "330ml", "1.5 L" → "1.5L", "500 ML" → "500ml"
+_SIZE_SPACE_RE = re.compile(
+    r'(\d+(?:[.,]\d+)?)\s*(ml|l|liter|liters|litre|litres)\b',
+    re.IGNORECASE,
+)
+
+# Word-number token: one or more word-number words (handles "twenty five", etc.)
+_WORD_NUM_TOKEN_RE = re.compile(
+    r'\b(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|'
+    r'eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|'
+    r'eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|'
+    r'eighty|ninety|hundred|thousand)(?:\s+(?:zero|one|two|three|four|'
+    r'five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|'
+    r'fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|'
+    r'fifty|sixty|seventy|eighty|ninety|hundred|thousand))*\b',
+    re.IGNORECASE,
+)
+
 
 def _normalize_numbers(text: str) -> str:
-    for word, digit in _WORD_NUMBERS.items():
-        text = re.sub(rf"(?<!\w){word}(?!\w)", digit, text, flags=re.IGNORECASE)
-    return text
+    """Convert word numbers → digits using word2number library (inference only)."""
+    def _replace(m: re.Match) -> str:
+        phrase = m.group(0)
+        if _W2N_AVAILABLE:
+            try:
+                return str(_w2n.word_to_num(phrase))
+            except ValueError:
+                pass
+        return phrase
+    return _WORD_NUM_TOKEN_RE.sub(_replace, text)
+
+
+def _normalize_sizes(text: str) -> str:
+    """Collapse '330 ml' → '330ml', '1.5 L' → '1.5l' (lowercase unit)."""
+    return _SIZE_SPACE_RE.sub(lambda m: m.group(1) + m.group(2).lower().replace('liter', 'l').replace('litre', 'l').replace('liters', 'l').replace('litres', 'l'), text)
 
 # ---------------------------------------------------------------------------
 # Comprehensive alias table — built from vending_machine.db + nlu.yml synonyms.
@@ -214,8 +247,9 @@ class DrinkEntityMasker(GraphComponent):
         parts.append(text[prev_end:])
         masked_text = "".join(parts)
 
-        # Inference only: normalize word numbers so DIET sees digits ("3") not words ("three")
+        # Inference only: normalize word numbers and size strings
         if not annot_drinks:
+            masked_text = _normalize_sizes(masked_text)
             masked_text = _normalize_numbers(masked_text)
 
         def offset_at(char_pos: int) -> int:
