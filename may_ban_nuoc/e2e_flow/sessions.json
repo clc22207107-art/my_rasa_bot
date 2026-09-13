@@ -1,0 +1,190 @@
+{
+  "sessions": [
+    {
+      "id": "purchase_coca",
+      "description": "Session 1: Buy two Coca-Cola 500ml, review the cart, confirm, pay with cash, and say goodbye.",
+      "turns": [
+        {
+          "user_text": "Hello",
+          "expect": {
+            "intent": "greet",
+            "actions": [
+              "utter_greet"
+            ],
+            "cart": {}
+          }
+        },
+        {
+          "user_text": "I want two Coca Cola 500ml",
+          "expect": {
+            "intent": "order_drink",
+            "actions": [
+              "action_add_to_cart"
+            ],
+            "cart": {
+              "coca": 2
+            },
+            "cart_items": [
+              {
+                "product": "coca",
+                "volume": "500ml",
+                "quantity": 2
+              }
+            ]
+          }
+        },
+        {
+          "user_text": "Show my cart",
+          "expect": {
+            "intent": "show_cart",
+            "actions": [
+              "action_show_cart"
+            ],
+            "cart": {
+              "coca": 2
+            },
+            "cart_items": [
+              {
+                "product": "coca",
+                "volume": "500ml",
+                "quantity": 2
+              }
+            ]
+          }
+        },
+        {
+          "user_text": "Confirm",
+          "expect": {
+            "intent": "confirm",
+            "actions": [
+              "action_confirm_order"
+            ],
+            "cart": {
+              "coca": 2
+            },
+            "response_contains": [
+              "How would you like to pay"
+            ],
+            "cart_items": [
+              {
+                "product": "coca",
+                "volume": "500ml",
+                "quantity": 2
+              }
+            ]
+          }
+        },
+        {
+          "user_text": "Cash",
+          "expect": {
+            "intent": "specify_payment",
+            "actions": [
+              "action_process_payment"
+            ],
+            "cart": {},
+            "response_contains": [
+              "Payment successful"
+            ]
+          }
+        },
+        {
+          "user_text": "Goodbye",
+          "expect": {
+            "intent": "goodbye",
+            "actions": [
+              "utter_goodbye"
+            ],
+            "cart": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "cancel_then_pepsi",
+      "description": "Session 2: In a fresh conversation, add Sprite, cancel the cart, buy two Pepsi, review, confirm, pay with cash, and say goodbye.",
+      "turns": [
+        {
+          "user_text": "I want one Sprite",
+          "expect": {
+            "intent": "order_drink",
+            "actions": [
+              "action_add_to_cart"
+            ],
+            "cart": {
+              "sprite": 1
+            }
+          }
+        },
+        {
+          "user_text": "Cancel my order",
+          "expect": {
+            "intent": "deny",
+            "actions": [
+              "action_reset_order"
+            ],
+            "cart": {}
+          }
+        },
+        {
+          "user_text": "I want two Pepsi",
+          "expect": {
+            "intent": "order_drink",
+            "actions": [
+              "action_add_to_cart"
+            ],
+            "cart": {
+              "pepsi": 2
+            }
+          }
+        },
+        {
+          "user_text": "Show my cart",
+          "expect": {
+            "intent": "show_cart",
+            "actions": [
+              "action_show_cart"
+            ],
+            "cart": {
+              "pepsi": 2
+            }
+          }
+        },
+        {
+          "user_text": "Confirm",
+          "expect": {
+            "intent": "confirm",
+            "actions": [
+              "action_confirm_order"
+            ],
+            "cart": {
+              "pepsi": 2
+            }
+          }
+        },
+        {
+          "user_text": "Cash",
+          "expect": {
+            "intent": "specify_payment",
+            "actions": [
+              "action_process_payment"
+            ],
+            "cart": {},
+            "response_contains": [
+              "Payment successful"
+            ]
+          }
+        },
+        {
+          "user_text": "Goodbye",
+          "expect": {
+            "intent": "goodbye",
+            "actions": [
+              "utter_goodbye"
+            ],
+            "cart": {}
+          }
+        }
+      ]
+    }
+  ]
+}
